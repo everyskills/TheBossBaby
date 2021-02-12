@@ -1,0 +1,14 @@
+ {
+    "name": "Flag Icons",
+    "version": "1.0.0",
+    "description": "get country flag by name",
+    "icon": "icon.png",
+    "help": "README.md",
+    "key": "flag",
+    "script": "main.py",
+    "author_name": "Osama Muhammed Al-zabidi",
+    "author_email": "everyskils@gmail.com",
+    "home_page": "https://www.everyskils.com",
+    "author_description": "Python Developer",
+	"system": "all"
+}

@@ -1,0 +1,14 @@
+{
+	"name": "App Lanucher",
+	"version": "1.0.0",
+	"description": "simple app lanucher for linux",
+	"icon": "icon.svg",
+	"help": "README.md",
+	"key": "app",
+	"script": "main.py",
+	"author_name": "Osama Muhammed Al-zabidi",
+	"author_email": "everyskils@gmail.com",
+	"home_page": "https://www.everyskils.com",
+	"author_description": "Python Developer",
+	"system": "linux"
+}

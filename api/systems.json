@@ -1,0 +1,27 @@
+{
+    "Linux": [
+        "Ubuntu",
+        "RedHat",
+        "CentOS",
+        "Pop",
+        "neon",
+        "elemnt",
+        "fedora",
+        "Kali"
+    ],
+
+    "Windows": [
+        "win32",
+        "win64",
+        "windows7",
+        "windows10",
+        "windows8",
+        "windowsxp"
+    ],
+
+    "MacOS": [],
+
+    "Android": [],
+
+    "IOS": []
+} 

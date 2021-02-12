@@ -1,0 +1,66 @@
+QListWidget,
+#Form, 
+#frame, 
+#input_frame,
+#status_frame {
+    background: #393D40;
+    color: white;
+}
+
+#frame {
+    padding: 6px 0px;
+    border-radius: 8px;
+    background-color: #393D40;
+}
+
+#input {
+    padding: 5px;
+    background: transparent;
+    background: #393D40;
+    font-size: 22px;
+    selection-background-color: rgb(75, 80, 83);
+    selection-color: rgb(213, 213, 213);
+}
+
+
+#btn_setting, #btn_ext {
+    background: transparent;
+    border: none;
+}
+
+#btn_setting:hover, #btn_ext:hover {
+    background: transparent;
+    border: none;
+}
+
+#btn_setting:pressed, #btn_ext:pressed {
+    background: transparent;
+    border: none;
+}
+
+QListWidget {
+    padding-top: 15px;
+}
+
+QListWidget:item:hover{
+	border-radius:  5px;
+	background-color: rgb(144, 170, 200, 0.10);
+	color: #ffffff;
+}
+
+QListWidget:item:selected{
+	border-radius:  5px;
+	background-color:#4B5053;
+	color: #ffffff;
+}
+
+QListWidget:item:focus{
+	border-radius:  5px;
+	background-color:#4B5053;
+    color: #ffffff;
+}
+
+
+QMdiArea {
+    background: #393D40;
+}

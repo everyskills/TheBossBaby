@@ -1,0 +1,113 @@
+{
+    "Videos": [
+        ".mp4",
+        ".mkv",
+        ".avi"
+    ],
+
+    "DataBase": [
+        "sqlite",
+        "sqlite3",
+        "sql",
+        "db",
+        "json",
+        "mysql"
+    ],
+
+    "Python": [
+        "pyi",
+        "pyw",
+        "pyc",
+        "py"
+    ],
+
+    "Documents": [
+        "doc",
+        "docx",
+        "odt",
+        "md"
+    ],
+
+    "Xlsx": [
+        "xlsx",
+        "xls",
+        "ods",
+        "csv"
+    ],
+
+    "Archives": [
+        "tar",
+        "tar.gz",
+        "rar",
+        "iso",
+        "zip"
+    ],
+
+    "UI": [
+        "ui",
+        "glade"
+    ],
+
+    "Image": [
+        "jpg",
+        "png",
+        "jpeg",
+        "svg",
+        "gif"
+    ],
+    
+    "Audio": [
+        "mp3",
+        "m4a"
+    ],
+
+    "C_C++": [
+        "cpp",
+        "cgg",
+        "c",
+        "h"
+    ],
+
+    "Dart": [
+        "dart"
+    ],
+
+    "Swift": [
+        "swift"
+    ],
+
+    "Books": [
+        "pdf"
+    ],
+
+    "Text": [
+        "text",
+        "txt"
+    ],
+
+    "LinuxApp": [
+        "deb",
+        "rpm",
+        "appimage"
+    ],
+
+    "Bash": [
+        "zsh",
+        "sh",
+        "bash"
+    ],
+
+    "Web": [
+        "xml",
+        "html",
+        "css",
+        "sass",
+        "less",
+        "js",
+        "htm"
+    ],
+
+    "Contact": [
+        "vcf"
+    ]
+}
