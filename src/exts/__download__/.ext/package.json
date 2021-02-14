@@ -1,0 +1,12 @@
+{
+	"name": "Calculator",
+	"version": "1.0.0",
+	"description": "simple and advanced calculator",
+	"icon": "icon.png",
+	"help": "README.md",
+	"author_name": "Osama Muhammed Alzabidi",
+	"author_email": "everyskils@gmail.com",
+	"home_page": "https://www.everyskills.com",
+	"author_description": "Python Developer",
+	"github_user": "everyskills"
+}
