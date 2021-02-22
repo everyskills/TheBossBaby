@@ -1,0 +1,17 @@
+{
+    "name": "Plugin Name",
+    "keyword": "key",
+    "description": "simple description what plugin do",
+    "version": "1.0.0",
+    "creator_name": "Osama Muhammed",
+    "creator_url": "https://www.example.com",
+    "creator_email": "",
+    "home_page": "https://www.github.com/<username>/<repository>",
+    "examples": [
+        "key arg for processes",
+        "..."
+    ],
+    "icon": "icon.png",
+    "help": "help.html",
+	"script": "main.py"
+}

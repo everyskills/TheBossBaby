@@ -1,28 +1,31 @@
 #!/usr/bin/python3
 
 import os
-import _pkg
 import shutil
 import json
 
+from kangaroo import pkg, item
 from glob import glob
+from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtCore import QProcess, QSize, QThreadPool, QUrl, Qt
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import QAction, QApplication, QDialog, QFrame, QGridLayout, QLabel, QLineEdit, QMessageBox, QProgressBar, QSizePolicy, QStyleFactory, QTextEdit, QWidget
-from PyQt5.uic import loadUi
-from _item import Ui_Item
+from PyQt5.QtWidgets import (QAction, QApplication, QDialog, 
+                            QFrame, QGridLayout, QLabel, QLineEdit, 
+                            QMessageBox, QProgressBar, QSizePolicy, 
+                            QStyleFactory, QTextEdit, QWidget)
 from _downloader import UnzipWorker
+from ui.setting_ui import Ui_Form
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 setting_file = base_dir + "Json/settings.json"
 
-class PluginSettings(QWidget):
+class PluginSettings(QWidget, Ui_Form):
     def __init__(self, parent=None, win: object=None) -> None:
         super().__init__(parent)
         QWidget.__init__(self)
-        
+        self.setupUi(self)
+
         self.win = win
-        self.ui = loadUi(base_dir + "setting.ui", self)
         self.bef_key = self.key.text().strip().lower()
         self.threadpool = QThreadPool()
         self.p = None
@@ -61,16 +64,16 @@ class PluginSettings(QWidget):
                 
                 self.set_info(k)
                 icon = base_dir + "icons/unknow_plugin.png"
-                list_item = _pkg.add_item(self.ui.list_widget, 
+                list_item = pkg.add_item(self.list_widget, 
                 QIcon(v.get('icon', '') if os.path.exists(v.get('icon')) else icon))
                 
-                item = _pkg.add_item_widget(
+                item_widget = pkg.add_item_widget(
                     list_item, 
-                    Ui_Item,
+                    item.KUi_Item,
                     v.get("json").get("name", "")[0:64], 
                     v.get("json").get("description", "")[0:64],
                     k)
-                _pkg.set_item_widget(self.ui.list_widget, item)
+                pkg.set_item_widget(self.list_widget, item_widget)
 
     def check_download(self):
         url = self.url_path.text().strip().replace("file://", "")
@@ -89,7 +92,7 @@ class PluginSettings(QWidget):
 
         elif os.path.exists(url) and not os.path.isfile(url):
             dirn = url.rstrip("/").split("/")[-1]
-            shutil.copytree(url, base_dir + down_path + dirn)
+            shutil.copytree(url, (base_dir + down_path + dirn) + ".ext" if not dirn.endswith(".ext") else "")
             self.setup_downloaded_plugin()
         
         elif (os.path.exists(url) and not 
@@ -107,24 +110,21 @@ class PluginSettings(QWidget):
     def setup_downloaded_plugin(self):
         for i in glob(base_dir + "exts/__download__/*.ext/"):
             try:
-                if os.path.exists(i + "package.json"):
-                    with open(i + "package.json", "r") as _f:
-                        data = json.load(_f)
-                        if (os.path.exists(i + data.get("script")) and
-                            data.get("key").strip() and
-                            data.get("system").strip()):
+                with open(i + "package.json", "r") as _f:
+                    data = json.load(_f)
+                    if (os.path.exists(i + data.get("script")) and
+                        data.get("key").strip() and not 
+                        data.get("key") in list(self.win.exts.keys()) and
+                        data.get("system").strip()):
 
-                            try:
-                                shutil.move(i.rstrip("/"), base_dir + f"exts/__{data.get('system')}__/")
-                            except shutil.Error:
-                                self.message(f"{data.get('name')}: is Already exists !")
-
-                            list(map(lambda x: os.remove(x), glob(base_dir + "exts/__download__/*")))
-                            self.message(f"<font size='4' color='white'>{data.get('name')}:\
-                                </font> <font size='4' color='green'>Install is Finished.</font><br>\
-                                Press 'Ctrl+Q' for Exit")
-                else:
-                    self.del_perr()
+                        shutil.move(i.rstrip("/"), base_dir + f"exts/__{data.get('system')}__/")
+                        
+                        list(map(lambda x: os.remove(x), glob(base_dir + "exts/__download__/*")))
+                        self.message(f"<font size='4' color='white'>{data.get('name')}:\
+                            </font> <font size='4' color='green'>Install is Finished.</font><br>\
+                            Press 'Ctrl+Q' for Exit")
+            except shutil.Error:
+                self.message(f"{data.get('name')}: is Already exists !")
             except (FileExistsError, TypeError, AttributeError):
                 self.del_perr(i)
 
@@ -230,7 +230,7 @@ class PluginSettings(QWidget):
 
     def set_info(self, key: str=""):
         try:
-            item = self.ui.list_widget.currentItem()
+            item = self.list_widget.currentItem()
             l_item = item.listWidget().itemWidget(item)
             plugin = l_item.shortcut.text()
         except AttributeError:
@@ -242,34 +242,34 @@ class PluginSettings(QWidget):
         if not os.path.exists(icon):
             icon = base_dir + "icons/unknow_plugin.png"
 
-        self.ui.plug_image.setPixmap(QIcon(icon).pixmap(QSize(60, 60)))
-        self.ui.plug_name.setText(f"""\
+        self.plug_image.setPixmap(QIcon(icon).pixmap(QSize(60, 60)))
+        self.plug_name.setText(f"""\
                                 {plug.get("name", "")[0:64]} \
                                 <sub><font size='2' \
                                 color='#ffffff'>v{plug.get("version", "")} \
                                 </font></sub>""")
         
-        self.ui.plug_desc.setText(plug.get("description", "")[0:120]) # limit 120 chrs
+        self.plug_desc.setText(plug.get("description", "")[0:120]) # limit 120 chrs
         self.key.setText(plug.get("key", ""))
         self.name.setText(plug.get("author_name", ""))
         self.email.setText(plug.get("author_email"))
         self.github.setText(f"https://www.github.com/{plug.get('github_user', '')}")
         self.home_page.setText(plug.get("home_page", ""))
         self.system.setText(plug.get("system", ""))
-        self.ui.sys_img.setPixmap(QIcon(base_dir + f"icons/systems/{plug.get('system')}.png").pixmap(QSize(30, 30)))
+        self.sys_img.setPixmap(QIcon(base_dir + f"icons/systems/{plug.get('system')}.png").pixmap(QSize(30, 30)))
         
     def start_up(self):
-        self.ui.plug_image.setPixmap(QIcon(base_dir + "icons/logo.png").pixmap(QSize(60, 60)))
-        self.ui.plug_name.setText("Kangaroo  <sub><font size='2' color='#ffffff'>v1.0.0</font></sub>")
-        # self.ui.plug_name.setText("Kangaroo  <sub><font size='2' color='#000'>v1.0.0</font></sub>")
-        self.ui.plug_desc.setText("simple system lanuchers") # limit 120 chrs
+        self.plug_image.setPixmap(QIcon(base_dir + "icons/logo.png").pixmap(QSize(60, 60)))
+        self.plug_name.setText("Kangaroo  <sub><font size='2' color='#ffffff'>v1.0.0</font></sub>")
+        # self.plug_name.setText("Kangaroo  <sub><font size='2' color='#000'>v1.0.0</font></sub>")
+        self.plug_desc.setText("simple system lanuchers") # limit 120 chrs
         self.key.setText("kangaroo, kng")
         self.name.setText("Osama Muhammed Alzabidi")
         self.email.setText("everyskils@gmail.com")
         self.github.setText("https://www.github.com/everyskills")
         self.home_page.setText("https://www.everyskills.com")
         self.system.setText("Cross Platform")
-        self.ui.sys_img.setPixmap(QIcon(base_dir + "icons/logo.png").pixmap(QSize(30, 30)))
+        self.sys_img.setPixmap(QIcon(base_dir + "icons/logo.png").pixmap(QSize(30, 30)))
 
     def remove_plugin(self):
         msgBox = QMessageBox(self)
@@ -299,6 +299,8 @@ class PluginSettings(QWidget):
         if reply == QMessageBox.Ok:
             path = self.win.exts.get(self.key.text()).get("path")
             shutil.rmtree(path)
+            self.parent.get_all_plugins()
+            self.query_exts()
             
         elif reply == QMessageBox.Cancel:
             self.win.show()
@@ -315,6 +317,8 @@ class PluginSettings(QWidget):
     def help_page(self):
         self.stackedWidget.setCurrentIndex(4)
         self.web_page.load(QUrl("https://www.google.com"))
+        QWebSettings.globalSettings().setAttribute(QWebSettings.PluginsEnabled, True)
+        
         self.web_page.loadProgress.connect(self.change_progress)
         self.web_page.loadFinished.connect(self.load_progress.hide)
 
@@ -330,7 +334,7 @@ class PluginSettings(QWidget):
         Kangaroo<br> <font size='2' color='#727272'>V1.3.6</font>\
         """)
         self.win.btn_ext.setIcon(icon)
-        self.ui.about_image.setPixmap(icon.pixmap(QSize(200, 200)))
+        self.about_image.setPixmap(icon.pixmap(QSize(200, 200)))
         self.stackedWidget.setCurrentIndex(3)
 
     def settings_page(self):
@@ -345,6 +349,8 @@ class PluginSettings(QWidget):
         dic["key_quit"] = self.get_key(self.key_quit_app)
         dic["key_hide"] = self.get_key(self.key_hide)
         dic["key_line_focus"] = self.get_key(self.key_line_focus)
+        dic["key_select_split"] = self.get_key(self.key_select_split)
+        dic["key_go_to_end"] = self.get_key(self.key_go_to_end)
 
         dic["theme"] = self.combo_themes.currentText().strip()
         dic["opacity"] = float(f'0.{self.slide_opacity.value()}' if not self.slide_opacity.value() == 10 else 1.0)
@@ -358,6 +364,7 @@ class PluginSettings(QWidget):
         dic["is_frame_less"] = self.check_frame.isChecked()
         dic["is_shadow"] = self.check_shadow.isChecked()
         dic["is_hor_pattern"] = self.check_hor_pattern.isChecked()
+        dic["is_auto_complete"] = self.check_auto_comp.isChecked()
 
         if not apply:
             with open(setting_file, "w") as _fsw:
@@ -377,6 +384,8 @@ class PluginSettings(QWidget):
             self.set_key(self.key_quit_app, data.get("key_quit", ""))
             self.set_key(self.key_hide, data.get("key_hide", ""))
             self.set_key(self.key_line_focus, data.get("key_line_focus", ""))
+            self.set_key(self.key_select_split, data.get("key_select_split", ""))
+            self.set_key(self.key_go_to_end, data.get("key_go_to_end", ""))
 
             for i in glob(base_dir + "styles/*.qss"):
                 self.combo_themes.addItem(os.path.splitext(os.path.split(i)[1])[0])
@@ -395,6 +404,8 @@ class PluginSettings(QWidget):
             self.check_frame.setChecked(data.get("is_frame_less"))
             self.check_shadow.setChecked(data.get("is_shadow"))
             self.check_hor_pattern.setChecked(data.get("is_hor_pattern"))
+            self.check_auto_comp.setChecked(data.get("is_auto_complete"))
+            
             _fs.close()
 
     def set_default_settings(self):

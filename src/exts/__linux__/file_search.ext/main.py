@@ -9,15 +9,15 @@ from PyQt5.QtGui import QDesktopServices, QIcon, QMovie
 from PyQt5.QtCore import QFileInfo, QUrl, QSize
 from PyQt5.QtWidgets import QAction, QWidget
 from PyQt5.uic import loadUi
+from kangaroo import pkg, item
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 class Plugin(QWidget):
-    def __init__(self, pkg, parent):
+    def __init__(self, parent):
         super(Plugin, self).__init__()
         QWidget.__init__(self)
 
-        self.pkg = pkg
         self.parent = parent
 
         self.ui = loadUi(base_dir + "UI.ui", self)
@@ -29,9 +29,12 @@ class Plugin(QWidget):
 
         enterAction = QAction("enter", self, shortcut="Return", triggered=self.get_enter_item)
         self.ui.list_widget.addAction(enterAction)
-
-        self.short_title(os.path.split(str(self.parent.get_text()).strip())[1])
         
+        self.init_ui()
+
+    def init_ui(self):
+        self.short_title(os.path.split(str(self.parent.get_text()).strip())[1])
+
         self.query_file()
         self.start_up()
 
@@ -48,8 +51,8 @@ class Plugin(QWidget):
         self.ui.list_widget.clear()
         query = self.parent.get_text()
 
-        _icon = self.pkg.icon_types(query)
-        self.ui.image.setPixmap(self.pkg.set_image(_icon, icon=True, size=150))
+        _icon = pkg.icon_types(query)
+        self.ui.image.setPixmap(pkg.set_image(_icon, icon=True, size=150))
 
         _file_count, _folder_count, _size = 0, 0, 0.00
 
@@ -71,10 +74,10 @@ class Plugin(QWidget):
             path = line.decode("UTF-8")
             name = os.path.basename(path)
             
-            if path.endswith(tuple(self.pkg.api_icons("Image"))):
+            if path.endswith(tuple(pkg.api_icons("Image"))):
                 _icon = QIcon(path)
             else:
-                _icon = self.pkg.icon_types(path)
+                _icon = pkg.icon_types(path)
 
             if not os.path.isfile(path):
                 _folder_count += 1
@@ -86,12 +89,10 @@ class Plugin(QWidget):
             except FileNotFoundError:
                 _size = 0
 
-            frame = self.pkg.Import(base_dir + "item.py").Ui_Item
-            list_item = self.pkg.add_item(self.ui.list_widget, _icon)
-
+            list_item = pkg.add_item(self.ui.list_widget, _icon)
             name = name.replace(query, f"<font color='#1a81da'>{query}</font>")
-            item = self.pkg.add_item_widget(list_item, frame, name, path)
-            self.pkg.set_item_widget(self.ui.list_widget, item)
+            item_widget = pkg.add_item_widget(list_item, item.KUi_Item, name, path)
+            pkg.set_item_widget(self.ui.list_widget, item_widget)
 
             self.ui.status.setText(f"{_folder_count} {'Folder' if _folder_count <= 1 else 'Folders'}, {_file_count} {'File' if _file_count <= 1 else 'Files'}") # ({naturalsize(_size, True, format='%.1f ')})
         
@@ -125,9 +126,9 @@ class Plugin(QWidget):
         self.set_data(_path)
 
         try:
-            img = tuple(self.pkg.api_icons("Image"))
-            video = tuple(self.pkg.api_icons("Video"))
-            audio = tuple(self.pkg.api_icons("Audio"))
+            img = tuple(pkg.api_icons("Image"))
+            video = tuple(pkg.api_icons("Video"))
+            audio = tuple(pkg.api_icons("Audio"))
         except TypeError:
             pass
 
@@ -140,13 +141,13 @@ class Plugin(QWidget):
        
         elif _file.endswith(img):
             self.hide_video()
-            self.ui.image.setPixmap(self.pkg.set_image(item.icon(), size=300))
+            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=300))
 
         elif _file.endswith(video) or _file.endswith(audio):
-            self.video_player = self.pkg.video_player(
+            self.video_player = pkg.video_player(
                 self.ui.image, "", self.media_time_changed)
             
-            self.ui.image.setPixmap(self.pkg.set_image(item.icon(), size=150))
+            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=150))
             self.video_player.set_media(_path)
             self.show_video()
 
@@ -158,12 +159,12 @@ class Plugin(QWidget):
 
         else:
             self.hide_video()
-            self.ui.image.setPixmap(self.pkg.set_image(item.icon(), size=150))
+            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=150))
             
     def set_data(self, _file):
         ff = QFileInfo(_file)
         self.short_title(ff.fileName())
-        self.ui.lsize.setText(self.pkg.get_size(ff.size()))
+        self.ui.lsize.setText(pkg.get_size(ff.size()))
 
         if ff.isDir():
             self.ui.litems.show()

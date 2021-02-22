@@ -11,15 +11,17 @@ from PyQt5.uic import loadUi
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 class Plugin(QWidget):
-    def __init__(self, pkg, parent):
+    def __init__(self, parent):
         super(Plugin, self).__init__()
         QWidget.__init__(self)
 
         self.parent = parent
-        self.pkg = pkg
-        
         self.ui = loadUi(base_dir + "UI.ui", self)
-        dd = self.parent.get_text().replace("-", "/")
+
+        self.init_ui()
+
+    def init_ui(self):
+        dd = self.parent.text.replace("-", "/")
         path = ""
         file = dd
 

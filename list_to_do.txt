@@ -1,0 +1,17 @@
+@packages:
+	[x] Linux
+	[x] MacOS
+	[x] Windows
+
+@Web Site:
+	[x] Tutorial
+	[x] Plugins
+
+@Test:
+	[y] Linux
+	[x] MacOS
+	[x] Windows
+
+@Kangaroo Windows:
+	[y] Main
+	[y] Settings 

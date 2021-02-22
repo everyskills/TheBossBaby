@@ -1,0 +1,79 @@
+/*
+ * author: Manuel Schneider <https://github.com/ManuelSchneid3r>
+ *
+ * Check http://doc.qt.io/qt-5/stylesheet-syntax.html especially the subtopics:
+ * The Style Sheet Syntax (http://doc.qt.io/qt-5/stylesheet-syntax.html)
+ * Qt Style Sheets Reference (http://doc.qt.io/qt-5/stylesheet-reference.html)
+ */
+
+* {
+    border: none;
+    color : white;
+    background-color: #59595b;
+}
+
+#KNG_frame {
+    border-radius: 8px;
+}
+
+#frame {
+    padding: 6px 0px;
+    border-radius: 8px;
+    background-color: #59595b;
+}
+
+#input {
+    padding: 0px 8px;
+    font-size: 20px;
+    selection-color: white;
+    selection-background-color: #808080;
+    background-color: transparent;
+}
+
+/********** ListViews ************/
+
+QListWidget {
+    background: transparent;
+    selection-color: #a0a0a0;
+}
+
+QListWidget::item:selected {
+    background: #202020;
+}
+
+QListWidget QScrollBar:vertical  {
+    width: 3px;
+    background: transparent;
+}
+
+QListWidget QScrollBar::handle:vertical  {
+    background: #404040;
+    border-radius: 1px;
+    min-height: 24px;
+}
+
+QListWidget QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
+QListWidget QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical,
+QListWidget QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    border: 0px;
+    width: 0px;
+    height: 0px;
+    background: transparent;
+}
+
+/********** resultsList **********/
+
+QListWidget#resultsList {
+    icon-size: 40px;
+    font-size: 24px;
+}
+
+QListWidget#resultsList::item{
+    padding: 8px 0px 0px 0px;
+}
+
+/********** actionList **********/
+
+QListWidget#actionList {
+    font-size: 20px;
+}

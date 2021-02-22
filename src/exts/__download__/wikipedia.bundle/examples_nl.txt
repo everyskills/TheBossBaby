@@ -1,0 +1,4 @@
+wiki ~nlWiki(query here)
+wikipedia ~nlWiki(query here)
+wiki ~nlWiki(query here)
+Zoek op wikipedia voor ~nlWiki(query here)

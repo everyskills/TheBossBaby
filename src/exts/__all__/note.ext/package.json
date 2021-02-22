@@ -1,0 +1,15 @@
+{
+	"name": "Python Functions",
+	"version": "1.0.0",
+	"description": "simple plugin for use some python functions",
+	"icon": "icon.png",
+	"help": "README.md",
+	"script": "main.py",
+	"key": "note",
+	"author_name": "Author name",
+	"author_email": "example@gmail.com",
+	"home_page": "https://www.example.com",
+	"author_description": "Python Developer",
+	"github_user": "example",
+	"system": "all"
+}

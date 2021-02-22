@@ -60,27 +60,32 @@
       <item row="0" column="1">
        <widget class="QLineEdit" name="line_search">
         <property name="styleSheet">
-         <string notr="true">background: none;
-padding: 3px;</string>
+         <string notr="true">padding: 3px; border-radius: 4px;</string>
         </property>
         <property name="frame">
          <bool>false</bool>
         </property>
         <property name="placeholderText">
-         <string>search</string>
+         <string>Filter</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0" colspan="2">
        <widget class="QListWidget" name="list_widget">
         <property name="styleSheet">
-         <string notr="true">background: transparent;</string>
+         <string notr="true"/>
         </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Plain</enum>
+        </property>
+        <property name="gridSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -100,11 +105,17 @@ padding: 3px;</string>
        <pointsize>11</pointsize>
       </font>
      </property>
+     <property name="cursor">
+      <cursorShape>IBeamCursor</cursorShape>
+     </property>
      <property name="text">
       <string/>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
      </property>
     </widget>
    </item>

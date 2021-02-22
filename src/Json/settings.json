@@ -1,19 +1,22 @@
 {
     "key_start_up": "Alt+Space",
     "key_clear_input": "Ctrl+W",
-    "key_remove_split": "Ctrl+L",
+    "key_remove_split": "Ctrl+B",
     "key_quit": "Ctrl+Q",
     "key_hide": "Esc",
     "key_line_focus": "F",
-    "theme": "Default",
+    "key_select_split": "Ctrl+L",
+    "key_go_to_end": "Ctrl+P",
+    "theme": "Light",
     "opacity": 1.0,
     "max_ext": 670,
-    "min_ext": 70,
-    "window_width": 680,
+    "min_ext": 60,
+    "window_width": 720,
     "is_launch_at_login": true,
     "is_auto_check_update": true,
     "is_rounded": true,
     "is_frame_less": true,
     "is_shadow": false,
-    "is_hor_pattern": false
+    "is_hor_pattern": false,
+    "is_auto_complete": true
 }

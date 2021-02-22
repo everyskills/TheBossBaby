@@ -2,9 +2,10 @@
 #-*- coding: utf-8 -*-
 
 import os
-from PyQt5.QtGui import QIcon
 import psutil
 
+from kangaroo import pkg, item
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QWidget
 from PyQt5.QtCore import QSize
 from PyQt5.uic import loadUi
@@ -49,11 +50,10 @@ def get_processes():
 
 
 class Plugin(QWidget):
-    def __init__(self, pkg, parent):
+    def __init__(self, parent):
         super(Plugin, self).__init__()
         QWidget.__init__(self)
 
-        self.pkg = pkg
         self.parent = parent
 
         self.ui = loadUi(base_dir + "UI.ui", self)
@@ -65,6 +65,10 @@ class Plugin(QWidget):
         self.btn_kill_proc.setIcon(QIcon(base_dir + "icons/dead.png"))
 
         self.ui.list_widget.addAction(enterAction)
+
+        self.init_ui()
+        
+    def init_ui(self):
         self.short_title(os.path.split(str(self.parent.get_text()).strip())[1])
         self.query_processes()
 
@@ -78,14 +82,13 @@ class Plugin(QWidget):
 
         for _, v in get_processes().items():
             name = v.get("name", "")
-            _icon = self.pkg.get_sys_icon(name)
+            _icon = pkg.get_sys_icon(name)
             if not _icon:
                 _icon = QIcon(base_dir + "icons/executable.png")
 
             if (self.list_widget.count() <= 9 and self.query in name):
-                frame = self.pkg.Import(base_dir + "item.py").Ui_Item
-                item = self.pkg.add_item_widget(self.ui.list_widget, frame, _icon, name, '', str(v.get("pid")))
-                self.pkg.set_item_widget(self.ui.list_widget, item)
+                item_widgwt= pkg.add_item_widget(self.ui.list_widget, item.KUi_Item, _icon, name, '', str(v.get("pid")))
+                pkg.set_item_widget(self.ui.list_widget, item_widgwt)
             
             self.ui.status.setText(f"{self.list_widget.count()} Proccess")
 

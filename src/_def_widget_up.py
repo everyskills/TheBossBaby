@@ -3,15 +3,12 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class Ui_Form(QtWidgets.QWidget):
     def __init__(self, win) -> None:
         super().__init__(win)
         QtWidgets.QWidget.__init__(self)
 
         self.win = win
-
-        # self.listWidget.itemClicked
 
         self.resize(538, 148)
         self.gridLayout = QtWidgets.QGridLayout(self)

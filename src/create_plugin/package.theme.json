@@ -1,0 +1,11 @@
+{
+    "name": "Theme Name",
+    "version": "1.0.0",
+    "creator_name": "Osama Muhammed",
+    "creator_url": "https://www.example.com",
+    "creator_email": "",
+    "home_page": "https://www.github.com/<username>/<repository>",
+    "type": "dark",
+	"script": "style.qss",
+    "image": "screen_shot.png"
+}

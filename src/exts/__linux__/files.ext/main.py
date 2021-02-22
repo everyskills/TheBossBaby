@@ -8,20 +8,20 @@ from PyQt5.QtGui import QDesktopServices, QIcon, QMovie
 from PyQt5.QtCore import QFileInfo, QUrl, QSize
 from PyQt5.QtWidgets import QAction, QWidget
 from PyQt5.uic import loadUi
+from kangaroo import pkg, item
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 class Plugin(QWidget):
-    def __init__(self, pkg, parent):
+    def __init__(self, parent):
         super(Plugin, self).__init__()
         QWidget.__init__(self)
 
-        self.pkg = pkg
         self.parent = parent
 
         self.ui = loadUi(base_dir + "files.ui", self)
-        self.ui.image.setStyleSheet(self.ui.image.styleSheet() + "background-color: #393D40;")
-        self.ui.list_widget.itemClicked.connect(self.add_click_path)
+        # self.ui.list_widget.itemClicked.connect(self.add_click_path)
+        self.ui.list_widget.itemDoubleClicked.connect(self.add_click_path)
         self.ui.list_widget.itemSelectionChanged.connect(self.get_path_info)
         self.ui.btn_video.clicked.connect(self.start_video)
         self.ui.slide_video.sliderMoved.connect(self.set_video_pos)
@@ -29,11 +29,13 @@ class Plugin(QWidget):
         enterAction = QAction("enter", self, shortcut="Return", triggered=self.get_enter_item)
         self.ui.list_widget.addAction(enterAction)
 
-        self.short_title(os.path.split(str(self.parent.get_text()).strip())[1])
+        self.init_ui()
         
+    def init_ui(self):
+        self.short_title(os.path.split(str(self.parent.get_text()).strip())[1])
         self.query_file()
         self.start_up()
-
+        
     def get_enter_item(self):
         self.add_click_path(self.ui.list_widget.currentItem())
         self.ui.list_widget.setFocus()
@@ -47,8 +49,8 @@ class Plugin(QWidget):
         self.ui.list_widget.clear()
         self.query = self.parent.get_text()
 
-        _icon = self.pkg.icon_types(self.query)
-        self.ui.image.setPixmap(self.pkg.set_image(_icon, icon=True, size=150))
+        _icon = pkg.icon_types(self.query)
+        self.ui.image.setPixmap(pkg.set_image(_icon, icon=True, size=150))
 
         _path, _file_count, _folder_count, _size = None, 0, 0, 0.00
 
@@ -66,25 +68,27 @@ class Plugin(QWidget):
                 all_path = glob(_path + "*")
                 for i in all_path:
                     if not os.path.isfile(i):
-                        _icon = self.pkg.icon_types(i)
+                        _icon = pkg.icon_types(i)
                         _folder_count += 1
                         _size += os.path.getsize(i)
 
                     elif not os.path.isdir(i):
-                        _icon = self.pkg.icon_types(i)
+                        _icon = pkg.icon_types(i)
                         _file_count += 1
                         _size += os.path.getsize(i)
 
                     else:
-                        _icon = self.pkg.icon_types(i)
+                        _icon = pkg.icon_types(i)
                         _file_count += 1
                         _size += os.path.getsize(i)
                     
-                    frame = self.pkg.Import(base_dir + "item.py").Ui_Item
-                    list_item = self.pkg.add_item(self.ui.list_widget, _icon)
-                    item = self.pkg.add_item_widget(list_item, frame, str(os.path.split(i)[1]), i)
-                    self.pkg.set_item_widget(self.ui.list_widget, item)
-                    self.ui.status.setText(f"{_folder_count} {'Folder' if _folder_count <= 1 else 'Folders'}, {_file_count} {'File' if _file_count <= 1 else 'Files'} ({self.pkg.get_size(_size)})")
+                    list_item = pkg.add_item(self.ui.list_widget, _icon)
+                    item_widget = pkg.add_item_widget(
+                        list_item, item.KUi_Item, str(os.path.split(i)[1]), i)
+                    pkg.set_item_widget(self.ui.list_widget, item_widget)
+                    self.ui.status.setText(f"{_folder_count} {'Folder' if _folder_count <= 1 else 'Folders'}, {_file_count} {'File' if _file_count <= 1 else 'Files'} ({pkg.get_size(_size)})")
+                    item_widget[1].mouseDoubleClickEvent = (lambda e: self.add_click_path(self.list_widget.currentItem()))
+
         except FileNotFoundError:
             pass
 
@@ -119,9 +123,9 @@ class Plugin(QWidget):
         self.set_data(_path)
 
         try:
-            img = tuple(self.pkg.api_icons("Image"))
-            video = tuple(self.pkg.api_icons("Video"))
-            audio = tuple(self.pkg.api_icons("Audio"))
+            img = tuple(pkg.api_icons("Image"))
+            video = tuple(pkg.api_icons("Video"))
+            audio = tuple(pkg.api_icons("Audio"))
         except TypeError:
             pass
 
@@ -134,13 +138,13 @@ class Plugin(QWidget):
        
         elif _file.endswith(img):
             self.hide_video()
-            self.ui.image.setPixmap(self.pkg.set_image(item.icon(), size=300))
+            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=300))
 
         elif _file.endswith(video) or _file.endswith(audio):
-            self.video_player = self.pkg.video_player(
+            self.video_player = pkg.video_player(
                 self.ui.image, "", self.media_time_changed)
             
-            self.ui.image.setPixmap(self.pkg.set_image(item.icon(), size=150))
+            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=150))
             self.video_player.set_media(_path)
             self.show_video()
 
@@ -152,12 +156,18 @@ class Plugin(QWidget):
 
         else:
             self.hide_video()
-            self.ui.image.setPixmap(self.pkg.set_image(item.icon(), size=150))
+            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=150))
             
     def set_data(self, _file):
         ff = QFileInfo(_file)
         self.short_title(ff.fileName())
-        self.ui.lsize.setText(self.pkg.get_size(ff.size()))
+        self.ui.lsize.setText(pkg.get_size(ff.size()))
+
+        if ff.isFile():
+            try:
+                self.ui.image.setText(str(open(_file, "r").read()))
+            except Exception:
+                pass
 
         if ff.isDir():
             self.ui.litems.show()

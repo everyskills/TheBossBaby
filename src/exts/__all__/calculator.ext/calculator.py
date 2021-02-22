@@ -1,9 +1,11 @@
 import math
+from . import func
 
 _CONSTANTS = {
     'pi' : math.pi,
     'e' : math.e,
-    'phi': (1 + 5 ** .5) / 2
+    'phi': (1 + 5 ** .5) / 2,
+    'ge': 9.8
 }
 
 _FUNCTIONS = {
@@ -32,7 +34,10 @@ _FUNCTIONS = {
     'sinh': math.sinh,
     'sqrt': math.sqrt,
     'tan': math.tan,
-    'tanh': math.tanh
+    'tanh': math.tanh,
+    'sum': func.get_sum,
+    'average': func.get_average,
+    'perc': func.get_percent
 }
 
 class Parser:
@@ -40,9 +45,10 @@ class Parser:
         self.string = string
         self.index = 0
         self.vars = {} if vars == None else vars.copy()
+
         for constant in _CONSTANTS.keys():
             if self.vars.get(constant) != None:
-                raise Exception("Cannot redefine the value of " + var)
+                raise Exception("Cannot redefine the value of " + self.vars.get(constant))
 
     def getValue(self):
         value = self.parseExpression()
@@ -245,9 +251,11 @@ def evaluate(expression, vars=None):
         p = Parser(expression, vars)
         value = p.getValue()
     except Exception as xxx_todo_changeme:
-        (ex) = xxx_todo_changeme
-        msg = ex.message
-        raise Exception(msg)
+        # pass
+        # raise Exception(xxx_todo_changeme)
+        # (ex) = xxx_todo_changeme
+        # msg = ex.message
+        raise Exception(xxx_todo_changeme)
 
     # Return an integer type if the answer is an integer
     if int(value) == value:
@@ -275,3 +283,10 @@ if __name__ == "__main__":
     print(evaluate("atan2(2, 1)"))
     print(evaluate("hypot(5, 12)"))
     print(evaluate("pow(3, 5)"))
+
+"""update
+calc help(var|func)
+
+@replace dict like this
+{'func|var': (callback, 'help message   ')}
+"""

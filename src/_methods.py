@@ -1,13 +1,15 @@
 #!/usr/bin/python3
 
 import re
+from PyQt5 import QtWidgets
 
 class Controls:
-    send = ""
-    sstart = ""
-
     def __init__(self, parent=None) -> None:
         self.__parent = parent
+        self.cb = QtWidgets.QApplication.clipboard()
+
+        ## Whenever clipboard data changes
+        # self.cb.dataChanged.connec()
 
     def close_win(self):
         self.__parent.close()
@@ -38,11 +40,8 @@ class Controls:
     def get_input(self, text: str):
         patt = re.compile(r"\$\(([a-z-A-Z_0-9]+)\)")
         find = patt.findall(text)
-
         for i in find:
             text = patt.sub(self.__parent.global_vars.get(i.strip(), ""), text)
-        
-        print("Your text: ", text)
         return text
 
     def text_changed(self, func: object):
@@ -50,9 +49,9 @@ class Controls:
     
     def get_text(self):
         try:
-            return self.__parent.get_kv(self.__parent.input.text())[1]
+            return self.__parent.get_kv(self.__parent.input.text())[1].strip()
         except IndexError:
-            pass
+            return ""
 
     def set_text(self, text: str):
         self.__parent.input.setText(self.__parent.get_kv(self.__parent.input.text())[0] + " " + text)
@@ -69,12 +68,84 @@ class Controls:
         self.__parent.input.setFocus()
 
     def return_pressed(self, call: object):
+        self.__parent.input.blockSignals(True)
         self.__parent.input.returnPressed.connect(call)
+        self.__parent.input.blockSignals(False)
+
+    def set_auto_complete(self, Iterable: list=[]):
+        text = self.get_text()
+        for i in Iterable:
+            if text and text.startswith(i[0].lower()) and text in i:
+                self.__parent.input.blockSignals(True)
+                ######### auto type 1
+                self.set_text(text + i[len(text):] + " ")
+                self.__parent.input.setCursorPosition(
+                    int(len(text)) + len(self.__parent.get_kv(self.__parent.input.text())[0]) + 1)
+                self.__parent.input.cursorForward(True, int(len(text)) + int(len(i)))
+                self.__parent.input.blockSignals(False)
+
+    @property
+    def mode_style(self):
+        return 'dark' if 'dark' in self.__parent.win_setting.mode_style else 'light'
+
+    @property
+    def style_mode(self):
+        return self.mode_style
+
+    @property
+    def style(self):
+        return self.mode_style
+
+    @property
+    def text(self):
+        return self.get_text()
+
+    @property
+    def value(self):
+        return self.get_text()
+        
+    @property
+    def result(self):
+        return self.get_text()
+
+    def text_copy(self, text: str=""):
+        if not text:
+            self.__parent.input.copy()
+        else:
+            self.cb.setText(text)
+
+    def text_cut(self):
+        self.__parent.input.cut()
+
+    def text_paste(self, get: bool=False):
+        if not get:
+            self.__parent.input.paste()
+        else:
+            return self.cb.text()
+
+
+    def by_key(self, key: str, default=None) -> dict:
+        _dict = {}
+        args = self.text.split()
+        for i in range(len(args)):
+            try:
+                _dict.update({args[i]: args[i + 1]})
+            except IndexError:
+                _dict.update({args[i]: ""})
+        return _dict.get(key, default)
+
+    def reload_page(self, count: int=1):
+        # print("web is reloaded")
+        for _ in range(count):
+            self.__parent.web.run_plugin(self.__parent.web_running_data)
+            # self.__parent.web.web_view.reload()
+
+
+    # def web_reload(self):
+    #     self.__parent.run_plugin(self.__parent.get_kv(self.__parent.input.text())[0])
 
     # def insert_in_selecte(self, text: str=""):
     #     # self.__parent.input.selectedText()
-
     #     self.send = self.__parent.input.selectionEnd()
     #     self.sstart = self.__parent.input.selectionStart()
-
     #     print("Start: ", self.sstart, "End: ", self.send)

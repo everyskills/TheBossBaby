@@ -1,1 +1,4 @@
- 
+```python
+def osama():
+    pass
+``` 

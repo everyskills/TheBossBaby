@@ -1,0 +1,26 @@
+{
+    "Documents": [
+        "pdf",
+        "doc",
+        "excel",
+        "xlsx"
+    ],
+
+    "Linux Apps": [
+        "appimage",
+        "deb",
+        "rpm"
+    ],
+
+    "Torrent Files": [
+        "fdmdownload"
+    ],
+
+    "Archives": [
+        "zip",
+        "tar",
+        "tar.gz",
+        "iso"
+    ]
+}
+ 

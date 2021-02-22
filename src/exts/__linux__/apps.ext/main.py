@@ -5,44 +5,39 @@ import os
 from threading import Thread
 from subprocess import call
 from glob import glob
-from PyQt5.QtCore import QProcess
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QWidget
 from PyQt5.uic import loadUi
+from kangaroo import pkg, item
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 apps = {}
 
 class Plugin(QWidget):
-    def __init__(self, pkg, parent):
+    def __init__(self, parent):
         super(Plugin, self).__init__()
         QWidget.__init__(self)
 
-        self.pkg = pkg
         self.parent = parent
-        self.ui = loadUi(base_dir + "apps.ui", self)
+        self.ui = loadUi(base_dir + "UI.ui", self)
 
-        # self.input.textChanged.connect(lambda: self.query_apps())
-        self.ui.list_widget.itemClicked.connect(self.run_clicked_app)
+        self.ui.list_widget.itemDoubleClicked.connect(self.run_clicked_app)
         self.ui.list_widget.itemSelectionChanged.connect(self.get_app_info)
-
-        # self.parent.return_pressed(self.check_command)
 
         enterAction = QAction("enter", self, shortcut="Return", triggered=self.get_enter_item)
         self.ui.list_widget.addAction(enterAction)
 
+        # self.parent.set_auto_complete(list(apps.keys()))
+        
+        self.init_ui()
+
+    def init_ui(self):
         self.query_apps()
         self.def_setup()
 
-    # def check_command(self):
-        # if self.parent.get_text() in ("update", "refresh"):
-        #     self.set_apps()
-        # elif self.parent.get_text() in ("clear-apps", "clean-apps"):
-        #     apps.clear()
-
     def def_setup(self):
         _icon = QIcon(base_dir + "icon.svg")
-        self.ui.image.setPixmap(self.pkg.set_image(_icon, icon=True, size=200))
+        self.ui.image.setPixmap(pkg.set_image(_icon, icon=True, size=200))
         self.ui.title.setText("Apps Plugin")
         self.ui.version.setText("1.0.0")
 
@@ -66,17 +61,17 @@ class Plugin(QWidget):
                 (self.query.lower() in k.lower()) and
                 self.ui.list_widget.count() <= 10):
 
-                frame = self.pkg.Import(base_dir + "item.py").Ui_Item
-                list_item = self.pkg.add_item(self.ui.list_widget, v["icon"])
-                item = self.pkg.add_item_widget(list_item, frame, k, v['comment'])
-                self.pkg.set_item_widget(self.ui.list_widget, item)
+                list_item = pkg.add_item(self.ui.list_widget, v["icon"])
+                item_widget = pkg.add_item_widget(list_item, item.KUi_Item, k, v['comment'])
+                pkg.set_item_widget(self.ui.list_widget, item_widget)
+                item_widget[1].mouseDoubleClickEvent = (
+                    lambda e: self.run_clicked_app(self.list_widget.currentItem()))
 
         self.ui.status.setText(f"{self.ui.list_widget.count()} of {len(list(apps.keys()))} apps")
 
     def get_app_info(self):
         item = self.ui.list_widget.currentItem()
-        litem = item.listWidget().itemWidget(item)
-        _name = litem.title.text()
+        _name = item.listWidget().itemWidget(item).title.text()
 
         self.short_title(_name)
 
@@ -89,7 +84,7 @@ class Plugin(QWidget):
         
         self.ui.lcomment.setText(com)
         self.ui.lcommand.setText(exe)
-        self.ui.image.setPixmap(self.pkg.set_image(item.icon(), size=200))
+        self.ui.image.setPixmap(pkg.set_image(item.icon(), size=200))
 
         try:
             self.ui.lcategories.setText(apps[_name]["categories"].split(";")[0])
@@ -97,14 +92,15 @@ class Plugin(QWidget):
             pass
 
     def run_clicked_app(self, item):
-        item = item.listWidget().itemWidget(item)
-
-        self.get_app_info()
-
-        exe = apps[item.title.text()]["exec"]
-        cmd = self.rep(exe, ["%u", "%U", "%F", "%f", "%i", "%I", "%c", "%C"])
-        Thread(target=call, kwargs={"shell": True, "args": cmd}, daemon=True).start()
-        self.parent.hide_win()
+        try:
+            item = item.listWidget().itemWidget(item)
+            self.get_app_info()
+            exe = apps[item.title.text()]["exec"]
+            cmd = self.rep(exe, ["%u", "%U", "%F", "%f", "%i", "%I", "%c", "%C"])
+            Thread(target=call, kwargs={"shell": True, "args": cmd}, daemon=True).start()
+            self.parent.hide_win()
+        except AttributeError:
+            pass
 
     def short_title(self, item: str):
         if len(item) <= 20:
@@ -120,7 +116,7 @@ class Plugin(QWidget):
 
     def get_app(self, _file: str, key: str, value: str=""):
         try:
-            app = self.pkg.Import(base_dir + "desktop_parser.py").DesktopParser(_file)
+            app = pkg.Import(base_dir + "desktop_parser.py").DesktopParser(_file)
             app.read()
             return app.get(key)
         except KeyError:
@@ -132,20 +128,17 @@ class Plugin(QWidget):
     	return _str
 
     def set_apps(self):
-        paths = []
         user_path = glob(os.path.expanduser("~/.local/share/applications/*.desktop"))
-        root_path = glob("/usr/share/applications/*.desktop")
-        paths.extend(user_path)
-        paths.extend(root_path)
+        user_path.extend(glob("/usr/share/applications/*.desktop"))
 
-        for i in list(dict.fromkeys(paths)):
+        for i in list(dict.fromkeys(user_path)):
             name = self.get_app(i, "Name") or self.get_app(i, "X-GNOME-FullName")
             _icon = self.get_app(i, "Icon")
 
             if (_icon and os.path.exists(_icon)):
                 icon = QIcon(_icon)
             else:
-                icon = self.pkg.get_sys_icon(_icon) if _icon else self.pkg.icon_path("executable-icon.png", True)
+                icon = pkg.get_sys_icon(_icon) if _icon else pkg.icon_path("executable-icon.png", True)
 
             if (name and self.get_app(i, "Exec")):
                 apps.update({name: {
