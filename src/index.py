@@ -5,27 +5,29 @@ import os
 import json
 import sys
 
+from threading import Thread
 from glob import glob
-from kangaroo import pkg, list_item, dialog
-from PyQt5.QtCore import QEvent, QUrl, Qt
+from UIBox import pkg, list_item, dialog
+from PyQt5.QtCore import QEvent, QSize, QUrl, Qt
 from PyQt5.QtGui import QDesktopServices, QIcon
-from PyQt5.QtWidgets import QAction, QApplication, QMenu, QStackedWidget, QSystemTrayIcon, QWidget
+from PyQt5.QtWidgets import QAction, QApplication, QMenu, QSizeGrip, QStackedWidget, QSystemTrayIcon, QWidget
 from plugin_settings import PluginSettings
 from _methods import  Controls
 from ui._window import Ui_Form as app_ui
 from _user_commands import UserCommandCreator
-from _plugin_web_view import KWPlugin
-from _plugin_items import KIPlugin
+from _plugin_web_view import UIBWPlugin
+from _plugin_items import UIBIPlugin
 from settings.applay import ApplaySettingOnWindow
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 __keywords__ = ["small", "install", "download", 
                 "about", "exit", "quit", "resize",
-                "killme", "close-kangaroo", "quit-kangaroo",
-                "update", "refresh", "clone", "add-cmd", 
-                "add-shortcut", "test", "kng", "kangaroo",
-                "create", "create-plugin", "clear-history"]
+                "killme", "close-uibox", "quit-uibox",
+                "update", "refresh", "clone", "add-cmd",
+                "add-shortcut", "test", "kng", "uibox",
+                "create", "create-plugin", "clear-history",
+                "reload"]
 
 __keywords__ = list(map(lambda x: "@" + x, __keywords__))
 
@@ -57,7 +59,7 @@ class MainWindow(QWidget, app_ui):
         self.win_setting.init_setup()
         self.win_setting.small_mode()
 
-        self.web = KWPlugin(self)
+        self.web = UIBWPlugin(self)
 
         ############ global variables
         self.exts = {}         # {key: {count, object, path, icon}}
@@ -90,6 +92,28 @@ class MainWindow(QWidget, app_ui):
         self.screen_shot_action = QAction("screenshot", self, shortcut="Meta+Shift+Return", triggered=self.get_screen_shot)
         self.addAction(self.screen_shot_action)
 
+
+    ############################ Code for Resize window from left and right ###############################3
+        self.gripSize = 16
+        self.grips = []
+
+        for _ in range(4):
+            grip = QSizeGrip(self)
+            grip.resize(self.gripSize, self.gripSize)
+            self.grips.append(grip)
+
+    def resizeEvent(self, event):
+        QWidget.resizeEvent(self, event)
+        rect = self.rect()
+        # top left grip doesn't need to be moved...
+        # top right
+        self.grips[1].move(rect.right() - self.gripSize, 0)
+        # bottom right
+        self.grips[2].move(
+            rect.right() - self.gripSize, rect.bottom() - self.gripSize)
+        # bottom left
+        self.grips[3].move(0, rect.bottom() - self.gripSize)
+
     ############################ Move Window Event ###############################3
     def mouse_press_event(self, e):
         self.previous_pos = e.globalPos()
@@ -116,7 +140,7 @@ class MainWindow(QWidget, app_ui):
     def get_screen_shot(self):
         screen = QApplication.primaryScreen()
         screenshot = screen.grabWindow(self.winId())
-        dia = dialog.KDialog(self)
+        dia = dialog.UIBDialog(self)
         path = dia.get_save_dir("Save ScreenShot Directory path")
         if path and os.path.exists(path):
             screenshot.save(f'{path}/Screenshot.png', 'png')
@@ -132,6 +156,7 @@ class MainWindow(QWidget, app_ui):
                     _fw.write(f"{text}\n")
                     self.history_append()
                     self.current = len(self.history)
+
             _fw.close()
 
     ##################### Append commands to history ##########################
@@ -188,8 +213,9 @@ class MainWindow(QWidget, app_ui):
         for rd in Plugins:
             try:
                 dic = self.get_json(rd + "package.json")
-                obj = pkg.Import(rd + dic.get("script")).Plugin
+                obj = pkg.Import(rd + dic.get("script")).Results
                 icon = rd + dic.get("icon", "")
+                
                 if not os.path.exists(icon):
                     icon = rd + "Icon.png"
 
@@ -234,62 +260,71 @@ class MainWindow(QWidget, app_ui):
     ####################### built in keywords for do some job #######################
     def built_in_func(self):
         text = ""
-        
+
         try:
-            text = self.input.text().strip().split(maxsplit=0)[0].strip().lower()
-        except IndexError:
-            pass
+            text, val = self.get_kv(self.input.text())
 
-        if text in ("@exit", "@quit"):
-            self.hide()
-            self.input.clear()
-            self.win_setting.small_mode()
+            if text in ("@exit", "@quit"):
+                self.hide()
+                self.input.clear()
+                self.win_setting.small_mode()
 
-        elif text in ("@small", "@resize"):
-            self.win_setting.small_mode()
+            elif text in ("@small", "@resize"):
+                self.win_setting.small_mode()
 
-        elif text in ("@killme", "@close-kangaroo", "@quit-kangaroo"):
-            QApplication.instance().quit()
+            elif text in ("@killme", "@close-uibox", "@quit-uibox"):
+                QApplication.instance().quit()
+
+            elif text in ("@download", "@install", "@clone"):
+                PluginSettings(win=self).install_url()
+
+            elif text in ("@add-cmd", "@add-shortcut"):
+                self.hide()
+                UserCommandCreator(self, keywords=__keywords__).show()
+
+            elif text in ("@create", "@create-plugin"):
+                self.create_plugin()
+
+            elif text in ("@clear-history"):
+                fw = open(base_dir + ".history.kng", "w")
+                fw.write("")
+                fw.close()
+                self.input.clear()
+
+            elif text in ("@reload"):
+                ## reset plugins
+                self.exts.clear()
+                self.get_all_plugins()
+
+                ## reset stacked widget
+                self.stackedWidget.removeWidget(self.stackedWidget.widget(0))
+                
+                ## reset settings
+                self.win_setting.init_setup()
+
+                self.input.clear()
+                
+            elif text in list(self.user_cmd.keys()):
+                pkg.run_app(self.user_cmd.get(text.strip()).get("cmd"))
             
-        elif text in ("@update", "@refresh"): 
-            self.get_all_plugins()
-            self.win_setting.init_setup()
-            self.input.clear()
-            self.win_setting.small_mode()
-
-        elif text in ("@download", "@install", "@clone"):
-            PluginSettings(win=self).install_url()
-
-        elif text in ("@add-cmd", "@add-shortcut"):
-            self.hide()
-            UserCommandCreator(self, keywords=__keywords__).show()
-
-        elif text in ("@create", "@create-plugin"):
-            self.create_plugin()
-
-        elif text in ("@clear-history"):
-            fw = open(base_dir + ".history.kng", "w")
-            fw.write("")
-            fw.close()
-            self.input.clear()
-
-        elif text in list(self.user_cmd.keys()):
-            pkg.run_app(self.user_cmd.get(text.strip()).get("cmd"))
-
-        else:
-            try:
+            else:
                 key = self.get_kv(self.input.text())[0]
-                self.exts.get(key).get("script").run(self.methods) # self.get_kv(self.input.text())[1]
-            except Exception as err:
-                # print(err)
-                pass
+                try:
+                    pp = self.exts.get(key).get("script").Run(self.methods)
+                    if isinstance(pp, dict):
+                        self.web_running_data.update(pp)
+                        self.run_web_plugin(key, self.web_running_data)
+                except:
+                    self.stackedWidget.currentWidget().__run__()
+        except Exception:
+            pass
 
     ####################### get line edit text and process it #######################
     def split_check(self, text: str):
         key, _ = self.get_kv(text)
         exts_keys = list(self.exts.keys())
 
-        self.web.KNG_list_widget.clear()
+        self.web.UIB_list_widget.clear()
         
         if self.win_setting.s.value("check_auto_complete", False, bool):
             List = list(self.exts.keys())
@@ -325,7 +360,7 @@ class MainWindow(QWidget, app_ui):
                 self.stackedWidget.insertWidget(0, self.web)
                 self.stackedWidget.setCurrentIndex(0)
 
-            if self.web.KNG_list_widget.count() <= 0:
+            if self.web.UIB_list_widget.count() <= 0:
                 self.running = ""
                 self.set_sys_icon()
                 self.win_setting.small_mode()
@@ -337,24 +372,24 @@ class MainWindow(QWidget, app_ui):
             # results = pkg.find_in(self.input.text().strip(), pkg.user_home_dirs)
             # for k, v in results.items():
             #     icon = pkg.icon_types(v)
-            #     item = pkg.add_item(self.web.KNG_list_widget, icon, k, v, font_size=9)
-            #     self.web.KNG_list_widget.addItem(item)
+            #     item = pkg.add_item(self.web.UIB_list_widget, icon, k, v, font_size=9)
+            #     self.web.UIB_list_widget.addItem(item)
 
             # def open_file(item):
             #     self.hide()
             #     QDesktopServices.openUrl(QUrl.fromUserInput(results.get(item.text())))
 
-            # self.web.KNG_list_widget.blockSignals(True) 
-            # self.web.KNG_list_widget.itemDoubleClicked.connect(open_file)
-            # self.web.KNG_list_widget.blockSignals(False)
+            # self.web.UIB_list_widget.blockSignals(True) 
+            # self.web.UIB_list_widget.itemDoubleClicked.connect(open_file)
+            # self.web.UIB_list_widget.blockSignals(False)
 
             # for i in exts_keys:
             #     try:
             #         if self.input.text().strip().lower() in i:
             #             icon = self.exts.get(i).get("icon")
             #             name = self.exts.get(i).get("json").get("name")
-            #             item = pkg.add_item(self.web.KNG_list_widget, icon, name, "", font_size=9)
-            #             self.web.KNG_list_widget.addItem(item)
+            #             item = pkg.add_item(self.web.UIB_list_widget, icon, name, "", font_size=9)
+            #             self.web.UIB_list_widget.addItem(item)
             #     except Exception:
             #         pass
             
@@ -367,14 +402,14 @@ class MainWindow(QWidget, app_ui):
         #                 if not ty == None or ty:
         #                     # result[ty].append({os.path.splitext(os.path.split(j)[1])[0]: j})
         #                     result[ty]
-        #                     item = pkg.add_item(self.web.KNG_list_widget, "", os.path.splitext(
+        #                     item = pkg.add_item(self.web.UIB_list_widget, "", os.path.splitext(
         #                         os.path.split(j)[1])[0], j, font_size=9, enabled=True)
-        #                     self.web.KNG_list_widget.addItem(item)
+        #                     self.web.UIB_list_widget.addItem(item)
 
         #             except KeyError:
         #                 result[ty] = []
-        #                 item = pkg.add_item(self.web.KNG_list_widget, "", ty, j, font_size=10, enabled=False, alignment=4)
-        #                 self.web.KNG_list_widget.addItem(item)
+        #                 item = pkg.add_item(self.web.UIB_list_widget, "", ty, j, font_size=10, enabled=False, alignment=4)
+        #                 self.web.UIB_list_widget.addItem(item)
 
 
     ###################### Get System Icon Linux/MacOS/Windows #############
@@ -395,9 +430,8 @@ class MainWindow(QWidget, app_ui):
     def run_plugin(self, key: str):
         plugin = self.exts.get(key)
         def_icon = plugin.get("icon")
-
         try:
-            pp = plugin.get("object")(parent=self.methods)
+            pp = plugin.get("object")(self.methods)
 
             ############ Fast Code ############
             self.btn_ext.setIcon(QIcon(def_icon if os.path.exists(
@@ -407,13 +441,14 @@ class MainWindow(QWidget, app_ui):
 
             if isinstance(pp, dict):
                 ## Qt Web View
+                self.web_running_data = pp
                 self.run_web_plugin(key, pp)
 
             elif isinstance(pp, list) or isinstance(pp, tuple):
                 ## Qt List Widget Item
                 if _w == None or not getattr(_w, "__type__", "") == "item":
                     self.stackedWidget.insertWidget(
-                        0, KIPlugin(self, pp, plugin))
+                        0, UIBIPlugin(self, pp))
                 else:
                     _w.func = pp
                     _w.init_ui(pp)
@@ -451,21 +486,21 @@ class MainWindow(QWidget, app_ui):
 
     def run_web_plugin(self, key, data):
         # self.web.run_plugin(data)
+        self.web.UIB_list_widget.clear()
         self.web.init_ui(data)
-        self.web_running_data = data
 
         icon = self.exts.get(key).get("icon")
         if not os.path.exists(icon):
             icon = base_dir + "icons/main/unknow.png"
 
-        item = pkg.add_item(self.web.KNG_list_widget, 
+        item = pkg.add_item(self.web.UIB_list_widget, 
             QIcon(icon),
             data.get("title", ""),
             enabled=True, 
             font_size=9)
 
-        self.web.KNG_list_widget.addItem(item)
-        self.web.KNG_list_widget.setCurrentItem(item)
+        self.web.UIB_list_widget.addItem(item)
+        self.web.UIB_list_widget.setCurrentItem(item)
 
     ####################### Static Methods #######################
     @staticmethod
@@ -488,7 +523,10 @@ class MainWindow(QWidget, app_ui):
             k, v = text.split(maxsplit=1)
             return (k.strip().lower(), v.strip())
         except (IndexError, ValueError):
-            return ("", "")
+            if text.strip():
+                return (text.strip().lower(), "")
+            else:
+                return ("", "")
 
     ####################### Create System Tray #######################
     def createActions(self):
@@ -517,6 +555,7 @@ class MainWindow(QWidget, app_ui):
             self.show()
             self.setFocus()
             self.input.setFocus()
+            self.input.selectAll()
         else:
             self.hide()
 
@@ -533,8 +572,8 @@ class MainWindow(QWidget, app_ui):
             "browser": "plugin_web_browser"
         }
 
-        open_file = dialog.KDialog(self)
-        dir_name = open_file.get_save_dir("Kangaroo - Create Plugin save path", os.path.expanduser("~"))
+        open_file = dialog.UIBDialog(self)
+        dir_name = open_file.get_save_dir("UIBox - Create Plugin save path", os.path.expanduser("~"))
         
         try:
             if dir_name and os.path.exists(dir_name):
@@ -546,7 +585,7 @@ class MainWindow(QWidget, app_ui):
             pass
             
 ################## List Item Widget ######################
-class PluginException(QWidget, list_item.KUi_List):
+class PluginException(QWidget, list_item.UIBUi_List):
     __type__ = "err"
 
     def __init__(self, parent=None) -> None:
@@ -554,11 +593,12 @@ class PluginException(QWidget, list_item.KUi_List):
         QWidget.__init__(self)
         self.setupUi(self)
 
+
 ################# main function for run app ##########################
 def main():
     app = QApplication(sys.argv)
     win =  MainWindow()
-    
+
     try:
         if ('--hide') in sys.argv[1:]:
             win.hide()
@@ -572,61 +612,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-# def by_key(self, key: str, default=None) -> dict:
-#     _dict = {}
-#     args = text.split()
-
-#     for i in range(len(args)):
-#         try:
-#             _dict.update({args[i]: args[i + 1]})
-#         except IndexError:
-#             _dict.update({args[i]: ""})
-    
-#     return _dict.get(key, default)
-
-# print(by_key("new name hello"))
-
-# types = json.load(open(base_dir + "Json/types.json"))
-# def get_type(_path):
-#     ty = os.path.splitext(os.path.split(_path)[1])[1].lstrip(".").lower()
-#     for k, v in types.items():
-#         if ty in v:
-#             return k
-
-# def search(query: str, path: object="~/"):
-#     result = {} # {type: [{}]}
-
-    # if query.strip() and isinstance(path, str):
-    #     for i in glob(os.path.expanduser(os.path.expandvars(path)) + "*"):
-    #         if query.lower().strip() in i.lower():
-    #             print(get_type(i))
-                # result.get("Documents").append(
-                #     {os.path.splitext(os.path.split(i)[1])[0]: i})
-
-                # result.update({os.path.splitext(os.path.split(i)[1])[0]: i})
-    
-    # if query.strip() and isinstance(path, list) or isinstance(path, tuple):
-
-    # for i in list(types.keys()):
-    #     result[i] = []
-
-    # for i in path:
-    #     for j in glob(os.path.expanduser(os.path.expandvars(i)) + "*"):
-    #         if query.strip().lower() in j.strip().lower():
-    #             ty = get_type(j)
-    #             try:
-    #                 if not ty == None:
-    #                     result[ty].append({os.path.splitext(os.path.split(j)[1])[0]: j})
-    #             except KeyError:
-    #                 result[ty] = []
-    # return result
-
-# print(search("pdf", pkg.user_home_dirs))
-
-
 
 
 
@@ -645,7 +630,7 @@ if __name__ == "__main__":
 """
 
 """
-@Kangaroo Requirements:
+@UIBox Requirements:
 ########### Hardware ###########
 Memory: >= 6GB
 CPU   : >= Core i3
@@ -662,14 +647,11 @@ Linux:
     - Windows:
     - MacOS  :
 
-
-
-
 @Questions:
-    Why do we need Kangaroo?
-    How I can use Kangaroo?
-    What the Kangaroo Plugins?
-    Get Start with Kangaroo?
-    How to create Kangaroo Plugin?
-    What rules for creating Kangaroo plugins?
+    Why do we need UIBox?
+    How I can use UIBox?
+    What the UIBox Plugins?
+    Get Start with UIBox?
+    How to create UIBox Plugin?
+    What rules for creating UIBox plugins?
 """

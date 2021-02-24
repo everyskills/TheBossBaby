@@ -13,21 +13,32 @@ base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 ## NOTE: Write all Information in package.json for best quality
 ## NOTE: try using .png file type when you icon choose if you can, size(35x35)
 
-
-def Plugin(parent):
-    ## [(title, subtitle, func), ...]
-    return [
-        {
-            "title": "Item number 1",
+## Function for Import from UIBox
+## don't edit this to another name
+def Results(parent):
+    List = []
+    
+    for i in range(10):
+        List.append({
+            "title": f"Item Number '{i}'",
             "subtitle": "Test Plugin Items",
             "icon": "",
-            "func": lambda: print(f"You clicked item 1 with text: {parent.text}")
-        },
+            "key": f"num{i}"
+        })
 
-        {
-            "title": "Item number 2",
-            "subtitle": "Test Plugin Items 2",
-            "icon": "",
-            "func": lambda: print(f"You clicked item 2 with text: {parent.text}")
-        }
-    ]
+    return List
+
+## Line Input Return Pressed CallBack
+def Run(parent, item):
+    """ 
+    :param parent: main window events and simple methods
+    :param item: return clicked item content
+    """
+    
+    print("TEXT: ", parent.text)
+    print("KEY: ", item.key)
+
+    if item.key == "num1":
+        print("You'r number 1")
+    else:
+        print("You'r in any number")

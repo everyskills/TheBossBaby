@@ -58,10 +58,11 @@ def update_contact(old, new):
     cur.execute(f"UPDATE Contact SET {who} WHERE {where}")
     con.commit()
 
-def Plugin(parent):
+def Results(parent):
     """ main function for start plugin from kangaroo """
 
     keys['color'] = 'black' if not parent.style == 'dark' else 'white'
+    keys["image"] = "file://" + base_dir + "personal.png"
 
     if parent.text.startswith("+"):
         pt = get_ph_ty(parent.text[1:4], parent.text[4:])
@@ -92,11 +93,11 @@ def Plugin(parent):
         "open_url_in_browser": True
     }
     
-def run(parent):
+def Run(parent):
     new_name = parent.by_key("new", "")
     del_name = parent.by_key("del", "")
     up_old_name = parent.by_key("up", "")
-    up_new_name = parent.by_key(up_old_name, "")
+    up_new_name = parent.by_key("to", "")
     
     if new_name:
         add_contact(new_name, parent.by_key(new_name))

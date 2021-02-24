@@ -6,12 +6,12 @@
     "creator_name": "Osama Muhammed",
     "creator_url": "https://www.example.com",
     "creator_email": "",
-    "home_page": "https://www.github.com/<username>/<repository>",
+    "home_page": "https://www.github.com/<username>/<repository>", // home page of plugin
     "examples": [
         "key arg for processes",
         "..."
     ],
-    "icon": "icon.png",
-    "help": "help.html",
+    "icon": "icon.png", // by default is Icon.png
+    "help": "help.html", // (optional)
 	"script": "main.py"
 }

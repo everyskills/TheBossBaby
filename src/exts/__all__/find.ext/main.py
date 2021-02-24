@@ -3,19 +3,19 @@
 
 import os
 
-from subprocess import Popen, PIPE
+from subprocess import PIPE
 from glob import glob
 from PyQt5.QtGui import QDesktopServices, QIcon, QMovie
 from PyQt5.QtCore import QFileInfo, QUrl, QSize
-from PyQt5.QtWidgets import QAction, QWidget
+from PyQt5.QtWidgets import QWidget
 from PyQt5.uic import loadUi
-from kangaroo import pkg, item
+from UIBox import pkg, item
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
-class Plugin(QWidget):
+class Results(QWidget):
     def __init__(self, parent):
-        super(Plugin, self).__init__()
+        super(Results, self).__init__()
         QWidget.__init__(self)
 
         self.parent = parent
@@ -27,14 +27,15 @@ class Plugin(QWidget):
         self.ui.btn_video.clicked.connect(self.start_video)
         self.ui.slide_video.sliderMoved.connect(self.set_video_pos)
 
-        enterAction = QAction("enter", self, shortcut="Return", triggered=self.get_enter_item)
-        self.ui.list_widget.addAction(enterAction)
+        # enterAction = QAction("enter", self.ui.list_widget, shortcut="Return", triggered=self.get_enter_item)
+        # self.ui.list_widget.addAction(enterAction)
         
+        self.lpermissions.hide() # label
+
         self.init_ui()
 
     def init_ui(self):
         self.short_title(os.path.split(str(self.parent.get_text()).strip())[1])
-
         self.parent.return_pressed(self.query_file)
         self.start_up()
 
@@ -52,30 +53,15 @@ class Plugin(QWidget):
 
         query = self.parent.get_text()
 
+        _in = self.parent.by_key("in", index=1)
+        dirn = "~/" if not _in else _in
+
         _icon = pkg.icon_types(query)
         self.ui.image.setPixmap(pkg.set_image(_icon, icon=True, size=150))
 
         _file_count, _folder_count, _size = 0, 0, 0.00
 
-        # query = query.replace("#fd", "type:Folder")
-        # query = query.replace("#img", "type:Image")
-        # query = query.replace("#doc", "type:Document")
-        # query = query.replace("#txt", "type:Text")
-        # query = query.replace("#audio", "type:Audio")
-        # query = query.replace("#arch", "type:Archive")
-        # query = query.replace("#video", "type:Video")
-        # query = query.replace("#pres", "type:Presentation")
-        # query = query.replace("#ss", "type:Spreadsheet")
-
-        # out, _ = Popen(["baloosearch", "-l", "10", query], stdout=PIPE).communicate()
-        # results = out.splitlines()
-        # lines = list(dict.fromkeys(results))
-
-        # for line in lines:
-        #     path = line.decode("UTF-8")
-        #     name = os.path.basename(path)
-        
-        for _file, _path in pkg.find_in_all(query).items():
+        for _file, _path in pkg.find_in_all(query, dirn).items():
             
             if _path.endswith(tuple(pkg.api_icons("Image"))):
                 _icon = QIcon(_path)
@@ -96,7 +82,7 @@ class Plugin(QWidget):
             list_item = pkg.add_item(self.ui.list_widget, _icon)
             name = os.path.basename(_file).replace(
                 query, f"<font color='#1a81da'>{query}</font>")
-            item_widget = pkg.add_item_widget(list_item, item.KUi_Item, name, _path)
+            item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item, name, _path)
             pkg.set_item_widget(self.ui.list_widget, item_widget)
 
             self.ui.status.setText(f"{_folder_count} {'Folder' if _folder_count <= 1 else 'Folders'}, {_file_count} {'File' if _file_count <= 1 else 'Files'}") # ({naturalsize(_size, True, format='%.1f ')})
@@ -161,7 +147,6 @@ class Plugin(QWidget):
                 str(video_screen_img_path + _file),
                 i_width=self.video_player.media.video_get_width() + 10, 
                 i_height=self.video_player.media.video_get_height() + 10)
-
         else:
             self.hide_video()
             self.ui.image.setPixmap(pkg.set_image(item.icon(), size=150))
@@ -188,17 +173,16 @@ class Plugin(QWidget):
         self.ui.lgid.setText(str(ff.groupId()))
         self.ui.lpath.setText(ff.path())
         # self.lpermissions.setText(str(ff.permissions())
-
+        
     def add_click_path(self, item):
         try:
             item = item.listWidget().itemWidget(item)
             _path = item.desc.text()
             self.set_data(_path)
-            QDesktopServices().openUrl(QUrl().fromUserInput(_path))  # from PyQt5
+            QDesktopServices().openUrl(QUrl().fromUserInput(_path))
             self.parent.hide_win()
         except AttributeError:
             self.query_file()
-
 
     def short_title(self, item: str):
         if len(item) <= 20:

@@ -47,9 +47,13 @@ class Controls:
     def text_changed(self, func: object):
         self.__parent.input.textChanged.connect(func)
     
-    def get_text(self):
+    def get_text(self, exception: str=""):
         try:
-            return self.__parent.get_kv(self.__parent.input.text())[1].strip()
+            text = self.__parent.get_kv(self.__parent.input.text())[1].strip()
+            if exception:
+                return re.sub(r"%s" % exception, "", text)
+            else:
+                return text
         except IndexError:
             return ""
 
@@ -67,10 +71,10 @@ class Controls:
         self.__parent.input.insert(text)
         self.__parent.input.setFocus()
 
-    def return_pressed(self, call: object):
-        self.__parent.input.blockSignals(True)
-        self.__parent.input.returnPressed.connect(call)
-        self.__parent.input.blockSignals(False)
+    # def return_pressed(self, call: object):
+    #     self.__parent.input.blockSignals(True)
+    #     self.__parent.input.returnPressed.connect(call)
+    #     self.__parent.input.blockSignals(False)
 
     def set_auto_complete(self, Iterable: list=[]):
         text = self.get_text()
@@ -123,22 +127,22 @@ class Controls:
         else:
             return self.cb.text()
 
-
-    def by_key(self, key: str, default=None) -> dict:
+    def by_key(self, key: str, default=None, index=None) -> dict:
         _dict = {}
         args = self.text.split()
+
         for i in range(len(args)):
-            try:
-                _dict.update({args[i]: args[i + 1]})
-            except IndexError:
-                _dict.update({args[i]: ""})
+            if i == index or index == None:
+                try:
+                    _dict.update({args[i]: args[i + 1]})
+                except IndexError:
+                    _dict.update({args[i]: ""})
+        
         return _dict.get(key, default)
 
     def reload_page(self, count: int=1):
-        # print("web is reloaded")
         for _ in range(count):
             self.__parent.web.run_plugin(self.__parent.web_running_data)
-            # self.__parent.web.web_view.reload()
 
 
     # def web_reload(self):

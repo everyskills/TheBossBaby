@@ -6,7 +6,7 @@ import json
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QFileDialog, QWidget
 from PyQt5.uic import loadUi
-from kangaroo import item, pkg
+from UIBox import item, pkg
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
@@ -113,7 +113,7 @@ class UserCommandCreator(QWidget):
         for k in list(self.parent.user_cmd.keys()):
             key = self.parent.user_cmd.get(k)
             list_item = pkg.add_item(self.list_widget, QIcon(key.get("icon")))
-            item_widget = pkg.add_item_widget(list_item, item.Ui_Item, 
+            item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item, 
             key.get("name"), 
             key.get("tag"),  k)
             pkg.set_item_widget(self.list_widget, item_widget)

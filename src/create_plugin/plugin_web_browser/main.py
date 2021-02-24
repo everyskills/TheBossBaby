@@ -2,7 +2,7 @@
 
 import os
 
-from kangaroo import web
+from UIBox import web
 from PyQt5.QtCore import QObject, QUrl, pyqtSlot
 from PyQt5.QtWidgets import QWidget
 from PyQt5.uic import loadUi 
@@ -12,7 +12,6 @@ base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 ## NOTE: Before create your plugin, please check if not was taken your keyword
 ## NOTE: Write all Information in package.json for best quality
 ## NOTE: try using .png file type when you icon choose if you can, size(35x35)
-
 
 class MyApp(QObject):
     def __init__(self, parent: object = None) -> None:
@@ -25,18 +24,21 @@ class MyApp(QObject):
         print("You'r using: ", text.strip(), " App")
 
 
-## Class for Import from Kangaroo
-class Plugin(QWidget): # You can use QMainWindow or QWidget
+## Class for Import from UIBox
+## don't edit this to another name
+class Results(QWidget): # You can use QMainWindow or QWidget
     def __init__(self, parent):
-        super(Plugin, self).__init__()
+        super(Results, self).__init__()
         QWidget.__init__(self)
 
         ## define main variables
-        self.parent = parent                # parent window functions
+        self.parent = parent                       # parent window functions
         self.ui = loadUi(base_dir + "UI.ui", self) # load ui file to class
 
+        web.get_settings()
+
         self.frame = self.web_view.page().mainFrame()
-        self.frame.addToJavaScriptWindowObject("kangaroo", MyApp(self)) # share MyApp class with js code
+        self.frame.addToJavaScriptWindowObject("uibox", MyApp(self)) # share MyApp class with js code
         self.document = self.frame.documentElement()
         
         self.ui.web_view.loadProgress.connect(self.load_progress_bar) # load progress bar
@@ -45,8 +47,6 @@ class Plugin(QWidget): # You can use QMainWindow or QWidget
         self.ui.web_view.load(QUrl("about:blank")) # set default url
 
         self.parent.set_auto_complete([]) # auto compelete
-        
-        web.get_settings()
 
     def init_ui(self):
         pass
@@ -64,3 +64,7 @@ class Plugin(QWidget): # You can use QMainWindow or QWidget
 
     def run_js(self, script: str):
         self.document.evaluateJavaScript(script)
+
+    ## Line Input Return Pressed CallBack
+    def __run__(self):
+        pass

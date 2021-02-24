@@ -4,7 +4,7 @@ import os
 
 from . import methods as mt
 from PyQt5.QtCore import QSize
-from kangaroo import dialog, pkg
+from UIBox import dialog, pkg
 from PyQt5.QtWidgets import QApplication
 from PyQt5.uic import loadUi
 from ._themes import ThemePage
@@ -19,7 +19,7 @@ class SettingsWindow:
 
         # self.parent = parent
         self.ui = loadUi(base_dir + "../ui/extend_setting.ui", self)
-        self.dialog = dialog.KDialog()
+        self.dialog = dialog.UIBDialog()
         self.setting = mt.setting
 
         ################# Include Classes
@@ -155,7 +155,7 @@ class SettingsWindow:
         mt.set_key_sequence(self.ui.key_open_settings, "F1")
 
         ########## Text
-        mt.set_text(self.ui.placeholder_text, "Kangaroo - search...")
+        mt.set_text(self.ui.placeholder_text, "UIBox - search...")
         mt.set_text(self.ui.start_up_text, "")
 
         ########## SpinBoxs

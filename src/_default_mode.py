@@ -2,7 +2,7 @@
 
 import os
 
-from kangaroo import pkg, item
+from UIBox import pkg, item
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QWidget
 from ui.default_mode_ui import Ui_Form
@@ -54,7 +54,7 @@ class DefaultModeItems(QWidget, Ui_Form):
 
                 item_widget = pkg.add_item_widget(
                     list_item,
-                    item.Ui_Item,
+                    item.UIBUi_Item,
                     title,
                     tag,
                     D,

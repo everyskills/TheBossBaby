@@ -1,28 +1,28 @@
 #!/usr/bin/python3
 
-import os
-import json
+# import os
+# import json
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction, QApplication, QStyleFactory
+# from PyQt5.QtCore import Qt
+# from PyQt5.QtGui import QIcon
+# from PyQt5.QtWidgets import QAction, QApplication, QStyleFactory
 
-base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
+# base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
-__app_name__ = "Kangaroo"
-__version__ = "1.3.6"
-__author__ = "Osama Muhammed Alzabidi"
+# __app_name__ = "UIBox"
+# __version__ = "1.3.6"
+# __author__ = "Osama Muhammed Alzabidi"
 
-class MainWindowSettings:
-    def __init__(self, parent=None) -> None:
-        self.parent = parent
+# class MainWindowSettings:
+#     def __init__(self, parent=None) -> None:
+#         self.parent = parent
         
-        self.max_ext = 670
-        self.min_ext = 60
-        self.win_width = 720
-        self.is_auto_comp = False
+#         self.max_ext = 670
+#         self.min_ext = 60
+#         self.win_width = 720
+#         self.is_auto_comp = False
 
-    def init_setup(self):
+    # def init_setup(self):
         # self.set_window_settings()
 
         # quitAction = QAction("Quit", self.parent, shortcut=self.kquit,
@@ -54,27 +54,27 @@ class MainWindowSettings:
         # self.parent.addAction(closeeAction)
         # self.parent.addAction(quitAction)
     
-        try:
-            width = self.parent.screen().size().width()
-            height = self.parent.screen().size().height()
-            self.parent.move(width - width + 350, height - height + 80)
-        except AttributeError:
-            pass
+        # try:
+        #     width = self.parent.screen().size().width()
+        #     height = self.parent.screen().size().height()
+        #     self.parent.move(width - width + 350, height - height + 80)
+        # except AttributeError:
+        #     pass
 
-        # self.parent.move(360, 60)
-        self.parent.setFixedSize(self.win_width, 320)
-        self.parent.setWindowFlags(self.parent.windowFlags()
-                                    | Qt.WindowStaysOnTopHint)
+        # # self.parent.move(360, 60)
+        # self.parent.setFixedSize(self.win_width, 320)
+        # self.parent.setWindowFlags(self.parent.windowFlags()
+        #                             | Qt.WindowStaysOnTopHint)
 
-        QApplication.instance().setApplicationName("Kangaroo")
-        QApplication.instance().setApplicationVersion("1.3.6")
-        QApplication.instance().setQuitLockEnabled(True)
+        # QApplication.instance().setApplicationName("Kangaroo")
+        # QApplication.instance().setApplicationVersion("1.3.6")
+        # QApplication.instance().setQuitLockEnabled(True)
         
-        self.parent.setWindowTitle("Kangaroo")
-        self.parent.setWindowIcon(QIcon(base_dir + "icons/logo.png"))
-        self.parent.input.setPlaceholderText("Kangaroo - search...")
-        self.parent.btn_setting.setIcon(QIcon(base_dir + "icons/main/search.svg"))
-        self.parent.input.setFocus()
+        # self.parent.setWindowTitle("Kangaroo")
+        # self.parent.setWindowIcon(QIcon(base_dir + "icons/logo.png"))
+        # self.parent.input.setPlaceholderText("Kangaroo - search...")
+        # self.parent.btn_setting.setIcon(QIcon(base_dir + "icons/main/search.svg"))
+        # self.parent.input.setFocus()
 
     # def set_window_settings(self, data: str=""):
     #     with open(base_dir + "Json/settings.json", "r") as _fs:
@@ -129,50 +129,50 @@ class MainWindowSettings:
     #         _fs.close()
     #         self.extend_mode()
 
-    def get_setting(self, key: str, value: str=""):
-        return json.load(open(base_dir + "Json/settings.json", "r")).get(key, value)
+    # def get_setting(self, key: str, value: str=""):
+    #     return json.load(open(base_dir + "Json/settings.json", "r")).get(key, value)
 
-    def clear_input(self):
-        self.parent.input.clear()
-        self.parent.input.setFocus()
+    # def clear_input(self):
+    #     self.parent.input.clear()
+    #     self.parent.input.setFocus()
 
-    def select_plugin_value(self):
-        k, v = self.parent.get_kv(self.parent.input.text())
-        self.parent.input.setSelection(len(k) + 1 if v else 0, len(self.parent.input.text()))
+    # def select_plugin_value(self):
+    #     k, v = self.parent.get_kv(self.parent.input.text())
+    #     self.parent.input.setSelection(len(k) + 1 if v else 0, len(self.parent.input.text()))
 
-    def clear_plugin_value(self):
-        k, v = self.parent.get_kv(self.parent.input.text())
-        self.parent.input.setText(k + " " if v else "")
+    # def clear_plugin_value(self):
+    #     k, v = self.parent.get_kv(self.parent.input.text())
+    #     self.parent.input.setText(k + " " if v else "")
 
-    def small_mode(self):
-        self.set_line_style(False)
-        self.parent.setFixedHeight(self.min_ext)
-        # self.parent.resize(QSize(self.parent.width(), self.min_ext))
-        self.parent.KNG_main_frame.hide()
+    # def small_mode(self):
+    #     self.set_line_style(False)
+    #     self.parent.setFixedHeight(self.min_ext)
+    #     # self.parent.resize(QSize(self.parent.width(), self.min_ext))
+    #     self.parent.KNG_main_frame.hide()
 
-    def extend_mode(self):
-        self.set_line_style(True)
-        self.parent.setFixedHeight(self.max_ext)
-        # self.parent.resize(QSize(self.parent.width(), self.max_ext))
-        self.parent.KNG_main_frame.show()
+    # def extend_mode(self):
+    #     self.set_line_style(True)
+    #     self.parent.setFixedHeight(self.max_ext)
+    #     # self.parent.resize(QSize(self.parent.width(), self.max_ext))
+    #     self.parent.KNG_main_frame.show()
 
-    def default_mode(self):
-        self.set_line_style(True)
-        self.parent.setFixedHeight(180)
-        # self.parent.resize(QSize(self.parent.width(), 180))
-        self.parent.KNG_main_frame.show()
+    # def default_mode(self):
+    #     self.set_line_style(True)
+    #     self.parent.setFixedHeight(180)
+    #     # self.parent.resize(QSize(self.parent.width(), 180))
+    #     self.parent.KNG_main_frame.show()
 
-    def extend_custom(self, value: int):
-        self.set_line_style(True)
-        self.parent.setFixedHeight(value)
-        # self.parent.resize(QSize(self.parent.width(), value))
-        self.parent.KNG_main_frame.show()
+    # def extend_custom(self, value: int):
+    #     self.set_line_style(True)
+    #     self.parent.setFixedHeight(value)
+    #     # self.parent.resize(QSize(self.parent.width(), value))
+    #     self.parent.KNG_main_frame.show()
     
-    def for_ward_cursor(self):
-        self.parent.input.setCursorPosition(len(self.parent.input.text()))
+    # def for_ward_cursor(self):
+    #     self.parent.input.setCursorPosition(len(self.parent.input.text()))
 
-    def set_line_style(self, show: bool=False):
-        pass
+    # def set_line_style(self, show: bool=False):
+    #     pass
         # style = os.path.splitext(os.path.split(self.style)[1])[0].strip().lower()
         # color = '777d7f' if 'dart' in style or style == 'default' else 'e6e6e6'
         # size = '2' if show else '0'
@@ -202,6 +202,6 @@ class MainWindowSettings:
         #         }
         #         """ % (color, size, color, size, frsize))
 
-    @property
-    def get_theme_name(self):
-        return os.path.splitext(os.path.split(self.style)[1])[0].strip().lower()
+    # @property
+    # def get_theme_name(self):
+    #     return os.path.splitext(os.path.split(self.style)[1])[0].strip().lower()

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang=""  style="color: {{ color }}">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+	<link href="{{ style }}" rel="stylesheet">
+  </head>
+
+  <body style="color: {{ color }}">
+
+	<div id='centered'>
+		<div>
+			<img id="call-img" src="file:///home/o_o/Projects/Ready/KANGAROO/kangaroo-app/src/exts/__all__/phone_storage.ext/personal.png" />
+			<h1>{{ name }}</h1>
+			<br>
+			<p><span class='icon-phone'></span> {{ phone }}</p>
+			<p><span class='icon-email'></span> {{ email }}</p>
+			<br>
+			<!-- <h5 style="color: red; font-size: small;"> {{ error }} </h5> -->
+		</div>
+	</div>
+
+	<div id='hint'>
+		<h2> Phone type: {{ ph_ty }} </h2>
+	</div>
+
+	</body>
+</html>

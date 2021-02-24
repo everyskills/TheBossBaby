@@ -1,4 +1,4 @@
-@packages:
+@Packages:
 	[x] Linux
 	[x] MacOS
 	[x] Windows
@@ -8,10 +8,13 @@
 	[x] Plugins
 
 @Test:
-	[y] Linux
-	[x] MacOS
-	[x] Windows
+	[y] Linux   (True)
+	[x] MacOS   ()
+	[x] Windows ()
 
-@Kangaroo Windows:
+@UIBox Windows:
 	[y] Main
-	[y] Settings 
+	[y] Settings
+
+@Change package.json to info.json
+@Change main.py to plugin.py

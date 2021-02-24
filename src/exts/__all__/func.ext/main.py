@@ -9,7 +9,7 @@ import re
 import os
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QWidget
 from PyQt5.uic import loadUi
 from . import func
 
@@ -27,7 +27,7 @@ _FUNCTIONS = {
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 ## Class for Import from Kangaroo
-class Plugin(QWidget): # use Widget type
+class Results(QWidget): # use Widget type
     math_vars = {}
     def __init__(self, parent=None):
         # super(Plugin, self).__init__()
@@ -49,7 +49,7 @@ class Plugin(QWidget): # use Widget type
         self.search_func()
         key, val = self.get_code()
         try:
-            self.set_result(str(_FUNCTIONS.get(key)(val)))
+            self.set_result(str(_FUNCTIONS.get(key.strip())(val.strip())))
         except Exception:
             pass
 
@@ -80,10 +80,3 @@ class Plugin(QWidget): # use Widget type
             return data[0].lower().strip(), data[1].strip()
         except IndexError:
             return ['', '']
-
-if __name__ == "__main__":
-    print(f"Test-{__keyword__}: Ok")
-    app = QApplication([])
-    win = Plugin()
-    win.show()
-    exit(app.exec_())

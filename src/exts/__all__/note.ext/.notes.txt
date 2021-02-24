@@ -1,1 +1,93 @@
-<b>Operating System</b>: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Kubuntu 20.10<br><b>KDE Plasma Version</b>: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;5.19.5<br><b>KDE Frameworks Version:</b> &nbsp;5.74.0<br><b>Qt Version:</b> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;5.14.2<br><b>Memory: </b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;7.7 GiB of RAM<div><br><b>Graphics Processor: </b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Mesa Intel® UHD Graphics 620<div><br><div><b>Processors:</b> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;8 × Intel® Core™ i5-8250U CPU @ 1.60GHz<br></div><div><br></div><div><b>Kernel Version:</b> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;5.8.0-43-generic<br>OS Type: 64-bit<br></div></div></div>
+<b>Operating System</b>: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Kubuntu 20.10<br><b>KDE Plasma Version</b>: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;5.19.5<br><b>KDE Frameworks Version:</b> &nbsp;5.74.0<br><b>Qt Version:</b> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;5.14.2<br><b>Memory: </b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;7.7 GiB of RAM<div><br><b>Graphics Processor: </b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Mesa Intel® UHD Graphics 620<div><br><div><b>Processors:</b> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;8 × Intel® Core™ i5-8250U CPU @ 1.60GHz<br></div><div><br></div><div><b>Kernel Version:</b> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;5.8.0-43-generic<br>OS Type: 64-bit<br></div></div></div><div><br></div><div>----------------------------------------------------------------------------</div><div>
+<p style="margin: 0px;"><!--StartFragment--><span style=" font-family:'Noto Sans'; font-size:10pt;">## killed services</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">vmware-USBArbitrator.service</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">snapd.service</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">vmware.service</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">NetworkManager-wait-online.service</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">cups-browsed</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">cups.path</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">cups.service</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">cups.socket</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">how to include PyQt5 code to core app</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">- Senior Odoo Consultant</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">- ويب (PHP، jvascript, JQuery/Ajax ، CSS، HTML، Django, Symfony, Java EE).</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">- مكتب (++Java, Python, C).</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">- تطويرالموبايل (Androïd).</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">-Big Data: (Hadoop, Hbase, Apache Spark</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">- التعلم الآلي ( SAS, Sickit-learn Python، R).</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">- قواعد البيانات NoSql:(MongoDB, HBase)</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">- قواعد البيانات (SQLite, MySql, Oracle, SqlServer, PostgreSql).</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">what is akonadi</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">how to add show password button in </span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">## Google Driver</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">user: qau.comlab@gmail.com</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">pass: Qau123456789@</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">#install py2exe in windows</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">## this code for make usb boot</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">sudo alien -ci android-.rpm</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;"># for run sudo with GUI</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">pkexec</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;"># Github Total</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">https://octoverse.github.com/</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;"># StackOverFlow Total</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">https://insights.stackoverflow.com/survey/2020</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;"># Python Projects</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">https://graspcoding.com/category/python-free-code/</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">Simple content app using:-</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">HTML5</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">CSS3:	 bootstrap4, Animation</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">SASS</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">JS: 	JQuery</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">Python: 	peel</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">SQLite3</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">##############</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">Check for rami</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">sudo usermod -l newUsername oldUsername</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">sudo usermod -d /home/newHomeDir -m newUsername</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">## or this</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">usermod -l &lt;newname&gt; -d /home/&lt;newname&gt; -m &lt;oldname&gt;</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">## create whl python package</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">python3 setup.py sdist bdist_wheel</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">## to upload python package</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">python3 -m twine upload --repository testpypi dist/*</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">https://harmash.com/algorithms-and-data-structure/drawing-test-3/</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">https://www.oreilly.com/library/view/python-data-science/9781491912126/ch04.html</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">## for download apk app</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">https://apkpure.com/ar/</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">## for download icons</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">https://www.flaticon.com/</span></p>
+<p style="margin: 0px; font-family: 'Noto Sans'; font-size: 10pt;"><br></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">## Docker kill service</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">dundee.service</span></p>
+<p style="margin: 0px;"><span style=" font-family:'Noto Sans'; font-size:10pt;">ubuntu-fan.service</span><!--EndFragment--></p></div>

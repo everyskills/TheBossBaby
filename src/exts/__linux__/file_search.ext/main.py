@@ -9,13 +9,13 @@ from PyQt5.QtGui import QDesktopServices, QIcon, QMovie
 from PyQt5.QtCore import QFileInfo, QUrl, QSize
 from PyQt5.QtWidgets import QAction, QWidget
 from PyQt5.uic import loadUi
-from kangaroo import pkg, item
+from UIBox import pkg, item
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
-class Plugin(QWidget):
+class Results(QWidget):
     def __init__(self, parent):
-        super(Plugin, self).__init__()
+        super(Results, self).__init__()
         QWidget.__init__(self)
 
         self.parent = parent
@@ -91,7 +91,7 @@ class Plugin(QWidget):
 
             list_item = pkg.add_item(self.ui.list_widget, _icon)
             name = name.replace(query, f"<font color='#1a81da'>{query}</font>")
-            item_widget = pkg.add_item_widget(list_item, item.KUi_Item, name, path)
+            item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item, name, path)
             pkg.set_item_widget(self.ui.list_widget, item_widget)
 
             self.ui.status.setText(f"{_folder_count} {'Folder' if _folder_count <= 1 else 'Folders'}, {_file_count} {'File' if _file_count <= 1 else 'Files'}") # ({naturalsize(_size, True, format='%.1f ')})

@@ -8,16 +8,15 @@ White: f6f6f6
 
 QListWidget,
 #Form, 
-#KNG_frame, 
-#KNG_input_frame,
-#status_frame {
+#UIB_frame, 
+#UIB_input_frame {
     /* color : #808080; */
     color: #232629;
     /* background-color: #f4f3f6; */
     background-color: #f6f6f6;
 }
 
-#KNG_frame {
+#UIB_frame {
     padding: 6px 0px;
     border-radius: 8px;
     background-color: #f6f6f6;
@@ -32,7 +31,6 @@ QListWidget,
     selection-background-color: #d2d2d2;
     selection-color: #232629;
 }
-
 
 #btn_setting, #btn_ext {
     background: transparent;
@@ -103,12 +101,12 @@ QWebView {
     color: #000;
 }
 
-#web_view {
+#UIB_web_view {
     background-color: #f6f6f6;
     color: #000;
 }
 
-#KNG_web_frame {
+#UIB_web_frame {
     border-left-color: #e6e6e6;
     border-left-width: 2px;
     border-left-style: solid;
@@ -127,3 +125,5 @@ QComboBox {
     background-color: #cccccc;
     color: #000;
 }
+
+

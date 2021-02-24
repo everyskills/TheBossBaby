@@ -10,9 +10,9 @@ from PyQt5.uic import loadUi
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
-class Plugin(QWidget):
+class Results(QWidget):
     def __init__(self, parent):
-        super(Plugin, self).__init__()
+        super(Results, self).__init__()
         QWidget.__init__(self)
 
         self.parent = parent

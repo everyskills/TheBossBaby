@@ -143,8 +143,7 @@ def build_emoji_html(emoji):
     html = html.replace('{{gemoji}}', gemoji)
     return html.replace('{{icon}}', icon)
 
-def Plugin(parent):
-    
+def Results(parent):
     query = parent.text
     emoji_arr = json.loads(open(base_dir + 'emoji.json').read())
     emojis = find_emojis(query, emoji_arr)

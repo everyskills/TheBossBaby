@@ -8,14 +8,14 @@ from glob import glob
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QWidget
 from PyQt5.uic import loadUi
-from kangaroo import pkg, item
+from UIBox import pkg, item
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 apps = {}
 
-class Plugin(QWidget):
+class Results(QWidget):
     def __init__(self, parent):
-        super(Plugin, self).__init__()
+        super(Results, self).__init__()
         QWidget.__init__(self)
 
         self.parent = parent
@@ -27,8 +27,6 @@ class Plugin(QWidget):
         enterAction = QAction("enter", self, shortcut="Return", triggered=self.get_enter_item)
         self.ui.list_widget.addAction(enterAction)
 
-        # self.parent.set_auto_complete(list(apps.keys()))
-        
         self.init_ui()
 
     def init_ui(self):
@@ -62,7 +60,7 @@ class Plugin(QWidget):
                 self.ui.list_widget.count() <= 10):
 
                 list_item = pkg.add_item(self.ui.list_widget, v["icon"])
-                item_widget = pkg.add_item_widget(list_item, item.KUi_Item, k, v['comment'])
+                item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item, k, v['comment'])
                 pkg.set_item_widget(self.ui.list_widget, item_widget)
                 item_widget[1].mouseDoubleClickEvent = (
                     lambda e: self.run_clicked_app(self.list_widget.currentItem()))

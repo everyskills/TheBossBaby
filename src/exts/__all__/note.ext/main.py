@@ -19,7 +19,7 @@ class MyApp(QObject):
         	_fw.write(str(text))
         	_fw.close()
 
-def Plugin(parent):
+def Results(parent):
 
 	content = parent.text
 	title = "Create a Note"

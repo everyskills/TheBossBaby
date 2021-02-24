@@ -42,7 +42,7 @@ class MyApp(QObject):
         print("You'r using: ", text.strip(), " App")
 
 def Plugin(parent=None):
-    """ main function for start plugin from kangaroo """
+    """ main function for start plugin from UIBox """
     return {
         ## HTML code or File path: (base_dir + "index.html")
         "html": HTML,
@@ -72,5 +72,5 @@ def Plugin(parent=None):
         # "base_file": "index.html",
 
         ## Open Extrnal Links in Default applicatins/brwoser
-        "open_url_in_browser": True
+        "open_links_in_browser": True
         }

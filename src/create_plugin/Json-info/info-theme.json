@@ -4,8 +4,8 @@
     "creator_name": "Osama Muhammed",
     "creator_url": "https://www.example.com",
     "creator_email": "",
-    "home_page": "https://www.github.com/<username>/<repository>",
+    "home_page": "https://www.github.com/<username>/<repository>", // home page of theme
     "type": "dark",
 	"script": "style.qss",
-    "image": "screen_shot.png"
+    "icon": "icon.png" // by default is Icon.png
 }

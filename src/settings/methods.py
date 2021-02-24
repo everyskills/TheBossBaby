@@ -3,7 +3,7 @@
 from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QCheckBox, QKeySequenceEdit, QLineEdit, QSpinBox
 
-setting = QSettings("kangaroo")
+setting = QSettings("UIBox")
 
 def L_changed(obj: QLineEdit) -> None:
     obj.returnPressed.connect(lambda: setting.setValue(obj.objectName(), obj.text()))

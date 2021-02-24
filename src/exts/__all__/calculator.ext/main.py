@@ -8,18 +8,19 @@ simple description what plugin do
 import re
 import os
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QWidget
 from PyQt5.uic import loadUi
 from .calculator import evaluate, _FUNCTIONS
+from .func import get_help
 
 __keyword__ = ""
 __author__ = ""
 __github__ = ""
-__all__ = ["Plugin",]
+__all__ = ["Results",]
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
-class Plugin(QWidget):
+class Results(QWidget):
     math_vars = {}
     def __init__(self, parent):
         QWidget.__init__(self)
@@ -31,7 +32,7 @@ class Plugin(QWidget):
         self.ui.line_search.textChanged.connect(self.search_func)
         self.ui.list_widget.itemDoubleClicked.connect(self.set_func)
 
-        self.parent.return_pressed(self.copy_result)
+        # self.parent.return_pressed(self.copy_result)
 
         self.init_ui()
 
@@ -40,12 +41,16 @@ class Plugin(QWidget):
         
         try:
             self.set_vars()
-            if self.parent.text.strip() and not self.parent.text.startswith("set"):
+            if len(self.parent.text.split(":")) > 1:
+                if self.parent.text.split(":")[0].strip() == "help":
+                    var = self.parent.text.split(":")[1].strip().lower()
+                    self.set_result(get_help(var))
+            elif self.parent.text.strip() and not self.parent.text.startswith("set"):
                 self.set_result(str(evaluate(self.parent.text, self.math_vars)))
         except Exception as math_err:
             self.title.setText(str(math_err))
 
-    def copy_result(self):
+    def __run__(self):
         text = self.ui.title.text().strip()
         self.parent.text_copy(text if text else self.ui.text_edit.toPlainText())
 
@@ -70,25 +75,19 @@ class Plugin(QWidget):
     def set_vars(self):
         txt = str(self.parent.text.strip())
         try:
-            patt =re.compile(r"set\s*\((.*)\)")
+            patt = re.compile(r"set\s*\((.*)\)")
             data = patt.findall(txt)[0].strip().split(";")
             for i in data:
                 k, v = i.split("=")
                 if not k.lower().strip() in "_abcdefghijklmnopqrstuvwxyz" or not evaluate(v.strip()):
                     self.title.setText(f"Error: {k} not support try choose char")
                 else:
-                    self.text_edit.insertHtml(
-                        f"{k} = {str(evaluate(v))}   \
-                            <font color='#38d23a'>Done...</font><br>")
+                    self.text_edit.setHtml(
+                        f"{k} = {str(evaluate(v))} \
+                        <font color='#38d23a'>Done...</font><br>")
                     self.math_vars.update({k.strip(): evaluate(v.strip())})
+                    self.title.clear()
         except IndexError:
             pass
         except ValueError as math_err:
             raise Exception(math_err)
-
-if __name__ == "__main__":
-    print(f"Test-{__keyword__}: Ok")
-    app = QApplication([])
-    win = Plugin()
-    win.show()
-    exit(app.exec_())

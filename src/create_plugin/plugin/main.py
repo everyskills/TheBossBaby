@@ -13,7 +13,7 @@ from PyQt5.uic import loadUi
 __keyword__ = ""
 __author__ = ""
 __github__ = ""
-__all__ = ["Plugin", ]
+__all__ = ["Results", ]
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
@@ -21,11 +21,11 @@ base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 ## NOTE: Write all Information in package.json for best quality
 ## NOTE: try using .png file type when you icon choose if you can, size(35x35)
 
-## Class for Import from Kangaroo
+## Class for Import from UIBox
 ## don't edit this to another name
-class Plugin(QWidget):
-    def __init__(self,  parent):
-        super(Plugin, self).__init__()
+class Results(QWidget):
+    def __init__(self, parent):
+        super(Results, self).__init__()
         QWidget.__init__(self)
 
         # parent window functions:
@@ -44,6 +44,10 @@ class Plugin(QWidget):
         label = QLabel(f"<font size='7'>Your text:</font> <br>{self.parent.text}")
         label.setAlignment(Qt.AlignCenter)
         self.gridLayout.addWidget(label)
+
+    ## Line Input Return Pressed CallBack
+    def __run__(self):
+        pass
 
 if __name__ == "__main__":
     print(f"Test-{__keyword__}: Ok")

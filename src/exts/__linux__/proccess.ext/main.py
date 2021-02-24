@@ -4,7 +4,7 @@
 import os
 import psutil
 
-from kangaroo import pkg, item
+from UIBox import pkg, item
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QWidget
 from PyQt5.QtCore import QSize
@@ -49,9 +49,9 @@ def get_processes():
     return listOfProcObjects
 
 
-class Plugin(QWidget):
+class Results(QWidget):
     def __init__(self, parent):
-        super(Plugin, self).__init__()
+        super(Results, self).__init__()
         QWidget.__init__(self)
 
         self.parent = parent
@@ -87,7 +87,7 @@ class Plugin(QWidget):
                 _icon = QIcon(base_dir + "icons/executable.png")
 
             if (self.list_widget.count() <= 9 and self.query in name):
-                item_widgwt= pkg.add_item_widget(self.ui.list_widget, item.KUi_Item, _icon, name, '', str(v.get("pid")))
+                item_widgwt= pkg.add_item_widget(self.ui.list_widget, item.UIBUi_Item, _icon, name, '', str(v.get("pid")))
                 pkg.set_item_widget(self.ui.list_widget, item_widgwt)
             
             self.ui.status.setText(f"{self.list_widget.count()} Proccess")

@@ -7,12 +7,12 @@ simple description what plugin do
 
 import os
 from PyQt5.QtWidgets import QWidget
-from kangaroo.list_item import KUi_List
+from UIBox.list_item import UIBUi_List
 
 __keyword__ = ""
 __author__ = ""
 __github__ = ""
-__all__ = ["Plugin",]
+__all__ = ["Results",]
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
@@ -20,11 +20,11 @@ base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 ## NOTE: Write all Information in package.json for best quality
 ## NOTE: try using .png file type when you icon choose if you can, size(35x35)
 
-## Class for Import from Kangaroo
-
-class Plugin(QWidget, KUi_List):
+## Class for Import from UIBox
+## don't edit this to another name
+class Results(QWidget, UIBUi_List):
     def __init__(self, parent):
-        super(Plugin, self).__init__()
+        super(Results, self).__init__()
         QWidget.__init__(self)
         self.setupUi(self)
 
@@ -45,16 +45,3 @@ class Plugin(QWidget, KUi_List):
 
 if __name__ == "__main__":
     print(f"Test-{__keyword__}: Ok")
-
-
-
-
-
-
-
-
-
-def Plugin(parent):
-    # (title, subtitle, hotkey, func)
-    # return {}
-    pass

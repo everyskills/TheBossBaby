@@ -4,7 +4,7 @@ import os
 import shutil
 import json
 
-from kangaroo import pkg, item
+from UIBox import pkg, item
 from glob import glob
 from PyQt5.QtWebKit import QWebSettings
 from PyQt5.QtCore import QProcess, QSize, QThreadPool, QUrl, Qt
@@ -69,7 +69,7 @@ class PluginSettings(QWidget, Ui_Form):
                 
                 item_widget = pkg.add_item_widget(
                     list_item, 
-                    item.KUi_Item,
+                    item.UIBUi_Item,
                     v.get("json").get("name", "")[0:64], 
                     v.get("json").get("description", "")[0:64],
                     k)

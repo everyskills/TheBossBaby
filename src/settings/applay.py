@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import QAction, QApplication
 from . import methods as mt
 from . main_window import SettingsMainWindow
 
+from UIBox.pkg import set_box_shadow
+
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 class ApplaySettingOnWindow:
@@ -50,7 +52,7 @@ class ApplaySettingOnWindow:
         self.check_do("check_frameless", lambda: self.p.setWindowFlags(
             self.p.windowFlags()| Qt.FramelessWindowHint))
 
-        self.check_do("check_shadow", lambda: self.p.setGraphicsEffect(self.p.set_shadow(3, (2, 2), "black")))
+        self.check_do("check_shadow", lambda: self.p.setGraphicsEffect(set_box_shadow(30, (20, 20), "black")))
 
         if not mt.setting.value("check_show_left_icon", True, bool):
             self.p.btn_setting.hide()
@@ -81,8 +83,8 @@ class ApplaySettingOnWindow:
 
         self.p.setWindowOpacity(mt.setting.value("window_opacity", type=float))
 
-        self.p.setWindowTitle("NO name")
-        self.p.input.setPlaceholderText(mt.setting.value("placeholder_text", "Kangaroo - search...", str))
+        self.p.setWindowTitle("UIBox")
+        self.p.input.setPlaceholderText(mt.setting.value("placeholder_text", "UIBox - search...", str))
         self.p.setWindowIcon(QIcon(base_dir + "icons/logo.png"))
         self.p.btn_setting.setIcon(QIcon(base_dir + "icons/search.svg"))
         
@@ -148,25 +150,25 @@ class ApplaySettingOnWindow:
         self.set_line_style(False)
         self.p.setFixedHeight(mt.setting.value("window_min_extend", type=int))
         # self.p.resize(QSize(mt.setting.value("window_min_extend", type=int), self.p.height()))
-        self.p.KNG_main_frame.hide()
+        self.p.UIB_main_frame.hide()
 
     def extend_mode(self):
         self.set_line_style(True)
         self.p.setFixedHeight(mt.setting.value("window_max_extend", type=int))
         # self.p.resize(QSize(mt.setting.value("window_max_extend", type=int), self.p.height()))
-        self.p.KNG_main_frame.show()
+        self.p.UIB_main_frame.show()
 
     def default_mode(self):
         self.set_line_style(True)
         self.p.setFixedHeight(180)
         # self.p.resize(QSize(self.p.width(), 180))
-        self.p.KNG_main_frame.show()
+        self.p.UIB_main_frame.show()
 
     def extend_custom(self, value: int):
         self.set_line_style(True)
         self.p.setFixedHeight(value)
         # self.p.resize(QSize(self.p.width(), value))
-        self.p.KNG_main_frame.show()
+        self.p.UIB_main_frame.show()
 
     def for_ward_cursor(self):
         self.p.input.setCursorPosition(len(self.p.input.text()))
@@ -178,20 +180,20 @@ class ApplaySettingOnWindow:
 
         if self.p.running_widget_type == "item":
             self.p.setStyleSheet(self.p.styleSheet() + """
-                #KNG_input_frame {
+                #UIB_input_frame {
                     border-bottom-color: #%s;
                     border-bottom-width: %spx;
                     padding-bottom: %spx;
                 }
 
-                #KNG_list_widget {
+                #UIB_list_widget {
                     border-right-color: #%s;
                     border-right-width: %spx;
                 }""" % (color, '0', '0', color, '0'))
         else:
             self.p.setStyleSheet(self.p.styleSheet() +
                 """
-                #KNG_input_frame {
+                #UIB_input_frame {
                     border-bottom-color: #%s;
                     border-bottom-width: %spx;
                     border-bottom-style: solid;
@@ -200,7 +202,7 @@ class ApplaySettingOnWindow:
                     padding-bottom: %spx;
                 }
 
-                #KNG_list_widget {
+                #UIB_list_widget {
                     border-right-color: #%s;
                     border-right-width: %spx;
                     border-right-style: solid;
