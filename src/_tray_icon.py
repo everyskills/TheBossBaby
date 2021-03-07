@@ -45,11 +45,10 @@ class TBB_Tray_Icon:
 
         self.trayIcon = QSystemTrayIcon(QIcon(base_dir + "icons/logo.png"))
         self.trayIcon.setContextMenu(self.trayIconMenu)
-
+        self.trayIcon.setToolTip(f"The Boss Baby")
         self.trayIcon.activated.connect(self.p.check_win)
 
-    def show_message(self, title: str, body: str, icon: int =1, limit: int=5):
-        self.tray = QSystemTrayIcon(QIcon(base_dir + "icons/logo.png"))
-        icon_ = self.tray.MessageIcon(icon)
-        self.tray.showMessage(title, body, icon_, limit * 2000)
-        self.tray.show()
+    def show_message(self, title: str="", body: str="", icon: str="", timeout: int=5, clicked: object=lambda: ()):
+        # self.tray = QSystemTrayIcon(QIcon(base_dir + "icons/logo.png"))
+        self.trayIcon.messageClicked.connect(clicked)
+        self.trayIcon.showMessage(title, body, QIcon(icon), timeout * 1000)

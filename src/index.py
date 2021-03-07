@@ -18,6 +18,7 @@ from settings.applay import ApplaySettingOnWindow
 from _downloader import Downloader
 from _keywords import TBB_Keyowrds
 from _tray_icon import TBB_Tray_Icon
+from _larg_text import TBB_Larg_Text
 
 # from threading import Thread
 
@@ -39,15 +40,8 @@ class MainWindow(QWidget, app_ui):
         self.methods = Controls(self)
         self.win_setting = ApplaySettingOnWindow(self)
 
-        ########## TheBossBaby Modules 
-        self.tbb_keys = TBB_Keyowrds(self)
-        self.tbb_tray_icon = TBB_Tray_Icon(self)
-
         self.win_setting.init_setup()
         self.win_setting.small_mode()
-
-        self.web = UIBWPlugin(self)
-        self.items = UIBIPlugin(self)
 
         ############ global variables
         self.running_widget_type = ""
@@ -59,7 +53,15 @@ class MainWindow(QWidget, app_ui):
         self.running = ""
         self.web_running_data = {}
         self.web_item_results = {}
-        
+
+        ########## TheBossBaby Modules
+        self.tbb_keys = TBB_Keyowrds(self)
+        self.tbb_tray_icon = TBB_Tray_Icon(self)
+        self.tbb_larg_text = TBB_Larg_Text(self)
+
+        self.web = UIBWPlugin(self)
+        self.items = UIBIPlugin(self)
+
         if self.win_setting.s.value("check_history_storage", False, type=bool):
             self.input.keyReleaseEvent = self.key_get_history
 
@@ -225,7 +227,6 @@ class MainWindow(QWidget, app_ui):
 
     @property
     def get_running_plugin(self):
-        print(self.get_kv(self.input.text())[0])
         return self.exts.get(self.get_kv(self.input.text())[0])
 
     ####################### built in keywords for do some job #######################

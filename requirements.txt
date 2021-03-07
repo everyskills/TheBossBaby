@@ -9,4 +9,6 @@ phonenumbers==8.12.15
 Pillow==7.2.0
 distutils
 markdown==3.2.2
+qtpy==1.9.0
+python-qnotifications==2.0.6
 PyQtWebKit
