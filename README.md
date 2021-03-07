@@ -2,7 +2,7 @@
 
 TheBossBaby is a extendable Search app with plugins and fetchers
 
-![Example](https://www.github.com/everyskills/Screenshot.gif)
+![Example](https://github.com/everyskills/TheBossBaby/blob/master/Screenshot.gif)
 
 >## Installation
 - ### Steps to install TheBossBaby app
@@ -222,12 +222,14 @@ for start using default keywords write in prefix like this ```@keyword```
 | ID/ObjectName    | Widget        |
 | -------------    | ------------- |
 | (install, download, downloader, installer)          | show downloader page in Search Box
-| 
 
 ## Platform Support
 - [x] Linux
-- [] Windows 10
-- [] MacOS
+- [x] Windows 10
+- [x] MacOS
+
+## Test Platfrom 
+- [x] Linux
 
 ## License
 Licensed under the GPL and MIT licenses (see LICENSE)
