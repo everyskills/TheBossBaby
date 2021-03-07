@@ -14,13 +14,7 @@ def set_settings():
         setting.setValue(k, v)
 
 def main():
-    ### Download python modules
-    if sys.platform.startswith("win"):
-        command = "python.exe"
-    else:
-        command = "python3"
-
-    os.system(f"{command} -m pip install -r {base_dir + 'requirements.txt'} --user")
+    os.system(f"{sys.argv[0]} -m pip install -r {base_dir + 'requirements.txt'} --user")
 
     ## set TheBossBaby settings file
     set_settings()
