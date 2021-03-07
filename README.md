@@ -2,7 +2,7 @@
 
 TheBossBaby is a extendable Search app with plugins and fetchers
 
-![Example](https://www.github.com/everyskills/TheBossBaby/Screenshot.gif)
+![Example](https://github.com/everyskills/TheBossBaby/blob/master/Screenshot.gif)
 
 >## Installation
 - ### Steps to install TheBossBaby app
