@@ -5,8 +5,8 @@ import json
 import subprocess
 import sys
 
-from threading import Thread
 from glob import glob
+from threading import Thread
 from PyQt5.QtCore import QFileInfo, QPointF, QSize, Qt, QRect
 from PyQt5.QtGui import QColor, QFont, QImage, QIcon, QBrush, QPixmap, QPainter, QWindow
 from PyQt5.QtWidgets import QFileIconProvider, QGraphicsDropShadowEffect, QListWidgetItem
@@ -137,19 +137,27 @@ def get_line(obj):
     except IndexError:
         return None
 
-def icon_types(_file, icon: bool =False):
+def icon_types(_file: str, is_file: list=[False, ""]):
     file_type = os.path.splitext(os.path.split(_file)[1])[1].strip(".")
     ## set image/video icon
     if file_type in json.load(open(base_dir + "api/icons.json")).get("Image"):
-        return QIcon(_file)
+        if not is_file[0]:
+            return QIcon(_file)
+        else:
+            return _file
 
     ## Default System Icons
     else:
         fileInfo = QFileInfo(_file)
         iconProvider = QFileIconProvider()
         icon = iconProvider.icon(fileInfo)
-        return icon
 
+        if not is_file[0]:
+            return icon
+        else:
+            iconProvider.icon(fileInfo).pixmap(200, 200).save(is_file[1], "png")
+            return is_file[1]
+            
 def api_icons(_type: str):
     try:
         return json.load(open(base_dir + "api/icons.json")).get(_type)
@@ -163,9 +171,10 @@ def Import(_file: str):
             os.path.split(_file)[0].split(".")[0], _file)
         foo = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(foo)
-    except (Exception, ModuleNotFoundError):
+    except Exception:
        import imp
        foo = imp.load_package(os.path.split(_file)[0].split(".")[0], _file)
+
     return foo
 
 def set_image(_file: str, icon: bool=False, size: int=150):
@@ -178,7 +187,7 @@ def add_item_widget(item, item_widget, text: str="",
                     desc: str="", hotkey: str="", no_desc: bool=False,
                     item_size=(250, 40)):
 
-    frame = item_widget()
+    frame = item_widget
     frame.title.setText(text)
     frame.shortcut.setText(hotkey)
     
@@ -195,10 +204,11 @@ def add_item_widget(item, item_widget, text: str="",
 
 def get_sys_icon(_name: str):
     _icon = QIcon.fromTheme(_name)
-    if not _icon.isNull():
-        return _icon
-    else:
-        return ""
+    return _icon
+    # if not _icon.isNull():
+    #     return _icon
+    # else:
+    #     return 
         
 def _ext_json(_path: str, key: str, value: str=""):
     return json.load(open(str(_path + "package.json"))).get(key.lower(), value)
@@ -216,7 +226,7 @@ def set_item(obj, item):
     obj.addItem(item)
 
 def run_app(cmd):
-    Thread(target=subprocess.call, kwargs={"shell": True, "args": cmd}).start()
+    Thread(target=subprocess.call, kwargs={"shell": True, "args": cmd}, daemon=True).start()
 
 def get_size(bytes, suffix="B"):
     """
@@ -297,6 +307,7 @@ def find_in_all(query: str, path: str="~/"):
         for dn in paths:
             if os.path.isdir(dn):
                 paths.extend(glob(dn + "/*"))
+                result.update({os.path.split(dn)[1]: dn})
             elif query.strip() in dn.strip():
                 result.update({os.path.split(dn)[1]: dn})
 
@@ -324,3 +335,16 @@ def get_split_file(_file):
         os.path.splitext(os.path.basename(_file))[0],
         os.path.splitext(os.path.basename(_file))[1]
     )
+
+def get_platform():
+    platform = ""
+    if sys.platform.startswith(("linux")):
+        platform = "linux"
+    elif sys.platform.startswith("win"):
+        platform = "windows"
+    elif sys.platform.startswith("darw"):
+        platform = "macos"
+    else:
+        platform = "all"
+
+    return platform

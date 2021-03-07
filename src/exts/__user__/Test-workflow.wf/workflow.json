@@ -1,0 +1,48 @@
+{
+	"name": "Test Workflow",
+	"version": "1.0.0",
+	"keyword": "test",
+	"description": "simple Workflow for test",
+	"icon": "$name.[png, svg]",
+
+	"workflow": [
+		{
+			"type": "web",
+			"url": "https://www.google.com/search?q={query}",
+			"browser": "google-chrome",
+			"args": false,
+			"use_thread": false,
+			"icon": "Icon.png",
+			"title": "Search in Google",
+			"subtitle": "search in Google for '{query}'"
+		},
+
+		{
+			"type": "script",
+			"script": "[text, file]",
+			"language": "",
+			"args": false,
+			"use_thread": false,
+			"icon": "",
+			"title": "",
+			"subtitle": ""
+		},
+
+		{
+			"type": "app",
+			"url": "/path/to/app/",
+			"args": false,
+			"use_thread": false,
+			"icon": "",
+			"title": "",
+			"subtitle": ""
+		},
+
+		{
+			"type": "run",
+			"path": "/path/to/list/all/files",
+			"args": true,
+			"use_thread": false
+		}
+	]
+}

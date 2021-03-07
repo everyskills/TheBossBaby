@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from kangaroo import item, pkg
+from UIBox import item, pkg
 
-class KUi_List(object):
+class UIBUi_List(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(640, 480)

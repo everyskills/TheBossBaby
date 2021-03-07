@@ -10,10 +10,7 @@ base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 con = sqlite3.connect(base_dir + "database.db")
 cur = con.cursor()
 
-keys = {
-    'font': base_dir + "icomoon.ttf",
-    'style' : "file://" + base_dir + "style.css",
-    }
+keys = {}
 
 script = """
 CREATE TABLE Contact (
@@ -61,36 +58,47 @@ def update_contact(old, new):
 def Results(parent):
     """ main function for start plugin from kangaroo """
 
-    keys['color'] = 'black' if not parent.style == 'dark' else 'white'
-    keys["image"] = "file://" + base_dir + "personal.png"
+    items = []
+    keys.update({
+        'color' : 'black' if not parent.style == 'dark' else 'white',
+        'bg' : parent.dark_color if parent.style == 'dark' else parent.light_color
+    })
 
     if parent.text.startswith("+"):
         pt = get_ph_ty(parent.text[1:4], parent.text[4:])
-        keys['name'] = pt
-        keys['phone'] = f"{parent.text[0]}({parent.text[1:4]}) {parent.text[4:]}"
-        keys['ph_ty'] = pt
+        keys.update({
+            'name' : pt,
+            'phone' : f"{parent.text[0]}({parent.text[1:4]}) {parent.text[4:]}",
+            'ph_ty' : pt
+        })
 
     elif parent.text:
         # _or = f"OR phone LIKE '{int(parent.text)}%'" if parent.text.isalnum() else ""
-        data = cur.execute(f"SELECT * FROM Contact WHERE name LIKE '{parent.text}%'").fetchall()
+        data = cur.execute(f"SELECT * FROM Contact WHERE name LIKE '{parent.text}%' OR phone LIKE '{parent.text}%'").fetchall()
         for i in data:
-            keys['name'] = i[1]
-            keys['phone'] = i[2]
-            keys['ph_ty'] = get_ph_ty("967", keys.get("phone"))
-    
-        parent.text_copy(str(keys.get("phone", "")))
+            keys.update({
+                'name' : i[1],
+                'phone' : i[2],
+                'ph_ty' : get_ph_ty("967", keys.get("phone"))
+            })
+
+            items.append({"key": i[2], "title": i[1],
+                          "icon": base_dir + "personal.png",
+                          "subtitle": i[2]})
 
     else:
-        keys['name'] = "You"
-        keys['phone'] = "000000000"
-        keys['ph_ty'] = "Company"
+        keys.update({
+            'name' : "You",
+            'phone' : "000000000",
+            'ph_ty' : "Company"
+        })
 
     return {
         "html": base_dir + "index.html",
-        "title": "Resutl for '%s'" % parent.text,
         "jinja": True,
         "keywords": keys,
-        "open_url_in_browser": True
+        "open_url_in_browser": True,
+        "items": items if items else [{"title": "no match found for '%s' in contact" % parent.text}]
     }
     
 def Run(parent):
@@ -105,3 +113,15 @@ def Run(parent):
         delete_contact(del_name)
     elif up_old_name:
         update_contact(up_old_name, up_new_name)
+
+def ItemSelected(parent, item):
+    keys.update({
+        "name": item.title,
+        "phone": item.key,
+        "ph_ty": get_ph_ty("967", item.key)
+    })
+
+    return {"keywords": keys}
+
+def ItemClicked(parent, item):
+    parent.text_copy(str(item.key))

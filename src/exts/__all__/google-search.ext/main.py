@@ -6,11 +6,20 @@ def Results(parent):
 	return {
         "html": "",
 		"title": f"Search for '{parent.text}'",
-		"open_url_in_browser": False
+		"open_links_in_browser": False,
+		"items": [
+			{"title": f"Search for '{parent.text}' in Google.", "key": "1"},
+			{"title": f" for '{parent.text}' in Google.", "key": "2"}
+		]
 	}
 
 def Run(parent):
 	return {"html": f"https://www.google.com/search?q={parent.text}"}
-    # return {
-        # "html": google_url.format(parent.text, 1+1, "en")
-    # }
+
+def ItemClicked(parent, item):
+	# print(item.title)
+	pass
+
+def ItemSelected(parent, item):
+	# print(item.title)
+	pass

@@ -3,17 +3,31 @@
 import os
 import sys
 
-from UIBox import pkg, web
-# from threading import Thread
-from PyQt5.QtGui import QDesktopServices, QIcon
+from UIBox import web
+from _user_commands import UserCommands
+from PyQt5.QtWebChannel import QWebChannel
 from PyQt5.QtCore import QObject, QSize, QUrl
-from PyQt5.QtWebKitWidgets import QWebPage, QWebView
-from PyQt5.QtWidgets import QAction, QFrame, QGridLayout, QListWidget, QProgressBar, QSizePolicy, QSplitter, QWidget
+from PyQt5.QtGui import QDesktopServices, QIcon
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
+from PyQt5.QtWidgets import QFrame, QGridLayout, QListWidget, QProgressBar, QSizePolicy, QSplitter, QWidget
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
-sys.path.insert(0, base_dir + '/modules/jinja2.zip')
-from jinja2 import Environment, FileSystemLoader, Template
+try:
+    from jinja2 import Environment, FileSystemLoader, Template
+except ModuleNotFoundError:
+    sys.path.insert(0, base_dir + '/modules/jinja2.zip')
+    from jinja2 import Environment, FileSystemLoader, Template
+
+"""
+return: ⏎
+shift: ⇧
+ctrl: ⌘
+alt: ⌥
+"""
+
+os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--no-sandbox --disable-web-security"
+                                            # "--blink-settings=darkMode=4"
 
 class UIBUi_web(object):
     def setupUi(self, Form):
@@ -37,7 +51,7 @@ class UIBUi_web(object):
         self.UIB_list_widget.setFrameShape(QFrame.NoFrame)
         self.UIB_list_widget.setFrameShadow(QFrame.Plain)
         self.UIB_list_widget.setIconSize(QSize(22, 22))
-        self.UIB_list_widget.setGridSize(QSize(38, 38))
+        self.UIB_list_widget.setGridSize(QSize(50, 50))
         self.UIB_list_widget.setWordWrap(False)
         self.UIB_list_widget.setSortingEnabled(True)
 
@@ -50,192 +64,224 @@ class UIBUi_web(object):
         self.UIB_web_frame.setSizePolicy(sizePolicy1)
         self.UIB_web_frame.setFrameShape(QFrame.NoFrame)
         self.UIB_web_frame.setFrameShadow(QFrame.Plain)
-        
-        self.UIB_web = QWebView(self.UIB_web_frame)
+
+        self.UIB_web = QWebEngineView(self.UIB_web_frame)
         self.UIB_web.setObjectName(u"UIB_web")
         self.UIB_web.setUrl(QUrl(u"about:blank"))
-
+        self.UIB_web.resize(300, 0)
+        
         self.UIB_progress_bar = QProgressBar(self.UIB_web_frame)
         self.UIB_progress_bar.setObjectName(u"UIB_progress_bar")
         self.UIB_progress_bar.setMaximumSize(QSize(16777215, 15))
         self.UIB_progress_bar.setValue(24)
 
         self.UIB_splitter = QSplitter(Form)
+        self.UIB_splitter.setHandleWidth(5)
+
         self.UIB_splitter.addWidget(self.UIB_list_widget)
         self.UIB_splitter.addWidget(self.UIB_web)
+
         self.gridLayout_2.addWidget(self.UIB_splitter)
         
         QWidget.setTabOrder(self.UIB_list_widget, self.UIB_web)
         self.UIB_progress_bar.hide()
 
-class WebPage(QWebPage):
-    def javaScriptConsoleMessage(self, message, line, source):
-        if source:
-            print('JS-Error: Line(%s), Source(%s): %s' % (line, source, message))
-        else:
-            print(message)
+class WebPage(QWebEnginePage):
+    def __init__(self, table):
+        QWebEnginePage.__init__(self)
 
-class UIBWPlugin(QWidget, UIBUi_web):
+        self._USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25"
+        self.open_links_in_browser = False
+
+    def javaScriptConsoleMessage(self, level: 'QWebEnginePage.JavaScriptConsoleMessageLevel', message: str, lineNumber: int, sourceID: str) -> None:
+        # print(f"JS-Error: Line(%s), Source(%s): %s" % (lineNumber, sourceID, message))
+        return super().javaScriptConsoleMessage(level, message, lineNumber, sourceID)
+
+    def set_user_agent(self, agent: str):
+        self.profile().setHttpUserAgent(agent if agent.strip() else self._USER_AGENT)
+
+    def acceptNavigationRequest(self, url, _type, isMainFrame):
+        if (_type == QWebEnginePage.NavigationTypeLinkClicked and self.open_links_in_browser):
+            # and not url.toString() in url.toEncoded().data().decode()):
+            QDesktopServices.openUrl(url)
+            return False
+
+        return super().acceptNavigationRequest(url,  _type, isMainFrame)
+
+    # def javaScriptAlert(self, securityOrigin: QUrl, msg: str) -> None:
+    #     # return super().javaScriptAlert(securityOrigin, msg)
+    #     print("JS-Alert: Url(%s), Message(%s)" % (securityOrigin, msg))
+
+class UIBWPlugin(QWidget, UIBUi_web, UserCommands):
     __type__ = "web"
 
-    def __init__(self, window=None) -> None:
-        # super().__init__(parent)
+    def __init__(self, window=None, func=None) -> None:
         QWidget.__init__(self)
         self.setupUi(self)     
 
         self.window = window
-
-        self.enterAction = QAction(
-            "enter", 
-            self.UIB_list_widget,
-            shortcut="Ctrl+Return", 
-            triggered=lambda: self.open_file(self.UIB_list_widget.currentItem(), 
-                            pkg.find_in(self.window.input.text().strip(), pkg.user_home_dirs)))
-
-        self.UIB_list_widget.addAction(self.enterAction)
-
-        self.UIB_list_widget.itemDoubleClicked.connect(
-            lambda item: self.open_file(item, 
-            pkg.find_in(self.window.input.text().strip(), 
-            pkg.user_home_dirs)))
+        self.func = func
+        self.results = {}
+        self.registeredObjects = {}
+        
+        self.default_jinja_vars = {
+            "include_file": self.window.methods.include_file,
+            "parent": self.window.methods
+        }
 
         self.UIB_list_widget.itemSelectionChanged.connect(self.get_selected_info)
 
-        self.init_ui()
+        web.get_webengine_settings()
+        self.web_page = WebPage(self)
+        self.channel = QWebChannel()
+
+        self.UIB_web.page().setDevToolsPage(self.web_page)
+        self.UIB_web.setPage(self.web_page)
+        self.UIB_web.page().setWebChannel(self.channel)
+
+        self.init_ui(self.func)
 
     def init_ui(self, func=None):
-        web.get_settings()
-
-        self.web_page = WebPage(self)
-        self.UIB_web.setPage(self.web_page)        
-        # self.UIB_web.loadProgress.connect(self.check_progress_bar)
-
         if not func == None:
+            if func.get("object", {}):
+                objects = func.get("object", {"": DefaultApp()})
+                self.web_page.open_links_in_browser = func.get("open_links_in_browser", True)
+
+                if (not list(self.registeredObjects.keys()) == list(objects.keys()) or not self.registeredObjects):
+                    self.channel.registeredObjects().clear()
+                    self.channel.registerObjects(objects)
+                    self.registeredObjects.update(objects)
+
+            if func.get("web_args", ""):
+            	os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] += " " + func.get("web_flags", "")
+            
             self.run_plugin(func)
 
-    def set_list_items(self):
-        self.results = pkg.find_in(self.window.input.text().strip(), pkg.user_home_dirs)
+    def run_plugin_item(self, item, selected: bool=False):
+        try:
+            data = type("item", (), self.window.web_item_results.get(id(item), {}))
+            key = self.window.running
 
-        for k, v in self.results.items():
-            icon = pkg.icon_types(v)
-            item = pkg.add_item(self.UIB_list_widget, icon, k, v, font_size=9)
-            self.UIB_list_widget.addItem(item)
+            if not selected:
+            	pp = self.window.exts.get(key).get("script").ItemClicked(self.window.methods, data)
+            else:
+            	pp = self.window.exts.get(key).get("script").ItemSelected(self.window.methods, data)
+
+            if isinstance(pp, dict):
+                pp.get("keywords", {}).update(self.window.web_running_data.get("keywords", {}))
+                self.window.web_running_data.update(pp)
+                self.window.run_web_plugin(self.window.exts.get(key).get(
+                    "icon"), self.window.web_running_data, False if selected else True)
+
+        except AttributeError:
+            self.window.built_in_func()
 
     def get_selected_info(self):
         item = self.UIB_list_widget.currentItem()
-        path = self.results.get(item.text())
-        keys = {}
+        data = self.results.get(id(item))
+
         try:
-            icon = pkg.icon_types(path, [True, base_dir + "tmp/uibox_icon_type.png"])
-            keys["name"] = item.text()
-            keys["icon"] = icon
+            is_run = self.window.get_kv(self.window.input.text())[0]
+            if not is_run in list(self.window.exts.keys()):
+                # path = self.results.get(item.text())
+                # icon = pkg.icon_types(path, [True, base_dir + "tmp/uibox_icon_type.png"])
+                # keys = {}
+                # if path.endswith((".pdf", ".mp4", ".mp3", ".jpg", ".png", ".jpeg", ".gif")):
+                #     self.UIB_web.load(QUrl.fromUserInput(path))
+                # else:
+                #     keys["name"] = item.text()
+                #     keys["icon"] = icon
 
-            html = """
-                <!DOCTYPE html>
-                <html>
-                    <head>
-                        <meta charset="utf-8">
-                        <title></title>
-                    </head>
+                #     html = """
+                #         <!DOCTYPE html>
+                #         <html>
+                #             <head>
+                #                 <meta charset="utf-8">
+                #                 <title></title>
+                #             </head>
 
-                    <body>
-                        <h3> {{name}} </h3>
-                        <img src='file://{{icon}}' />
-                    </body>
+                #             <body>
+                #                 <iframe src="{{file}}"> </iframe>
+                #                 <h3> {{name}} </h3>
+                #                 <img src='file://{{icon}}' />
+                #             </body>
 
-                </html>
-            """
+                #         </html>
+                #     """
+                #     self.set_html(self.get_jinja_template(html, keys))
+                # self.window.btn_ext.setIcon(QIcon(icon))
+                # pass
 
-            self.window.btn_ext.show()
-            self.window.btn_ext.setIcon(QIcon(icon))
+                desc = data.get("json", {}).get("description", "")
+                name = data.get("json", {}).get("name", "")
+                version = data.get("json", {}).get("version")
+                key = data.get("json", {}).get("keyword", "")
 
-            self.set_html(self.get_jinja_template(html, keys))
-        except TypeError:
-            pass
-        
+                keys = {
+                    "name": name if name else data.get("title"),
+                    "icon": data.get("icon"),
+                    "tag":  desc if desc else data.get("description"),
+                    "version": version,
+                    "style": "file://" + base_dir + "default_view/plugin.css",
+                    "key": key if key else data.get("keyword"),
+                    'color': 'black' if not self.window.methods.style == 'dark' else 'white',
+                    'bg': self.window.methods.dark_color if self.window.methods.style == 'dark' else self.window.methods.light_color
+                }
+
+                html = self.get_jinja_template(open(base_dir + "default_view/plugin.html", "r").read(), keys)
+                self.window.btn_ext.setIcon(QIcon(data.get("icon")))
+                self.set_html(html)
+
+            else:
+                self.run_plugin_item(item, selected=True)
+
+        except Exception as err:
+            print(err)
+            self.run_plugin_item(item, selected=True)
+
     def open_file(self, item, results):
         self.window.hide()
         QDesktopServices.openUrl(QUrl.fromUserInput(results.get(item.text())))
 
     def run_plugin(self, func):
-        html = func.get("html")
+        html = str(func.get("html"))
+        if html.strip():
+            self.web_page.set_user_agent(str(func.get("user_agent", "")))
 
-        if func.get("open_links_in_browser", True):
-            self.UIB_web.page().setLinkDelegationPolicy(self.web_page.DelegateAllLinks)
-            self.UIB_web.page().linkClicked.connect(self.__link_clicked)
-
-        self.web_frame = self.UIB_web.page().mainFrame()
-        self.web_frame.addToJavaScriptWindowObject(func.get("call_name", "").strip(),
-                                                    func.get("object", DefaultApp()))
-
-        if func.get("jinja") and not func.get("template_dir"):
-            html = self.get_jinja_template(open(html, "r").read() if os.path.exists(html) 
-                                            else html, func.get("keywords", {}))
-
-        elif func.get("template_dir"):
-            html = self.get_jinja_template_env(func.get("template_dir", "templates"),
-                                               func.get("base_file", "index.html"), 
-                                               func.get("keywords", {}))
-        self.set_html(html)
-
-    # def check_progress_bar(self, value):
-    #     if self.UIB_progress_bar.isHidden(): 
-    #         self.UIB_progress_bar.show()
-    #     self._progress_bar(value)
-
-    # def _progress_bar(self, value: int):
-    #     if value == 100:
-    #         self.UIB_progress_bar.setValue(0)
-    #         self.UIB_progress_bar.hide()
-    #     else:
-    #         Thread(target=self.UIB_progress_bar.setValue,
-    #                args=[value], daemon=True).start()
-
-    def __link_clicked(self, url):
-        """Open external links in browser and internal links in the webview"""
-        self.UIB_web.setFocus()
-
-        ready_url = url.toEncoded().data().decode()
-
-        if self.root_url not in ready_url:
-            QDesktopServices.openUrl(url)
-        else:
-            self.UIB_web.load(QUrl(ready_url))
-
-        self.UIB_web.setFocus()
+            if func.get("jinja", False) and not func.get("template_dir", ""):
+                html = self.get_jinja_template(open(html, "r").read() if os.path.exists(html) 
+                                                else html, func.get("keywords", {}))
+            elif func.get("template_dir", ""):
+                html = self.get_jinja_template_env(func.get("template_dir", "templates"),
+                                                   func.get("base_file", "index.html"), 
+                                                   func.get("keywords", {}))
+            self.set_html(html)
 
     ############ Check HTML return code type
     def set_html(self, html: str):
         try:
-            if html.startswith(("http", "ftp", "tcp", "file")):
-                self.UIB_web.load(QUrl(html))
-
-            elif os.path.exists(html):
-                # self.UIB_web.setUrl(QUrl().fromUserInput(html))
+            if html.startswith(("http", "ftp", "tcp", "file")) or os.path.exists(html):
                 self.UIB_web.load(QUrl.fromUserInput(html))
-                # self.UIB_web.setHtml(str(open(QUrl().fromUserInput(html).toLocalFile(), "r").read()), 
-                #                       QUrl.fromUserInput(html))
-
             else:
-                # with open(self.ext.get('path') + ".tmp.html", "w") as _fw:
-                #     _fw.write(str(func.get("html")))
-                #     _fw.close()
-                # self.UIB_web.setUrl(QUrl().fromUserInput(self.ext.get('path') + ".tmp.html"))
-                self.UIB_web.setHtml(html)
+                tmp_path = base_dir + "tmp/plugin.html"
+                with open(tmp_path, "w", encoding="utf-8") as _fw:
+                    _fw.write(str(html))
+                self.UIB_web.load(QUrl.fromUserInput(tmp_path))
         except Exception:
             pass
 
     def get_jinja_template_env(self, tmp_dir: str="templates", base: str="index.html", kwargs: dict={}):
         file_loader = FileSystemLoader(tmp_dir)
         env = Environment(loader=file_loader)
-
         template = env.get_template(base)
+        kwargs.update(self.default_jinja_vars)
         output = template.render(kwargs)
 
         return output
 
     def get_jinja_template(self, html: str, kwargs: dict={}):
         tm = Template(html)
+        kwargs.update(self.default_jinja_vars)
         return tm.render(kwargs)
 
 class DefaultApp(QObject):

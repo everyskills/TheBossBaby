@@ -3,7 +3,7 @@ html, body {
     width: 100%;
     height: 100%;
     font-family: "HelveticaNeue";
-
+    
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -42,7 +42,7 @@ p {
     opacity: 0.7;
 }
 @font-face { 
-    font-family: icomoon; src: url('./icomoon.ttf'); 
+    font-family: icomoon; src: url('./icomoon.ttf');
 } 
 
 [class^="icon-"], [class*=" icon-"] {
@@ -62,7 +62,6 @@ p {
     content: "\e600";
     font-size: 0.8em;
 }
-
 
 #call-img {
     width: 150px;

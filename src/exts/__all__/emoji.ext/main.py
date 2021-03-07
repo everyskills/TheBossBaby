@@ -3,7 +3,19 @@
 import os
 import json
 
+from PyQt5.QtCore import QObject, pyqtSlot
+
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
+
+class MyApp(QObject):
+    def __init__(self, parent) -> None:
+        super(MyApp, self).__init__()
+        self.p = parent
+
+    ################## simple function for call python in javascript
+    @pyqtSlot(str) # type of arguments/options
+    def copy_emoji(self, icon):
+        self.p.text_copy(str(icon))
 
 def score(query, field):
     if field == query:
@@ -57,7 +69,7 @@ def find_emojis(query, emoji_arr):
     }
 
 
-def build_html(appearance, content):
+def build_html(appearance, content, color, bg):
     html = """
     <html>
     <head>
@@ -66,6 +78,8 @@ def build_html(appearance, content):
                 padding: 10px 12px;
                 font: 15px/1.4 'Helvetica Neue';
                 font-weight: 300;
+                color: {{color}};
+                background-color: {{bg}};
                 /*-webkit-user-select: none;*/
             }
 
@@ -113,27 +127,37 @@ def build_html(appearance, content):
             .dark {
                 color: rgb(224,224,224);
             }
+
         </style>
+
     </head>
-    <script>
-        function copyToClipboard(emoji) {
-            command = 'printf "'+emoji+'" | LANG=en_US.UTF-8 pbcopy && osascript -e \\'display notification "Copied!" with title "Flashlight"\\'';
-            flashlight.bash(command);
-        }
-    </script>
+
     <body class="{{appearance}}">
         <div class="message"></div>
         {{content}}
+
+        <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+        <script>
+            var backend = null;
+            new QWebChannel(qt.webChannelTransport, function(channel) {
+                backend = channel.objects.emoji;
+            });
+        </script>
+
     </body>
     </html>
     """
 
-    html = html.replace("{{appearance}}", appearance)
+    html = html.replace("{{color}}", color).replace("{{bg}}", bg).replace("{{appearance}}", appearance)
     return html.replace("{{content}}", content)
 
-
 def build_emoji_html(emoji):
-    html = """<div class="emoji"><i onclick="copyToClipboard('{{icon}}')">{{icon}}</i><label onclick="copyToClipboard('{{gemoji}}')">{{alias}}</label></div>"""
+    html = """
+        <div class="emoji">
+            <i onclick="backend.copy_emoji('{{icon}}')">{{icon}}</i>
+            <label onclick="backend.copy_emoji('{{gemoji}}')">{{alias}} </label>
+        </div>
+        """
 
     alias = emoji['aliases'][0]
     gemoji = ':'+emoji['aliases'][0]+':'
@@ -158,6 +182,7 @@ def Results(parent):
         content = '<h1>Emoji matching your search <small>%s results</small></h1><div class="emojis">' % (len(emojis['matches']))
         for emoji in emojis['matches']:
             content += build_emoji_html(emoji)
+            
         content += '</div>'
 
     if len(emojis['others']):
@@ -167,9 +192,12 @@ def Results(parent):
         content += '</div>'
 
     parent.text_copy(output)
+    color = 'black' if not parent.style == 'dark' else 'white'
+    bg = parent.dark_color if parent.style == 'dark' else parent.light_color
 
     return {
-        "html": build_html("gemoji", content),
+        "html": build_html("gemoji", content, color, bg),
         "title": title,
-        "open_url_in_browser": True
+        "open_url_in_browser": True,
+        "object": {"emoji": MyApp(parent)}
     }

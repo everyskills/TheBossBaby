@@ -7,7 +7,7 @@ from PyQt5.QtCore import (
 from PyQt5.QtWidgets import QCheckBox
 from PyQt5.QtGui import QColor, QBrush, QPaintEvent, QPen, QPainter
 
-class KAnimatedToggle(QCheckBox):
+class UIBAnimatedToggle(QCheckBox):
 
     _transparent_pen = QPen(Qt.transparent)
     _light_grey_pen = QPen(Qt.lightGray)

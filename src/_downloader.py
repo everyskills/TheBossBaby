@@ -1,114 +1,158 @@
 #!/usr/bin/python3
 
 import os
-import sys
-import traceback
-import zipfile
+import shutil
 
-from PyQt5.QtCore import QObject, QRunnable, pyqtSignal, pyqtSlot
+from glob import glob
+from PyQt5.QtGui import QDragEnterEvent, QIcon
+from PyQt5.QtCore import QThreadPool
+from PyQt5.QtWidgets import QAction, QApplication, QMessageBox, QWidget
+from _unzip import UnzipWorker, ZipInfo
+from ui.down import Ui_Form
 
-PROGRESS_ON = """
-QLabel {
-    background-color: rgb(233,30,99);
-    border: 2px solid rgb(194,24,91);
-    color: rgb(136,14,79);
-}
-"""
+base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
-PROGRESS_OFF = """
-QLabel {
-    color: rgba(0,0,0,0);
-}
-"""
+class Downloader(QWidget, Ui_Form):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        QWidget.__init__(self)
+        self.setupUi(self)
+        self.setAcceptDrops(True)        
 
-EXCLUDE_PATHS = [
-    '__MACOSX/',
-]
+        self.threadpool = QThreadPool()
+        self.dragEnterEvent = self.drag_plugin
+        self.screenshot.dragEnterEvent = self.drag_plugin
+        self.plugin_file = ""
 
+        self.screenshot.setStyleSheet("border: 1px dotted white; border-radius: 5px;")
+        self.screenshot.setText("Drag Plugin Zip file here")
 
-class WorkerSignals(QObject):
-    '''
-    Defines the signals available from a running worker thread.
-    '''
-    finished = pyqtSignal()
-    error = pyqtSignal(tuple)
-    progress = pyqtSignal(float)
+        # self.quitAction = QAction( "&Quit", self,
+        #     shortcut="Ctrl+Q",
+        #     triggered=self.close)
+        # self.addAction(self.quitAction)
 
+        self.btn_install.clicked.connect(self.start_unzip)
+        self.progress_bar.hide()
 
-class UnzipWorker(QRunnable):
-    '''
-    Worker thread for unzipping.
-    '''
-    signals = WorkerSignals()
+    def unzip_file(self, url: str):
+        # Load the zipfile and pass to the worker which will extract.
+        self.progress_bar.show()
 
-    def __init__(self, path):
-        super(UnzipWorker, self).__init__()
-        os.chdir(os.path.dirname(path))
-        self.zipfile = zipfile.ZipFile(path)
+        self.worker = UnzipWorker(os.path.expanduser(os.path.expandvars(url)))
+        self.worker.signals.progress.connect(self.update_progress)
+        self.worker.signals.finished.connect(self.unzip_finished)
+        self.worker.signals.error.connect(self.unzip_error)
+        self.update_progress(0)
 
-    @pyqtSlot()
-    def run(self):
+        self.threadpool.start(self.worker)
+        self.worker = None  # Remove the worker so it is not double-triggered.
+
+    def update_progress(self, pc):
+        """
+        Accepts progress as float in
+        :param pc: float 0-1 of completion.
+        :return:
+        """
+        current_n = int(pc * 10)
+        self.progress_bar.setValue(current_n // 10 * 100)
+
+    def unzip_finished(self):
+        self.start_install()
+
+    def unzip_error(self, err):
+        _, _, traceback = err
+        self.update_progress(1)  #  Reset the Pez bar.
+        dlg = QMessageBox(self)
+        dlg.setText(traceback)
+        dlg.setIcon(QMessageBox.Critical)
+        dlg.show()
+
+    def drag_plugin(self, event: QDragEnterEvent):
+        data = event.mimeData()
         try:
-            items = self.zipfile.infolist()
-            total_n = len(items)
+            path = data.urls()[0].toLocalFile()
+            if os.path.exists(path) and path.endswith(".zip"):
+                event.setAccepted(True)
+                self.plugin_file = path
+                self.set_plugin_info(path)
+            else:
+                event.setAccepted(False)
+        except IndexError:
+            pass
 
-            for n, item in enumerate(items, 1):
-                if not any(item.filename.startswith(p) for p in EXCLUDE_PATHS):
-                    self.zipfile.extract(item)
+    def start_install(self):
+        try:
+            _down_path = base_dir + "exts/__download__/"
+            
+            for i in glob(_down_path + "*"):
+                if not os.path.isfile(i) and not i.endswith(".zip"):
 
-                self.signals.progress.emit(n / total_n)
+                    if not self.info.get("style", ""):
+                        _path = base_dir + \
+                            f"exts/__{self.info.get('system')}__/" + \
+                            os.path.split(i)[1] + ".ext"
 
-        except Exception as e:
-            exctype, value = sys.exc_info()[:2]
-            self.signals.error.emit((exctype, value, traceback.format_exc()))
-            return
+                        if os.path.exists(_path):
+                            shutil.rmtree(_path)
+                        shutil.move(i, _path)
 
-        self.signals.finished.emit()
+                    else:
+                        _path = base_dir + f"styles/" + os.path.split(i)[1] + ".thm"
+                        if os.path.exists(_path):
+                            shutil.rmtree(_path)
+                        shutil.move(i, _path)
 
+            os.remove(_down_path + os.path.split(self.plugin_file)[1])
+            os.remove(base_dir + "tmp/Icon.png")
+            os.remove(base_dir + "tmp/Screenshot.png")
 
-# class UrlDownloader:
-    # def __init__(self, parent):
-    #     super().__init__()
+        except Exception as err:
+            print("Copy Error: ", err)
 
-    #     self.parent = parent
-    #     self.p = None
+    def start_unzip(self):
+        _down_path = base_dir + "exts/__download__/"
+        zip_down = _down_path + os.path.split(self.plugin_file)[1]
+        if (
+            self.info.get("keyword") and
+            self.info.get("script") and
+            self.info.get("system")) or (
+                
+                self.info.get("type", "") and 
+                self.info.get("style")):
 
-    # def message(self, s):
-    #     self.parent.output_text_edit.setHtml(s)
+            shutil.copy2(self.plugin_file, _down_path)
+            self.unzip_file(zip_down)
 
-    # def start_process(self, cmd: str):
-    #     if self.p is None:  # No process running.
-    #         self.message("<font color='white' size='5'>Executing process</font>")
-    #         # Keep a reference to the QProcess (e.g. on self) while it's running.
-    #         self.p = QProcess()
-    #         self.p.readyReadStandardOutput.connect(self.handle_stdout)
-    #         self.p.readyReadStandardError.connect(self.handle_stderr)
-    #         self.p.stateChanged.connect(self.handle_state)
-    #         # Clean up once complete.
-    #         self.p.finished.connect(self.process_finished)
+    def set_plugin_info(self, url: str):
+        self.zip_file = ZipInfo(url)
+
+        icon = self.zip_file.get_icon(base_dir + "tmp/")
+        screen = self.zip_file.get_screenshot(base_dir + "tmp/")
+
+        self.info = self.zip_file.get_json
+        html = """
+        <font size='4'>%s</font><br> 
+        &nbsp;<font size='2'>Version: %s</font><br><br>
+        <font size='3'>%s</font>
+        """ % (
+            self.info.get("name", "UnKnow Name"),
+            self.info.get("version", "1.0.0"),
+            self.info.get("description", "")
+        )
+
+        if screen:
+            self.screenshot.setPixmap(QIcon(base_dir + "tmp/Screenshot.png").pixmap(640, 400))            
+        if icon:
+            self.icon.setIcon(QIcon(base_dir + "tmp/Icon.png"))
         
-            # self.p.start(cmd)
-            # self.p.start("git clone https://www.github.com/everyskills/Kangaroo.git /home/o_o/Projects/Ready/kangaroo-app/exts/__download__/Kangaroo")
-        
-    # def handle_stderr(self):
-    #     data = self.p.readAllStandardError()
-    #     stderr = bytes(data).decode("utf8")
-    #     self.message(stderr)
+        self.data.setText(html)
 
-    # def handle_stdout(self):
-    #     data = self.p.readAllStandardOutput()
-    #     stdout = bytes(data).decode("utf8")
-    #     self.message(stdout)
+def main():
+    app = QApplication([])
+    win = Downloader()
+    win.show()
+    exit(app.exec_())
 
-    # def handle_state(self, state):
-    #     states = {
-    #         QProcess.NotRunning: "<font color'red'>Not running",
-    #         QProcess.Starting: "<font color='green'>Starting",
-    #         QProcess.Running: "<font color='>white'Running<",
-    #     }
-    #     state_name = states[state]
-    #     self.message(f"State changed: {state_name}</font>")
-
-    # def process_finished(self):
-    #     self.message("<font color='white' size='5'>Process finished.</font>")
-    #     self.p = None
+if __name__ == "__main__":
+    main()

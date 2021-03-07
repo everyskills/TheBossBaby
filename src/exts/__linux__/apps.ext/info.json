@@ -1,0 +1,15 @@
+{
+    "name": "Linux App Lanucher",
+    "version": "1.0.0",
+    "description": "simple app lanucher for linux",
+    "icon": "Icon.svg",
+    "help": "README.md",
+    "keyword": "app",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "linux",
+    "enabled": true
+}

@@ -1,0 +1,15 @@
+{
+    "name": "Time & Date",
+    "version": "1.0.0",
+    "description": "simple runtime plugin for show time & date",
+    "icon": "icon.svg",
+    "help": "README.md",
+    "keyword": "time",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "all",
+    "enabled": false
+}

@@ -1,0 +1,15 @@
+{
+    "name": "File Search",
+    "version": "1.0.0",
+    "description": "file search and folder",
+    "icon": "Icon.svg",
+    "help": "README.md",
+    "keyword": "find",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "all",
+    "enabled": true
+}

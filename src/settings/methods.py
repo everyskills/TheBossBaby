@@ -1,9 +1,9 @@
 #!/usr/bin/python3.8
 
 from PyQt5.QtCore import QSettings
-from PyQt5.QtWidgets import QCheckBox, QKeySequenceEdit, QLineEdit, QSpinBox
+from PyQt5.QtWidgets import QApplication, QCheckBox, QKeySequenceEdit, QLineEdit, QSpinBox, QComboBox, QStyleFactory
 
-setting = QSettings("UIBox")
+setting = QSettings("Everyskills", "TheBossBaby")
 
 def L_changed(obj: QLineEdit) -> None:
     obj.returnPressed.connect(lambda: setting.setValue(obj.objectName(), obj.text()))
@@ -32,3 +32,15 @@ def set_spin_value(obj: QSpinBox, default):
 
 def set_check(obj: QCheckBox, default):
     obj.setChecked(setting.value(obj.objectName(), default, bool))
+
+def CB_changed(obj: QComboBox):
+    def run():
+        name = obj.objectName()
+        item = obj.currentText()
+
+        setting.setValue(name, item)
+        
+        if name == "window_style":
+            QApplication.setStyle(QStyleFactory.create(item))
+
+    obj.currentTextChanged.connect(run)

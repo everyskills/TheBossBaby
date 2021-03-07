@@ -1,30 +1,18 @@
-## UIBox for cross-platform v1.0.0
+## TheBossBaby for cross-platform v1.0.0
 
-UIBox is a Search extendable app with plugins and fetchers
+TheBossBaby is a extendable Search app with plugins and fetchers
 
 ![Example](https://raw.github.com/nate-parrott/flashlight/master/Image.png)
 
 >## Installation
-- ### Python Requirements
-    - [Python Language](https://www.python.org)
-    - [PyQt5](https://pypi.org/project/PyQt5/)
-    - [PyQtWebKit](https://pypi.org/project/PyQtWebKit)
-    - [psutil](https://pypi.org/project/psutil/)
-    - [jinja2](https://pypi.org/project/Jinja2/)
-    
-- ### Steps to complete install
+- ### Steps to install TheBossBaby app
 ```bash
-git clone https://www.github.com/everyskills/UIBox.git
+git clone https://www.github.com/everyskills/TheBossBaby.git
 
-## Unzip UIBox Archive 
+## Unzip TheBossBaby Archive 
 ## after then do this command
 
-python3 install.py
-```
-
->## Removing
-```bash
-uibox --uninstall
+python3 setup.py
 ```
 
 ## Main Widgets for style
@@ -33,13 +21,14 @@ uibox --uninstall
 | -------------    | ------------- |
 | UIB_list_widget   | QListWidget  |
 | input         | QLineEdit  |
-| UIB_web          | QWebView |
+| UIB_web          | QWebEngineView |
 | UIB_progress_bar  | QProgressBar|
-| UIB_search_icon   | QToolButton
-| UIB_plugin_icon   | QToolButton
+| btn_ext   | QToolButton
+| btn_setting   | QToolButton
+| UIB_splitter | QSplitter
 
 
-### example how to style UIBox Widgets
+### example how to style TheBossBaby Widgets
 ```css
 /* List Widget */
 #UIB_list_widget {
@@ -95,29 +84,34 @@ The first thing we need is an `info.json` file. Here's what to put in it:
 	"icon": "icon.png",                         // (optional)
 	"help": "README.md",                        // (optional)
 	"script": "main.py",
-	"key": "print",
+	"keyword": "print",
 	"creator_name": "Author name",              // (optional)
 	"creator_email": "example@domain.com",      // (optional)
     "creator_url": "https://www.example.com"    // (optional)
-	"creator_description": "Python Developer",  // (optional)
-	"system": "all"
+	"system": "all",
+    "examples": [
+        "print value",
+        "..."
+    ]
 }
 ```
 
 (Remember to remove the inline comments, or else the JSON won't validate and the plugin will show up blank.)
 
-Once that's there, you should be able to open up the UIBox Installed list and see your plugin. It doesn't do anything yet.
+Once that's there, you should be able to open up the TheBossBaby Installed list and see your plugin. It doesn't do anything yet.
 
 ## plugin.py / json("script")
 ```python
 def Results(parent):
     """ param: parent for main window methods """
     return {
-        "title": "Your text is '%s'" % parent.text
+        "items": [
+            {"title": "Your text is '%s'" % parent.text, "subtitle": "you can see print right screen", "key": ""}
+        ]
     }
 ```
 
-Now, if we type "print Hello world" into UIBox, we'll see the title our plugin returned.
+Now, if we type "print Hello world" into TheBossBaby, we'll see the title our plugin returned.
 
 ## Detour: debugging
 Sometimes, your Python script might crash you'll see error messages in the "errors" panel. If you want to debug your Javascript or HTML, right-click your web content and _Inspect Element_.
@@ -129,25 +123,26 @@ Of course, the plugin doesn't actually _do_ anything yet — ideally, we want it
 Now, we need some way of passing the message that we're supposed to speak to run. That's why we returned an parent parameter for window methods
 
 ```python
-def Run(parent):
+def Run(parent, item):
     import os
-    os.system('firefox --search '{}''.format(message)) # TODO: proper escaping via pipes.quote
+    os.system('firefox --search '{}''.format(item.key)) # TODO: proper escaping via pipes.quote
 ```
 
-There. **Now our plugin should work**. Type "what is python" into UIBox, hit enter, watch it go.
+There. **Now our plugin should work**. Type "what is python" into TheBossBaby, hit enter, watch it go.
 
 
 ## Showing HTML inline in Spotlight
 
-Many plugins, like Emoji and Call, return HTML and JavaScript to show content inline in the UIBox window. You can do this by returning an HTML string from your `results` function:
+Many plugins, like Emoji and Call, return HTML and JavaScript to show content inline in the TheBossBaby window. You can do this by returning an HTML string from your `results` function:
 
 ```python
 def Results(parent):
-    message = parent.text
-    html = "<h1>{0}</h1>".format(message)
+    html = "<h1>{0}</h1>".format(parent.text)
     return {
-        "title": "Search for '{0}'".format(message),
         "html": html
+        "items": [
+            {"title": "Your text is '%s'" % parent.text, "subtitle": "you can see print right screen", "key": ""}
+        ]
     }
 ```
 
@@ -156,18 +151,18 @@ If you'd like to load a web URL, you should return a `delayed Javascript redirec
 ```javascript
 <script>
     setTimeout(function() {
-      window.location = 'http://google.com'
+      window.location = 'https://google.de'
     }, 500); // delay so we don't get rate-limited by doing a request after every keystroke
 </script>
 ```
 
 
 There are two more fields you can return in your `results` dictionary that may be relevant if you're using webviews:
-- `open_links_in_browser`: _optional_ when the user clicks links in the webview, they'll close UIBox and open in a browser
+- `open_links_in_browser`: _optional_ when the user clicks links in the webview, they'll close TheBossBaby and open in a browser
 
 
 ## Screenshots
-Online plugin pages like [this one](url) have screenshots of plugins. Take a screenshot of UIBox showing your plugin by pressing `Meta + Shift + Return`, then saving that screenshot inside your plugin
+Online plugin pages like [this one](url) have screenshots of plugins. Take a screenshot of TheBossBaby showing your plugin by pressing `Meta + Shift + Return`, then saving that screenshot inside your plugin
 
 
 ## License

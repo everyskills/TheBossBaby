@@ -91,7 +91,7 @@ class Results(QWidget):
 
             list_item = pkg.add_item(self.ui.list_widget, _icon)
             name = name.replace(query, f"<font color='#1a81da'>{query}</font>")
-            item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item, name, path)
+            item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item(), name, path)
             pkg.set_item_widget(self.ui.list_widget, item_widget)
 
             self.ui.status.setText(f"{_folder_count} {'Folder' if _folder_count <= 1 else 'Folders'}, {_file_count} {'File' if _file_count <= 1 else 'Files'}") # ({naturalsize(_size, True, format='%.1f ')})

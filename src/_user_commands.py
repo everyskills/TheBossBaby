@@ -3,171 +3,158 @@
 import os
 import json
 
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QFileDialog, QWidget
-from PyQt5.uic import loadUi
-from UIBox import item, pkg
+from PyQt5.QtCore import QSize, QUrl
+from PyQt5.QtGui import QDesktopServices, QFont, QIcon
+from UIBox import pkg, item
+from glob import glob
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
-class UserCommandCreator(QWidget):
-    def __init__(self, parent=None, keywords: list=[], *args, **kwargs):
-        super(UserCommandCreator, self).__init__(parent, *args, **kwargs)
-        QWidget.__init__(self)
+class UserCommands:
+    def __init__(self) -> None:
+        pass
 
-        self.ui = loadUi(base_dir + "ui/user_command.ui", self)
-        self.parent = parent
-        self.keywords = keywords
-        self.data = {} # {key: {tag: "", command: "", icon: ""}}
-        self.def_icon = base_dir + "icons/main/executable.png"
+    def add_item(self, icon: str="", title: str="", tag: str="", hotkey: str=""):
+        uib_item = item.UIBUi_Item()
 
-        self.cmd_icon.mousePressEvent = self.edit_image
-    
-        self.ui.btn_image.setIcon(
-            QIcon(base_dir + "icons/main/executable.png"))
-            
-        self.list_widget.itemSelectionChanged.connect(self.set_info)
+        ret_color = (
+            self.window.methods.light_color
+            if self.window.methods.style == 'dark'
+            else self.window.methods.dark_color)
 
-        self.btn_alert.clicked.connect(self.frame_alert.hide)
-        self.btn_image.clicked.connect(self.set_image)
-        self.btn_cancle.clicked.connect(self.close)
-        self.btn_save.clicked.connect(self.save_data)
+        if not hotkey:
+            hotkey = "<font size='4' color='%s'>⏎</font>" % ret_color
+
+        if not tag.strip():
+            uib_item.desc.hide()
+            uib_item.gridLayout.addWidget(uib_item.title, 0, 1, 2, 1)
+        else:
+            uib_item.desc.show()
+            uib_item.gridLayout.addWidget(uib_item.title, 0, 1, 1, 1)
+
+        list_item = pkg.add_item(self.UIB_list_widget,
+                                QIcon(icon), 
+                                icon_size=(27, 27))
+
+        item_widget = pkg.add_item_widget(list_item, uib_item, title, tag, hotkey, item_size=(260, 37))
         
-        self.set_data()
-        self.frame_alert.hide()
+        font = QFont()
+        font.setPixelSize(12)
+        item_widget[1].title.setFont(font)
         
-    def edit_image(self, event):
-        if self.key.text().strip():
-            self.set_image()
-            self.edit_cmd()
+        pkg.set_item_widget(self.UIB_list_widget, item_widget)
+        return item_widget[0]
 
-    def alert(self, msg: str, what: bool=True):
-        self.ui.msg_alert.setText(msg)
-        self.ui.frame_alert.setStyleSheet(""" 
-        #frame_alert {
-            color: white;
-            border: 2px solid %s;
-            background-color: %s;
-            border-radius: 5px;
+    def run_clicked_item(self):
+        item = self.UIB_list_widget.currentItem()
+        dic = {
+            "web": self.web_type_code,
+            "run": None,
+            "app": None,
+            "script": None
         }
-        """ % ('brown' if not what else 'green', 
-            'rgba(255, 75, 70, 0.20)' 
-            if not what else 'rgba(82, 255, 117, 0.20)'))
-        
-        self.ui.frame_alert.show()
 
-    def get_image_path(self, native_dialog: bool = False):
-        options = QFileDialog.Options()
-        if native_dialog:
-            options |= QFileDialog.DontUseNativeDialog
-        
-        fileName, _ = QFileDialog.getOpenFileName(
-            self, "Choose Icon", "", 
-            "PNG Image Type (*.png);; JPG Image Type (*.jpg);; SVG Image Type (*.svg)", 
-            options=options)
-
-        if fileName:
-            return fileName
+        if not self.results.get(id(item)):
+            self.run_plugin_item(item)
         else:
-            return ""
+            data = self.results.get(id(item))
+            key, val = self.window.get_kv(self.window.input.text())
+            is_args = None
 
-    def set_image(self):
-        _path = self.get_image_path()
-        icon = _path if _path else self.def_icon
-        self.btn_image.setText(icon)
-        self.btn_image.setIcon(QIcon(icon))
-        self.cmd_icon.setPixmap(QIcon(icon).pixmap(40, 40))
+            try:
 
-    def get_forms_data(self, name="", key="", tag="", icon="", cmd="", update: bool=False):
-        ## Black List 
-        black_list = []
-        black_list.extend(self.keywords)
-        black_list.extend(list(self.parent.exts.keys()))
-        
-        if not name or not key:
-            self.alert("Error: name or key is empty value please insert value to continue.", False)
+                if data.get("args", "").strip() == "yes" and val.strip() and key == data.get("keyword", ""):
+                    is_args = True
+                elif data.get("args", "").strip() == "no":
+                    is_args = False
+                
+                if isinstance(is_args, bool):
+                    dic.get(data.get("type", ""))(data, key, val, is_args)
+                elif not key in list(self.window.exts.keys()):
+                    self.window.input.setText(data.get("json", {}).get("keyword", data.get("keyword")) + " ")
+                    self.window.input.setFocus()
 
-        elif not key in black_list:
-            with open(base_dir + "Json/user_commands.json") as _fsetting:
-                self.data.update(json.load(_fsetting))
-                self.data.update({
-                    key: {
-                        "name": name,
-                        "cmd": cmd, 
-                        "tag": tag, 
-                        "icon": icon if icon else self.def_icon
-                        }
-                    })
-                    
-                self.fw(json.dumps(self.data, indent=4))
-                _fsetting.close()
+            except Exception as err:
+                print("USER-CMD-CLICKED: ", err)
 
-            self.alert(f"Good: ({key}) added to commands history")
+    def set_list_items(self, _path: str="exts/__user__/*.wf/"):
+        text = self.window.input.text().strip()
+        key, _ = self.window.get_kv(self.window.input.text())
+        # query = ""
+
+        self.UIB_list_widget.setGridSize(QSize(43, 43))
+
+        ###################### Workflow List Item ######################
+        # for p in glob(base_dir + _path):
+        #     data = json.load(open(p + "workflow.json"))
+        #     wf_data = type("wf_data", (), data)
+            
+            # print(wf_data.workflow)
+
+            # if data.get("args", "").strip() == "yes" and key == data.get("keyword"):
+            #     query = self.window.methods.text
+
+            # elif data.get("args", "").strip() == "no":
+            #     query = text
+
+            # icon = data.get("icon", p + "Icon.png")
+            # if not os.path.exists(icon):
+            #     icon = base_dir + "icons/main/unknow.png"
+
+            # if (text.lower() in data.get("title", "").lower() or
+            #     text.lower() in data.get("keyword", "").lower() or
+            #     text.lower() in data.get("subtitle", "").lower() or
+            #     key == data.get("keyword")):
+            #     item = self.add_item(icon,
+            #                         data.get("title", "").replace("{query}", query),
+            #                         data.get("subtitle", "").replace("{query}", query))
+            #     data.update({"icon": icon})
+                
+            #     self.results.update({id(item): data})
+
+
+        ###################### Plugins List Item ######################
+        for k in (self.window.exts.keys()):
+            data = self.window.exts.get(k)
+            if (text.lower() in data.get("json").get("name", "") or
+                text.lower() in data.get("json").get("description") or
+                text.lower() in data.get("json").get("keyword") or
+                key == data.get("json").get("keyword")):
+
+                item = self.add_item(data.get("icon"),
+                                    data.get("json").get("name", ""),
+                                    data.get("json").get("description"))
+                
+                self.results.update({id(item): data})
+
+
+    ######################## WEB Run Code #########################
+    def web_type_code(self, data, key, val, is_args: bool):
+        browser = data.get("browser", "default")
+
+        def open_browser(url):
+            if browser == "TBB-browser":
+                pass
+            elif browser == "default":
+                QDesktopServices.openUrl(QUrl.fromUserInput(url))
+            else:
+                pkg.run_app(f"{browser} '{url}'")
+
+        if is_args:
+            url = data.get("url", "").replace("{query}", val.strip())
         else:
-            self.alert(f"Error: ({key}) key is already exists", False)
+            url = data.get("url", "").replace("{query}", self.window.input.text().strip())
 
-        self.set_data()
+        open_browser(url)
 
-    def set_data(self):
-        self.list_widget.clear()
-        for k in list(self.parent.user_cmd.keys()):
-            key = self.parent.user_cmd.get(k)
-            list_item = pkg.add_item(self.list_widget, QIcon(key.get("icon")))
-            item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item, 
-            key.get("name"), 
-            key.get("tag"),  k)
-            pkg.set_item_widget(self.list_widget, item_widget)
+    ######################## SCRIPT Run Code #########################
+    def script_type_code(self):
+        pass
 
-    def closeEvent(self, event) -> None:
-        self.parent.show()
+    ######################## File Run Code #########################
+    def run_type_code(self):
+        pass
 
-    @staticmethod
-    def fw(text: str):
-        with open(base_dir + "Json/user_commands.json", "w") as _fwrite:
-            _fwrite.write(str(text))
-
-    def set_info(self):
-        item = self.list_widget.currentItem()
-        item_widget = item.listWidget().itemWidget(item)
-        
-        self.key.textChanged.connect(self.edit_cmd)
-
-        k = item_widget.shortcut.text()
-        key = self.parent.user_cmd.get(k)
-
-        self.cmd_name.setText(key.get("name"))
-        self.cmd_tag.setText(key.get("tag"))
-        self.cmd_icon.setPixmap(QIcon(key.get("icon")).pixmap(40, 40))
-
-        self.key.setText(k)
-        self.name.setText(key.get("name"))
-        self.tag.setText(key.get("tag"))
-        self.cmd.setText(key.get("cmd"))
-
-    def edit_cmd(self):
-        self.get_forms_data(
-            name = self.name.text().strip(),
-            cmd = self.cmd.text().strip(),
-            icon = self.btn_image.text().strip(),
-            key = self.key.text().strip(),
-            tag = self.tag.text().strip(),
-            update = True
-            )
-
-    def save_data(self):
-        self.get_forms_data(
-            name = self.line_name.text().strip(),
-            cmd = self.line_cmd.text().strip(),
-            icon = self.btn_image.text().strip(),
-            key = self.line_key.text().strip(),
-            tag = self.line_tag.text().strip()
-            )
-
-def main():
-    app = QApplication([])
-    win = UserCommandCreator()
-    win.show()
-    exit(app.exec_())
-
-if __name__ == "__main__":
-    main()
+    ######################## APP Run Code #########################
+    def app_type_code(self):
+        pass

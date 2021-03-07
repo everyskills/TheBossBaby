@@ -3,11 +3,11 @@
 
 import os
 
-from subprocess import PIPE
 from glob import glob
+from subprocess import PIPE
 from PyQt5.QtGui import QDesktopServices, QIcon, QMovie
 from PyQt5.QtCore import QFileInfo, QUrl, QSize
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QAction, QWidget
 from PyQt5.uic import loadUi
 from UIBox import pkg, item
 
@@ -27,17 +27,20 @@ class Results(QWidget):
         self.ui.btn_video.clicked.connect(self.start_video)
         self.ui.slide_video.sliderMoved.connect(self.set_video_pos)
 
-        # enterAction = QAction("enter", self.ui.list_widget, shortcut="Return", triggered=self.get_enter_item)
-        # self.ui.list_widget.addAction(enterAction)
+        enterAction = QAction("enter", self.ui.list_widget, shortcut="Ctrl+Return", triggered=lambda: self.add_click_path(dirn=True))
+        self.ui.list_widget.addAction(enterAction)
         
         self.lpermissions.hide() # label
+        self.start_up()
 
-        self.init_ui()
+    def __run__(self):
+    	self.query_file()
 
     def init_ui(self):
-        self.short_title(os.path.split(str(self.parent.get_text()).strip())[1])
-        self.parent.return_pressed(self.query_file)
-        self.start_up()
+        self.ui.list_widget.clear()
+
+        # self.short_title(os.path.split(str(self.parent.get_text()).strip())[1])
+        # self.start_up()
 
     def get_enter_item(self):
         self.add_click_path(self.ui.list_widget.currentItem())
@@ -80,11 +83,9 @@ class Results(QWidget):
                 _size = 0
 
             list_item = pkg.add_item(self.ui.list_widget, _icon)
-            name = os.path.basename(_file).replace(
-                query, f"<font color='#1a81da'>{query}</font>")
-            item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item, name, _path)
+            name = os.path.basename(_file).replace(query, f"<font color='#1a81da'>{query}</font>")
+            item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item(), name, _path)
             pkg.set_item_widget(self.ui.list_widget, item_widget)
-
             self.ui.status.setText(f"{_folder_count} {'Folder' if _folder_count <= 1 else 'Folders'}, {_file_count} {'File' if _file_count <= 1 else 'Files'}") # ({naturalsize(_size, True, format='%.1f ')})
         
     def hide_video(self):
@@ -173,16 +174,24 @@ class Results(QWidget):
         self.ui.lgid.setText(str(ff.groupId()))
         self.ui.lpath.setText(ff.path())
         # self.lpermissions.setText(str(ff.permissions())
-        
-    def add_click_path(self, item):
+
+    def add_click_path(self, dirn: bool=False):
         try:
-            item = item.listWidget().itemWidget(item)
+            main_item = self.ui.list_widget.currentItem()
+            item = main_item.listWidget().itemWidget(main_item)
             _path = item.desc.text()
+
             self.set_data(_path)
+
+            if dirn:
+                _path = os.path.dirname(_path)
+
             QDesktopServices().openUrl(QUrl().fromUserInput(_path))
+            
             self.parent.hide_win()
         except AttributeError:
-            self.query_file()
+            # self.query_file()
+            pass
 
     def short_title(self, item: str):
         if len(item) <= 20:

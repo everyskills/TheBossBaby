@@ -5,9 +5,9 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (QColorDialog, QDialog, QErrorMessage, QFileDialog, QFontDialog,
                             QInputDialog, QLineEdit, QMessageBox)
 
-class KDialog(QDialog):
+class UIBDialog(QDialog):
     def __init__(self, parent=None):
-        super(KDialog, self).__init__(parent)
+        super(UIBDialog, self).__init__(parent)
 
         self.openFilesPath = ''
         self.errorMessageDialog = QErrorMessage(self)

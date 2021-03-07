@@ -34,7 +34,7 @@ class Results(QWidget):
         self.def_setup()
 
     def def_setup(self):
-        _icon = QIcon(base_dir + "icon.svg")
+        _icon = QIcon(base_dir + "Icon.svg")
         self.ui.image.setPixmap(pkg.set_image(_icon, icon=True, size=200))
         self.ui.title.setText("Apps Plugin")
         self.ui.version.setText("1.0.0")
@@ -60,7 +60,7 @@ class Results(QWidget):
                 self.ui.list_widget.count() <= 10):
 
                 list_item = pkg.add_item(self.ui.list_widget, v["icon"])
-                item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item, k, v['comment'])
+                item_widget = pkg.add_item_widget(list_item, item.UIBUi_Item(), k, v['comment'])
                 pkg.set_item_widget(self.ui.list_widget, item_widget)
                 item_widget[1].mouseDoubleClickEvent = (
                     lambda e: self.run_clicked_app(self.list_widget.currentItem()))

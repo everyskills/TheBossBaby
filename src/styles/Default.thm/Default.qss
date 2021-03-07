@@ -8,15 +8,15 @@ White: 393D40
 */
 
 QListWidget,
-#Form, 
-#KNG_frame, 
-#KNG_input_frame,
+#Form,
+#UIB_frame, 
+#UIB_input_frame,
 #status_frame {
     color: #232629;
     background-color: #393D40;
 }
 
-#KNG_frame {
+#UIB_frame {
     padding: 6px 0px;
     border-radius: 8px;
     background-color: #393D40;
@@ -24,10 +24,11 @@ QListWidget,
 
 #input {
     padding: 5px;
+    padding-top: 0px;
     background: transparent;
-    color: #232629;
+    color: #fff;
     background-color: #393D40;
-    font-size: 22px;
+    font-size: 20px;
     selection-background-color: #d2d2d2;
     selection-color: #232629;
 }
@@ -50,37 +51,38 @@ QListWidget,
 
 QListWidget {
     background: #393D40;
-    padding-top: 15px;
     color: #fff;
+
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 QListWidget:item:hover{
-	/* border-radius:  5px; */
-	background-color: #efefef;
+	border-radius:  5px;
+	background-color: #707577;
 	color: #fff;
 }
 
 QListWidget:item:selected{
-	/* border-radius:  5px; */
-	background-color: #cecece;
+	border-radius:  5px;
+	background-color: #707577;
 	color: #fff;
 }
 
 QListWidget:item:focus{
-	/* border-radius:  5px; */
-	background-color: #cecece;
+	border-radius:  5px;
+	background-color: #707577;
     color: #fff;
 }
 
 QLineEdit {
-    background-color: #cccccc;
+    background-color: #707577;
     color: #fff;
 }
 
 QLabel {
     color: #fff;
 }
-
 
 QPushButton, QToolButton {
     background-color: #cccccc;
@@ -89,11 +91,21 @@ QPushButton, QToolButton {
 
 QTextEdit {
     background-color: #393D40;
-    color: #232629;
+    color: #fff;
 }
 
 QMdiArea {
     background: #393D40;
+}
+
+QWebEngineView {
+    background-color: #393D40;
+    color: #fff;
+}
+
+#UIB_web_view {
+    background-color: #393D40;
+    color: #fff;    
 }
 
 QWebView {
@@ -106,7 +118,7 @@ QWebView {
     color: #fff;
 }
 
-#KNG_web_frame {
+#UIB_web_frame {
     border-left-color: #e6e6e6;
     border-left-width: 2px;
     border-left-style: solid;

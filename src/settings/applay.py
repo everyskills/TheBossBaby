@@ -6,10 +6,9 @@ import os
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QAction, QApplication
-from . import methods as mt
-from . main_window import SettingsMainWindow
-
 from UIBox.pkg import set_box_shadow
+from .main_window import SettingsMainWindow
+from . import methods as mt
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
@@ -43,27 +42,22 @@ class ApplaySettingOnWindow:
             self.select_plugin_value)
 
         self.set_key_action(self.p, "key_quit_app", QApplication.instance().quit)
-
         self.set_key_action(self.p, "key_open_settings", self.open_setting_window)
+        
+        self.set_key_action(self.p, "key_resize_to_larg", self.extend_mode)
+        self.set_key_action(self.p, "key_resize_to_small", self.small_mode)
 
         ############## CHeck Box
         self.check_do("check_round", self.set_round_window)
-        
-        self.check_do("check_frameless", lambda: self.p.setWindowFlags(
-            self.p.windowFlags()| Qt.FramelessWindowHint))
-
+        self.check_do("check_frameless", lambda: self.p.setWindowFlags(self.p.windowFlags()| Qt.FramelessWindowHint))
         self.check_do("check_shadow", lambda: self.p.setGraphicsEffect(set_box_shadow(30, (20, 20), "black")))
+        self.check_do("check_hor_pattern", lambda: self.p.setWindowFlags(self.p.windowFlags() | Qt.HorPattern))
 
         if not mt.setting.value("check_show_left_icon", True, bool):
             self.p.btn_setting.hide()
 
-        if not mt.setting.value("check_show_right_icon", False, bool):
+        if not mt.setting.value("check_show_right_icon", True, bool):
             self.p.btn_ext.hide()
-
-        self.check_do("check_hor_pattern", lambda:  
-                    self.p.setWindowFlags(
-                    self.p.windowFlags() 
-                    | Qt.HorPattern))
 
     def init_setup(self):
         try:
@@ -77,20 +71,18 @@ class ApplaySettingOnWindow:
             mt.setting.value("window_width", type=int),
             mt.setting.value("window_height", type=int)))
         
-        self.p.setWindowFlags(self.p.windowFlags() | Qt.WindowStaysOnTopHint | Qt.Tool)
-        # self.p.setWindowFlags(self.p.windowFlags() 
-        #                     | Qt.WindowStaysOnTopHint)
-
+        self.p.setWindowTitle("TheBossBaby")
+        self.p.setWindowFlags(self.p.windowFlags() | Qt.WindowStaysOnTopHint)
         self.p.setWindowOpacity(mt.setting.value("window_opacity", type=float))
-
-        self.p.setWindowTitle("UIBox")
-        self.p.input.setPlaceholderText(mt.setting.value("placeholder_text", "UIBox - search...", str))
         self.p.setWindowIcon(QIcon(base_dir + "icons/logo.png"))
         self.p.btn_setting.setIcon(QIcon(base_dir + "icons/search.svg"))
-        
-        style = mt.setting.value("theme", type=str)
+        self.p.btn_ext.setIcon(QIcon(base_dir + "icons/logo.png"))
 
-        self.mode_style = json.load(open(os.path.split(style)[0] + "/package.json")).get("type", "light")
+        try:
+            style = mt.setting.value("theme", type=str)
+            self.mode_style = json.load(open(os.path.split(style)[0] + "/info.json")).get("type", "light")
+        except Exception:
+            pass
 
         if os.path.exists(style):
             self.p.setStyleSheet(open(style, "r").read())
@@ -101,6 +93,10 @@ class ApplaySettingOnWindow:
         self.p.hide()
         SettingsMainWindow().show()
 
+    def open_downloader_window(self):
+        self.p.hide()
+        self.p.open_download_window()
+        
     def set_key_action(self, obj, key, func):
         obj.addAction(QAction(key.replace("_", " "), obj,
                               shortcut=mt.setting.value(key), 
@@ -148,69 +144,61 @@ class ApplaySettingOnWindow:
 
     def small_mode(self):
         self.set_line_style(False)
-        self.p.setFixedHeight(mt.setting.value("window_min_extend", type=int))
-        # self.p.resize(QSize(mt.setting.value("window_min_extend", type=int), self.p.height()))
         self.p.UIB_main_frame.hide()
+        self.p.setFixedHeight(mt.setting.value("window_min_extend", type=int))
+        # self.p.resize(QSize(mt.setting.value("window_width", type=int), mt.setting.value("window_min_extend", type=int)))
 
     def extend_mode(self):
         self.set_line_style(True)
-        self.p.setFixedHeight(mt.setting.value("window_max_extend", type=int))
-        # self.p.resize(QSize(mt.setting.value("window_max_extend", type=int), self.p.height()))
         self.p.UIB_main_frame.show()
+        self.p.setFixedHeight(mt.setting.value("window_max_extend", type=int))
+        # self.p.resize(QSize(mt.setting.value("window_width", type=int), mt.setting.value("window_max_extend", type=int)))
 
     def default_mode(self):
         self.set_line_style(True)
+        self.p.UIB_main_frame.show()
         self.p.setFixedHeight(180)
         # self.p.resize(QSize(self.p.width(), 180))
-        self.p.UIB_main_frame.show()
 
     def extend_custom(self, value: int):
         self.set_line_style(True)
+        self.p.UIB_main_frame.show()
         self.p.setFixedHeight(value)
         # self.p.resize(QSize(self.p.width(), value))
-        self.p.UIB_main_frame.show()
 
     def for_ward_cursor(self):
         self.p.input.setCursorPosition(len(self.p.input.text()))
 
     def set_line_style(self, show: bool = False):
-        color = '777d7f' if not self.mode_style == 'light' else 'e6e6e6'
+        color = '777d7f' if not self.mode_style == 'light' else 'c8c8c8'  # 'e6e6e6'
         size = '2' if show else '0'
         frsize = '2' if show else '0'
 
-        if self.p.running_widget_type == "item":
-            self.p.setStyleSheet(self.p.styleSheet() + """
-                #UIB_input_frame {
-                    border-bottom-color: #%s;
-                    border-bottom-width: %spx;
-                    padding-bottom: %spx;
-                }
+        self.p.setStyleSheet(self.p.styleSheet() +
+            """
+            /*
+            #UIB_input_frame {
+                border-bottom-color: #%s;
+                border-bottom-width: %spx;
+                border-bottom-style: solid;
+                padding-bottom: 0px;
+                margin-bottom: 0px;
+                padding-bottom: %spx;
+            }
+            */
 
-                #UIB_list_widget {
-                    border-right-color: #%s;
-                    border-right-width: %spx;
-                }""" % (color, '0', '0', color, '0'))
-        else:
-            self.p.setStyleSheet(self.p.styleSheet() +
-                """
-                #UIB_input_frame {
-                    border-bottom-color: #%s;
-                    border-bottom-width: %spx;
-                    border-bottom-style: solid;
-                    padding-bottom: 0px;
-                    margin-bottom: 0px;
-                    padding-bottom: %spx;
-                }
-
-                #UIB_list_widget {
-                    border-right-color: #%s;
-                    border-right-width: %spx;
-                    border-right-style: solid;
-                    padding-top: 0px;
-                    margin-top: 0px;
-                }
-                """ % (color, size, frsize, color, size))
+            #UIB_list_widget {
+                border-right-color: #%s;
+                border-right-width: %spx;
+                border-right-style: solid;
+                padding-top: 0px;
+                margin-top: 0px;
+            }
+            """ % (color, size, frsize, color, size))
 
     def set_round_window(self):
         self.p.setAttribute(Qt.WA_TranslucentBackground, True)
         self.p.setStyleSheet(self.p.styleSheet() + "border-radius: 8px;")
+
+    def set_theme(self, theme_name: str):
+        SettingsMainWindow().thm.applay_theme(theme_name)

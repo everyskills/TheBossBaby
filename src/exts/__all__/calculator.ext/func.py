@@ -9,6 +9,7 @@ def get_sum(*args):
 def get_percent(x, fu):
     return (x / fu * 100)
 
+
 def get_help(var):
     helps = {
         'abs': "Returns the absolute value of x",

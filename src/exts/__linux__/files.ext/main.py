@@ -84,7 +84,7 @@ class Results(QWidget):
                     
                     list_item = pkg.add_item(self.ui.list_widget, _icon)
                     item_widget = pkg.add_item_widget(
-                        list_item, item.UIBUi_Item, str(os.path.split(i)[1]), i)
+                        list_item, item.UIBUi_Item(), str(os.path.split(i)[1]), i)
                     pkg.set_item_widget(self.ui.list_widget, item_widget)
                     self.ui.status.setText(f"{_folder_count} {'Folder' if _folder_count <= 1 else 'Folders'}, {_file_count} {'File' if _file_count <= 1 else 'Files'} ({pkg.get_size(_size)})")
                     item_widget[1].mouseDoubleClickEvent = (lambda e: self.add_click_path(self.list_widget.currentItem()))
@@ -135,7 +135,7 @@ class Results(QWidget):
             movie.setScaledSize(QSize(300, 200))
             self.ui.image.setMovie(movie)
             movie.start()
-       
+
         elif _file.endswith(img):
             self.hide_video()
             self.ui.image.setPixmap(pkg.set_image(item.icon(), size=300))
@@ -159,33 +159,34 @@ class Results(QWidget):
             self.ui.image.setPixmap(pkg.set_image(item.icon(), size=150))
             
     def set_data(self, _file):
-        ff = QFileInfo(_file)
-        self.short_title(ff.fileName())
-        self.ui.lsize.setText(pkg.get_size(ff.size()))
+        if not _file.endswith(".fdmdownload"):
+            ff = QFileInfo(_file)
+            self.short_title(ff.fileName())
+            self.ui.lsize.setText(pkg.get_size(ff.size()))
 
-        if ff.isFile():
-            try:
-                self.ui.image.setText(str(open(_file, "r").read()))
-            except Exception:
-                pass
+            if ff.isFile():
+                try:
+                    self.ui.image.setText(str(open(_file, "r").read()))
+                except Exception:
+                    pass
 
-        if ff.isDir():
-            self.ui.litems.show()
-            self.ui.label_3.show()
-            self.ui.litems.setText(str(len(glob(_file + "/*"))))
-        else:
-            self.ui.label_3.hide()
-            self.ui.litems.hide()
+            if ff.isDir():
+                self.ui.litems.show()
+                self.ui.label_3.show()
+                self.ui.litems.setText(str(len(glob(_file + "/*"))))
+            else:
+                self.ui.label_3.hide()
+                self.ui.litems.hide()
 
-        self.ui.lcreated.setText(ff.created().toString())
-        self.ui.lmodified.setText(ff.lastModified().toString())
-        self.ui.laccessed.setText(ff.lastRead().toString())
-        self.ui.luser.setText(ff.owner())
-        self.ui.luid.setText(str(ff.ownerId()))
-        self.ui.lgroup.setText(str(ff.group()))
-        self.ui.lgid.setText(str(ff.groupId()))
-        self.ui.lpath.setText(ff.path())
-        # self.lpermissions.setText(str(ff.permissions())
+            self.ui.lcreated.setText(ff.created().toString())
+            self.ui.lmodified.setText(ff.lastModified().toString())
+            self.ui.laccessed.setText(ff.lastRead().toString())
+            self.ui.luser.setText(ff.owner())
+            self.ui.luid.setText(str(ff.ownerId()))
+            self.ui.lgroup.setText(str(ff.group()))
+            self.ui.lgid.setText(str(ff.groupId()))
+            self.ui.lpath.setText(ff.path())
+            # self.lpermissions.setText(str(ff.permissions())
 
     def add_click_path(self, item):
         item = item.listWidget().itemWidget(item)

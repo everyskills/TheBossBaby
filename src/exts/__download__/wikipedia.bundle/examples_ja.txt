@@ -1,3 +1,0 @@
-wiki ~jaWiki(query here)
-wikipedia ~jaWiki(query here)
-wiki ~jaWiki(query here)

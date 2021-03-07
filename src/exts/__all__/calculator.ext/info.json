@@ -1,0 +1,15 @@
+{
+    "name": "Calculator",
+    "version": "1.0.0",
+    "description": "simple and advanced calculator",
+    "icon": "Icon.png",
+    "help": "README.md",
+    "keyword": "calc",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "everyskils@gmail.com",
+    "home_page": "https://www.everyskills.com",
+    "system": "all",
+    "enabled": true
+}

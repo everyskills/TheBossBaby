@@ -5,7 +5,7 @@ import os
 from . import methods as mt
 from PyQt5.QtCore import QSize
 from UIBox import dialog, pkg
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QStyleFactory
 from PyQt5.uic import loadUi
 from ._themes import ThemePage
 from ._plugins import PluginPage
@@ -16,7 +16,7 @@ base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 class SettingsWindow:
     def __init__(self) -> None:
         super().__init__()
-
+    
         # self.parent = parent
         self.ui = loadUi(base_dir + "../ui/extend_setting.ui", self)
         self.dialog = dialog.UIBDialog()
@@ -72,12 +72,17 @@ class SettingsWindow:
         mt.C_changed(self.ui.check_frameless)
         mt.C_changed(self.ui.check_round)
         mt.C_changed(self.ui.check_shadow)
+        mt.C_changed(self.ui.check_show_left_icon)
+        mt.C_changed(self.ui.check_show_right_icon)
 
         ############# QSpinBox Value Changed
         mt.S_changed(self.ui.window_width)
         mt.S_changed(self.ui.window_height)
         mt.S_changed(self.ui.window_max_extend)
         mt.S_changed(self.ui.window_min_extend)
+
+        ############# QComboBox Value Changed
+        mt.CB_changed(self.ui.window_style)
 
         self.add_list_paths()
 
@@ -135,10 +140,6 @@ class SettingsWindow:
     #         self.ui.right_icon.setText("Drag Image")
 
     def get_settings_value(self):
-        # color = mt.setting.value("line_color_style", "#000")
-        # self.ui.btn_color.setStyleSheet("background: %s" % color)
-        # self.ui.btn_font.setFont(mt.setting.value("line_font_style", self.ui.btn_font.font()))
-
         ########## Shortcutss
         mt.set_key_sequence(self.ui.key_focus_line_search, "Ctrl+F")
         mt.set_key_sequence(self.ui.key_clear_split_line_text, "Ctrl+B")
@@ -155,7 +156,7 @@ class SettingsWindow:
         mt.set_key_sequence(self.ui.key_open_settings, "F1")
 
         ########## Text
-        mt.set_text(self.ui.placeholder_text, "UIBox - search...")
+        mt.set_text(self.ui.placeholder_text, "The Boss Baby - Go...")
         mt.set_text(self.ui.start_up_text, "")
 
         ########## SpinBoxs
@@ -168,8 +169,8 @@ class SettingsWindow:
 
         ########### Check box
         mt.set_check(self.ui.check_history_storage, False)
-        # mt.set_check(self.ui.check_show_left_icon, True)
-        # mt.set_check(self.ui.check_show_right_icon, False)
+        mt.set_check(self.ui.check_show_left_icon, True)
+        mt.set_check(self.ui.check_show_right_icon, True)
         mt.set_check(self.ui.check_auto_complete, False)
         mt.set_check(self.ui.check_auto_update, True)
         mt.set_check(self.ui.check_auto_launche, True)
@@ -177,6 +178,9 @@ class SettingsWindow:
         mt.set_check(self.ui.check_frameless, True)
         mt.set_check(self.ui.check_round, False)
         mt.set_check(self.ui.check_shadow, False)
+
+        self.ui.window_style.addItems(QStyleFactory.keys())
+        self.ui.window_style.setCurrentText(mt.setting.value(self.ui.window_style.objectName()))
 
     def set_window_opacity(self, value: int):
         mt.setting.setValue("window_opacity", float(
@@ -189,9 +193,6 @@ class SettingsWindow:
     #     self.ui.left_icon.setStyleSheet("")
 
 
-
-
-
     def add_list_paths(self):
         for i in range(10):
             item_widget = KUi_Form()
@@ -199,7 +200,7 @@ class SettingsWindow:
 
             item.setSizeHint(QSize(60, 60))
 
-            item_widget.btn_icon.setIcon(pkg.icon_types(item_widget.line_path.text().strip(), True))
+            item_widget.btn_icon.setIcon(pkg.icon_types(item_widget.line_path.text().strip()))
             item_widget.line_path.setText(str(i))
             item_widget.setObjectName("line_path_%d" % i)
 

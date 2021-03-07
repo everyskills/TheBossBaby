@@ -18,7 +18,7 @@ class Ui_Form(object):
         self.UIB_frame.setObjectName("UIB_frame")
         
         self.gridLayout_7 = QtWidgets.QGridLayout(self.UIB_frame)
-        self.gridLayout_7.setContentsMargins(0, 2, 0, 0)
+        self.gridLayout_7.setContentsMargins(0, 4, 0, 0)
         self.gridLayout_7.setObjectName("gridLayout_7")
         self.UIB_input_frame = QtWidgets.QFrame(self.UIB_frame)
         
@@ -49,13 +49,13 @@ class Ui_Form(object):
         self.btn_setting.setFont(font)
         self.btn_setting.setStyleSheet("padding-left: 5px;")
         self.btn_setting.setText("")
-        self.btn_setting.setIconSize(QtCore.QSize(32, 32))
+        self.btn_setting.setIconSize(QtCore.QSize(30, 30))
         self.btn_setting.setAutoRaise(True)
         self.btn_setting.setObjectName("btn_setting")
         self.gridLayout_2.addWidget(self.btn_setting, 0, 0, 1, 1)
         
         self.input = QtWidgets.QLineEdit(self.UIB_input_frame)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.input.sizePolicy().hasHeightForWidth())

@@ -15,13 +15,13 @@ RIGHTTOP = RIGHT | TOP
 LEFTBOTTOM = LEFT | BOTTOM
 RIGHTBOTTOM = RIGHT | BOTTOM
 
-class KFramelessBase:
+class UIBFramelessBase:
 
     Margins = 4
     BaseClass = QWidget
 
     def __init__(self, *args, **kwargs):
-        super(KFramelessBase, self).__init__(*args, **kwargs)
+        super(UIBFramelessBase, self).__init__(*args, **kwargs)
         self.dragParams = {'type': 0, 'x': 0,
                            'y': 0, 'margin': 0, 'draging': False}
         self.originalCusor = None
@@ -140,8 +140,8 @@ class KFramelessBase:
             self.setGeometry(x, y, width, height)
 
 
-class KFramelessWidget(QWidget, KFramelessBase):
+class KFramelessWidget(QWidget, UIBFramelessBase):
     BaseClass = QWidget
 
-class KFramelessDialog(QDialog, KFramelessBase):
+class KFramelessDialog(QDialog, UIBFramelessBase):
     BaseClass = QDialog

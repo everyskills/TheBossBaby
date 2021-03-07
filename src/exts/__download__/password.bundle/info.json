@@ -1,9 +1,0 @@
-{
-    "name": "password",
-    "displayName": "Password",
-    "description": "Generating random password.",
-    "examples": ["password", "password 16"],
-    "categories": ["Utilities"],
-    "creator_name": "Mikhail Vospennikov",
-    "creator_url": "https://github.com/ntwf"
-}

@@ -3,24 +3,117 @@
         "pdf",
         "doc",
         "excel",
-        "xlsx"
+        "xlsx",
+        "docx",
+        "odt",
+        "md",
+        "ods",
+        "csv"
     ],
 
     "Linux Apps": [
         "appimage",
         "deb",
-        "rpm"
+        "rpm",
+        "desktop",
+        "bin"
+    ],
+
+    "Mac OS Apps": [
+        "dmg"
+    ],
+
+    "Windows Apps": [
+        "exe",
+        "dll"
     ],
 
     "Torrent Files": [
-        "fdmdownload"
+        "fdmdownload",
+        "torrent"
     ],
 
     "Archives": [
         "zip",
         "tar",
         "tar.gz",
-        "iso"
+        "iso",
+        "rar",
+        "gz",
+        "vsix"
+    ],
+
+    "Videos/Audio": [
+        "mp4",
+        "mkv",
+        "avi",
+        "mp3",
+        "m4a"
+    ],
+
+    "Data Bases": [
+        "sqlite",
+        "sqlite3",
+        "sql",
+        "db",
+        "json",
+        "mysql"
+    ],
+
+    "Python Language": [
+        "pyi",
+        "pyw",
+        "pyc",
+        "py",
+        "whl"
+    ],
+
+    "User Interface Files": [
+        "ui",
+        "glade"
+    ],
+
+    "Pictures/Images": [
+        "jpg",
+        "png",
+        "jpeg",
+        "svg",
+        "gif"
+    ],
+
+    "C/C++ Languages": [
+        "cpp",
+        "cgg",
+        "c",
+        "h"
+    ],
+
+    "Programming Languages": [
+        "swift",
+        "dart",
+        "java",
+        "class",
+        "small",
+        "qml"
+    ],
+
+    "Scripting Languages": [
+        "sh",
+        "zsh",
+        "bash"
+    ],
+
+    "Web Files": [
+        "xml",
+        "html",
+        "css",
+        "sass",
+        "less",
+        "js",
+        "htm"
+    ],
+
+    "Contacts": [
+        "vcf"
     ]
 }
- 

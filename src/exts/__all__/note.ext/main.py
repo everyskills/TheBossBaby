@@ -7,32 +7,7 @@ base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 note_file = base_dir + ".notes.txt"
 
-class MyApp(QObject):
-    def __init__(self) -> None:
-        super(MyApp, self).__init__()
-
-    ################## simple function for call python in javascript
-    @pyqtSlot(str) # type of arguments/options
-    def save_text(self, text: str):
-        """ get name from <h1> and print it from python code"""
-        with open(note_file, "w") as _fw:
-        	_fw.write(str(text))
-        	_fw.close()
-
-def Results(parent):
-
-	content = parent.text
-	title = "Create a Note"
-
-	if parent.text == 'clipboard':
-		content = parent.text_paste(True)
-		title = "Copyed Clipboard to note"
-
-	elif parent.text == 'note':
-		content = open(note_file).read()
-		title = "Geting th note from history"
-
-	html = u"""
+html = u"""
 	<!DOCTYPE html>
 	<html>
 	<head>
@@ -79,30 +54,72 @@ def Results(parent):
 		cursor: pointer;
 	}
 	</style>
-	
-	<script>
-	function output() {
-		return document.getElementById("field").innerHTML;
-	}
-	</script>
-	
 	</head>
 	<body>
 	
 	<div id='field' contentEditable><!--CONTENT--></div>
 	
-	<div id='save' onClick="note.save_text(output())">
+	<div id='save' onClick="backend.save_text(output())">
 		Save note
 	</div>
 	
+	<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+	<script>
+		function output() {
+			return document.getElementById("field").innerHTML;
+		}
+		var backend = null;
+		new QWebChannel(qt.webChannelTransport, function(channel) {
+			backend = channel.objects.note;
+		});
+	</script>
+
 	</body>
 	</html>
-	""".replace("<!--CONTENT-->", content.replace("\n", "<br/>")).replace("{{image}}", "file://" + base_dir + "background.png")
-	
+	"""
+
+class MyApp(QObject):
+    def __init__(self) -> None:
+        super(MyApp, self).__init__()
+
+    ################## simple function for call python in javascript
+    @pyqtSlot(str) # type of arguments/options
+    def save_text(self, text: str):
+        """ get name from <h1> and print it from python code"""
+        with open(note_file, "w") as _fw:
+        	_fw.write(str(text))
+        	_fw.close()
+
+def Results(parent):
+
+	content = parent.text
+	title = "Create a Note"
+
+	if parent.text == 'clipboard':
+		content = parent.text_paste(True)
+		title = "Copyed Clipboard to note"
+
+	elif parent.text == 'note':
+		with open(note_file) as gr:
+			content = gr.read()
+		title = "Geting th note from history"
+
 	return {
-		"title": title,
-		"html": html,
-        "open_url_in_browser": True,
-        "object": MyApp(),
-        "call_name": "note"
+		"html": html.replace("<!--CONTENT-->", content.replace("\n", "<br/>")).replace("{{image}}", "file://" + base_dir + "background.png"),
+        "open_links_in_browser": True,
+        "object": {"note": MyApp()},
+		"items": [
+			{"key": "secound", "icon": "", "title": title}
+		]
 	}
+
+def Run(parent):
+	print("Your text: ", parent.text)
+	with open(note_file) as cp:
+		parent.text_copy(cp.read())
+
+def ItemClicked(parent, item):
+	pass
+
+def ItemSelected(parent, item):
+	pass

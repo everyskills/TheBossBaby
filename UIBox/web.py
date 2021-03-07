@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
-from PyQt5.QtWebKit import QWebSettings
+def get_webkit_settings():
+    from PyQt5.QtWebKit import QWebSettings
 
-def get_settings():
     settings = QWebSettings.globalSettings()
     settings.setDefaultTextEncoding("utf-8")
     settings.setAttribute(QWebSettings.JavascriptEnabled, True)
@@ -24,12 +24,47 @@ def get_settings():
     settings.setAttribute(QWebSettings.LocalStorageDatabaseEnabled, True)
     settings.setAttribute(QWebSettings.LocalStorageEnabled, True)
     settings.setAttribute(QWebSettings.WebGLEnabled, True)
-    settings.setAttribute(QWebSettings.OfflineWebApplicationCacheEnabled, True)
     settings.setAttribute(QWebSettings.FrameFlatteningEnabled, True)
     settings.setAttribute(QWebSettings.Accelerated2dCanvasEnabled, True)
     settings.setAttribute(QWebSettings.ScrollAnimatorEnabled, True)
-    settings.setAttribute(QWebSettings.PrivateBrowsingEnabled, True)
-    settings.setAttribute(QWebSettings.NotificationsEnabled, True)
     settings.setAttribute(QWebSettings.HyperlinkAuditingEnabled, True)
 
     return settings
+
+def get_webengine_settings():
+    from PyQt5.QtWebEngineWidgets import QWebEngineSettings
+
+    settings = QWebEngineSettings.globalSettings()
+    settings.setDefaultTextEncoding("utf-8")
+    settings.setAttribute(QWebEngineSettings.TouchIconsEnabled, True)
+    settings.setAttribute(QWebEngineSettings.Accelerated2dCanvasEnabled, True)
+    # settings.setAttribute(QWebEngineSettings.AllowAllUnknownUrlSchemes, True)
+    settings.setAttribute(QWebEngineSettings.AllowWindowActivationFromJavaScript, True)
+    settings.setAttribute(QWebEngineSettings.AutoLoadIconsForPage, True)
+    settings.setAttribute(QWebEngineSettings.DnsPrefetchEnabled, True)
+    settings.setAttribute(QWebEngineSettings.ErrorPageEnabled, True)
+    settings.setAttribute(QWebEngineSettings.FullScreenSupportEnabled, True)
+    settings.setAttribute(QWebEngineSettings.HyperlinkAuditingEnabled, True)
+    settings.setAttribute(QWebEngineSettings.JavascriptCanAccessClipboard, True)
+    settings.setAttribute(QWebEngineSettings.JavascriptCanOpenWindows, True)
+    settings.setAttribute(QWebEngineSettings.JavascriptCanPaste, True)
+    settings.setAttribute(QWebEngineSettings.JavascriptEnabled, True)
+    settings.setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, True)
+    settings.setAttribute(QWebEngineSettings.LocalContentCanAccessRemoteUrls, True)
+    settings.setAttribute(QWebEngineSettings.LocalStorageEnabled, True)
+    settings.setAttribute(QWebEngineSettings.PdfViewerEnabled, True)
+    settings.setAttribute(QWebEngineSettings.PluginsEnabled, True)
+    # settings.setAttribute(QWebEngineSettings.PictographFont, True)
+    settings.setAttribute(QWebEngineSettings.PrintElementBackgrounds, True)
+    # settings.setAttribute(QWebEngineSettings.SansSerifFont, True)
+    settings.setAttribute(QWebEngineSettings.ScreenCaptureEnabled, True)
+    settings.setAttribute(QWebEngineSettings.ScrollAnimatorEnabled, True)
+    # settings.setAttribute(QWebEngineSettings.SerifFont, True)
+    settings.setAttribute(QWebEngineSettings.SpatialNavigationEnabled, True)
+    # settings.setAttribute(QWebEngineSettings.StandardFont, True)
+
+    settings.setAttribute(QWebEngineSettings.WebGLEnabled, True)
+    settings.setAttribute(QWebEngineSettings.WebRTCPublicInterfacesOnly, True)
+    settings.setAttribute(QWebEngineSettings.XSSAuditingEnabled, True)
+    settings.setAttribute(QWebEngineSettings.AutoLoadImages, True)
+    # settings.setAttribute(QWebEngineSettings.FocusOnNavigationEnabled, True)

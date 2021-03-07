@@ -2,9 +2,9 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class KUi_Item(QtWidgets.QWidget):
+class UIBUi_Item(QtWidgets.QWidget):
     def __init__(self):
-        super(KUi_Item, self).__init__()
+        super(UIBUi_Item, self).__init__()
 
         self.LClick, self.LHover, self.LDClick = [], [], []
 
@@ -63,7 +63,6 @@ class KUi_Item(QtWidgets.QWidget):
         /* color: #898b8c; */
         #desc {
             padding-left: 3px;
-            padding-top: 4px;
             font-size: 11px;
             color: #929a90;
         }

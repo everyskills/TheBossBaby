@@ -1,7 +1,12 @@
 #!/usr/bin/python3
 
 import re
+import os
+
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QUrl
+
+base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 class Controls:
     def __init__(self, parent=None) -> None:
@@ -71,11 +76,6 @@ class Controls:
         self.__parent.input.insert(text)
         self.__parent.input.setFocus()
 
-    # def return_pressed(self, call: object):
-    #     self.__parent.input.blockSignals(True)
-    #     self.__parent.input.returnPressed.connect(call)
-    #     self.__parent.input.blockSignals(False)
-
     def set_auto_complete(self, Iterable: list=[]):
         text = self.get_text()
         for i in Iterable:
@@ -87,6 +87,14 @@ class Controls:
                     int(len(text)) + len(self.__parent.get_kv(self.__parent.input.text())[0]) + 1)
                 self.__parent.input.cursorForward(True, int(len(text)) + int(len(i)))
                 self.__parent.input.blockSignals(False)
+
+    @property
+    def is_dark(self):
+        return self.mode_style == 'dark'
+
+    @property
+    def is_light(self):
+        return self.mode_style == 'light'
 
     @property
     def mode_style(self):
@@ -111,6 +119,14 @@ class Controls:
     @property
     def result(self):
         return self.get_text()
+
+    @property
+    def dark_color(self):
+        return "#393D40"
+
+    @property
+    def light_color(self):
+        return "#f6f6f6"
 
     def text_copy(self, text: str=""):
         if not text:
@@ -144,6 +160,10 @@ class Controls:
         for _ in range(count):
             self.__parent.web.run_plugin(self.__parent.web_running_data)
 
+
+    def include_file(self, _file: str):
+        key = self.__parent.get_kv(self.__parent.input.text())[0]
+        return QUrl.fromUserInput(self.__parent.exts.get(key, {}).get("path") + _file).toLocalFile()
 
     # def web_reload(self):
     #     self.__parent.run_plugin(self.__parent.get_kv(self.__parent.input.text())[0])

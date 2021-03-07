@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Photo Gallery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link href="{{ thumbnail_slider_css }}" rel="stylesheet" type="text/css" />
+    <link href="{{ ninja_slider_css }}" rel="stylesheet" type="text/css" />
+    <script src="{{ thumbnail_slider_js }}" type="text/javascript"></script>
+    <script src="{{ ninja_slider_js }}" type="text/javascript"></script>
+
+    <style>
+        body {
+            font: normal 0.9em Arial; 
+            margin: 0 auto;
+        }
+        
+        a {
+            color:#1155CC;
+        }
+        
+        ul li {
+            padding: 10px 0;
+        }
+
+    </style>
+    
+</head>
+<body>
+    <div id='ninja-slider'>
+        <div>
+            <div class="slider-inner">
+                <ul>
+                    {% for _, img in images %}
+                        <li><a class="ns-img" href="{{ img }}"></a></li>
+                    {% endfor %}
+                </ul>
+                <div class="fs-icon" title="Expand/Close"></div>
+            </div>
+
+            <div id="thumbnail-slider">
+                <div class="inner">
+                    <ul>
+                        {% for num, img_sub in images %}
+                            <li>
+                                <a class="thumb" href="{{ img_sub }}"></a>
+                                <span>{{ num }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

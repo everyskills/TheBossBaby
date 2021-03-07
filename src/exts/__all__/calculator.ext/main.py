@@ -28,11 +28,9 @@ class Results(QWidget):
         self.parent = parent
         self.ui = loadUi(base_dir + "UI.ui", self) 
 
-        self.ui.image.setPixmap(QIcon(base_dir + "icon.png").pixmap(300, 300))
+        self.ui.image.setPixmap(QIcon(base_dir + "Icon.png").pixmap(300, 300))
         self.ui.line_search.textChanged.connect(self.search_func)
         self.ui.list_widget.itemDoubleClicked.connect(self.set_func)
-
-        # self.parent.return_pressed(self.copy_result)
 
         self.init_ui()
 

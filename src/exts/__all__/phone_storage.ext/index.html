@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang=""  style="color: {{ color }}">
+<html lang=""  style="background-color: {{ bg }}; color: {{ color }}">
   <head>
     <meta charset="utf-8">
     <title></title>
-	<link href="{{ style }}" rel="stylesheet">
+	<link href="{{ include_file('style.css') }}" rel="stylesheet">
   </head>
 
-  <body style="color: {{ color }}">
+  <body style="background-color: {{ bg }}; color: {{ color }}">
 
 	<div id='centered'>
 		<div>
-			<img id="call-img" src="{{ image }}" />
+			<img id="call-img" src="{{ include_file('personal.png') }}" />
 			<h1>{{ name }}</h1>
 			<br>
 			<p><span class='icon-phone'></span> {{ phone }}</p>

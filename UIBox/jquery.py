@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
-from PyQt5.QtWebKit import QWebElement
-
-class KDocument():
+class UIBDocument():
     def __init__(self, frame) -> None:
         super().__init__()
 

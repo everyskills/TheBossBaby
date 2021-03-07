@@ -14,7 +14,7 @@ def SELF(method):
     return wrapper
 
 
-class KPushButton(QPushButton):
+class UIBPushButton(QPushButton):
 
     STYLE = """
         QPushButton {
@@ -51,9 +51,9 @@ class KPushButton(QPushButton):
 
     def __init__(self, parent = None, text = "", icon = "", style = "DefaultStyle"):
         if icon:
-            super(PushButton, self).__init__(QIcon(icon), text, parent)
+            super(UIBPushButton, self).__init__(QIcon(icon), text, parent)
         else:
-            super(PushButton, self).__init__(text, parent)
+            super(UIBPushButton, self).__init__(text, parent)
 
         self.font_size = 17
         self.border_radius = 6

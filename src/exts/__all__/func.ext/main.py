@@ -37,7 +37,7 @@ class Results(QWidget): # use Widget type
         self.parent = parent                # parent window functions
         self.ui = loadUi(base_dir + "UI.ui", self) # include UI file
 
-        self.ui.image.setPixmap(QIcon(base_dir + "icon.png").pixmap(200, 200))
+        self.ui.image.setPixmap(QIcon(base_dir + "Icon.png").pixmap(200, 200))
         self.ui.line_search.textChanged.connect(self.search_func)
         self.ui.list_widget.itemDoubleClicked.connect(self.set_func)
 
