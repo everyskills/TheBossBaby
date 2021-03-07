@@ -9,7 +9,6 @@ def Results(parent):
 		"open_links_in_browser": False,
 		"items": [
 			{"title": f"Search for '{parent.text}' in Google.", "key": "1"},
-			{"title": f" for '{parent.text}' in Google.", "key": "2"}
 		]
 	}
 
