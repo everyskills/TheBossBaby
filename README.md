@@ -90,13 +90,13 @@ The first thing we need is an `info.json` file. Here's what to put in it:
 	"keyword": "print",
 	"creator_name": "Author name",              // (optional)
 	"creator_email": "example@domain.com",      // (optional)
-    "creator_url": "https://www.example.com",    // (optional)
-    "home_page" : "https://www.github/<user name>/<repo name>", // (optional)
-	"system": "all",
-    "examples": [
-        "print value",
-        "..."
-    ]
+    	"creator_url": "https://www.example.com",    // (optional)
+    	"home_page" : "https://www.github/<user name>/<repo name>", // (optional)
+	"system": "all", // [windows, macos, linux, all]
+	"examples": [
+            "print value",
+            "..."
+    	]
 }
 ```
 
