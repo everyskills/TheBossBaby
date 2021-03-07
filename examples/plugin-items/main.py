@@ -17,28 +17,29 @@ base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 ## don't edit this to another name
 def Results(parent):
     List = []
-    
+
     for i in range(10):
         List.append({
+            "icon": "",
             "title": f"Item Number '{i}'",
             "subtitle": "Test Plugin Items",
-            "icon": "",
             "key": f"num{i}"
         })
 
     return List
 
-## Line Input Return Pressed CallBack
-def Run(parent, item):
+## will run this function when the line input was clicked
+def Run(parent):
     """ 
     :param parent: main window events and simple methods
     :param item: return clicked item content
     """
-    
-    print("TEXT: ", parent.text)
-    print("KEY: ", item.key)
+    pass
 
-    if item.key == "num1":
-        print("You'r number 1")
-    else:
-        print("You'r in any number")
+## will run this function when the item was selected
+def ItemSelected(parnet, item):
+    pass
+
+## will run this function when the item was clicked
+def ItemClicked(parent, item):
+    pass

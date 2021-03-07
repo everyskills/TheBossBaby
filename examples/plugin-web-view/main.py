@@ -15,17 +15,23 @@ HTML = """
   </head>
   <body>
 
-    <h1 id="app"> Your Text: </h1>
-    <h3> {{ text }} </h3>
+    <h3 class='app'> {{ text }} </h3>
     <button onclick="javascript:return_text()">Click me</button> <!-- run js script on click -->
 
+    <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
     <script>
+      var backend = null;
+      new QWebChannel(qt.webChannelTransport, function(channel) {
+          backend = channel.objects.tbb;
+      });
+
       function return_text() {
-        var text = document.getElementById("app").innerText; // get h1 context
-        kng.get_name(text); // call Python method
+          var text = document.getElementById("app").innerText; // get h1 context
+          tbb.get_name(text); // call Python method
       }
+
     </script>
-    
+
   </body>
 </html>
 """
@@ -39,7 +45,7 @@ class MyApp(QObject):
     @pyqtSlot(str) # type of arguments/options
     def get_name(self, text: str):
         """ get name from <h1> and print it from python code"""
-        print("You'r using: ", text.strip(), " App")
+        print("Your name is: ", text.strip())
 
 def Plugin(parent=None):
     """ main function for start plugin from UIBox """
@@ -48,17 +54,16 @@ def Plugin(parent=None):
         "html": HTML,
         
         ## remove it if you do not need it
-        "object": MyApp(),
+        "object": {"tbb": MyApp()},
 
-        ## status code return
-        "status": True,
-        
-        ## the name for call python functions from HTML
-        "call_name": "kng",
-        
-        ## [("icon", "title", callback), ...]
-        "items": [("", "Your text '%s'" % parent.get_text(), lambda i, t: print(i, t), lambda i, t: print(i, t, "selected") )],
-        
+        "items": [
+          {
+            "title": "Your text '%s'" % parent.text,
+            "subtitle": "",
+            "key": ""
+          }
+        ],
+
         ## Jinja Template Directory
         # "template_dir": "",
         
@@ -68,9 +73,12 @@ def Plugin(parent=None):
         ## Jinja Render Keywords
         "keyword": {"text": parent.text},
 
-        ## Start HTML File
+        ## Start HTML File for Jinja Template directory
         # "base_file": "index.html",
 
         ## Open Extrnal Links in Default applicatins/brwoser
-        "open_links_in_browser": True
-        }
+        "open_links_in_browser": True,
+
+        ## Use custom user agent
+        # "user_agent": ""
+    }

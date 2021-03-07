@@ -98,7 +98,8 @@ class WebPage(QWebEnginePage):
         return super().javaScriptConsoleMessage(level, message, lineNumber, sourceID)
 
     def set_user_agent(self, agent: str):
-        self.profile().setHttpUserAgent(agent if agent.strip() else self._USER_AGENT)
+        if agent.strip():
+            self.profile().setHttpUserAgent(agent if agent.strip() else self._USER_AGENT)
 
     def acceptNavigationRequest(self, url, _type, isMainFrame):
         if (_type == QWebEnginePage.NavigationTypeLinkClicked and self.open_links_in_browser):

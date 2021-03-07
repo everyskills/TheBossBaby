@@ -1,0 +1,18 @@
+{
+    "name": "Plugin name",
+    "version": "1.0.0",
+    "description": "simple plugin description.",
+    "icon": "Icon.png",
+    "help": "README.md",
+    "keyword": "key",
+    "script": "main.py",
+    "creator_name": "Author name",
+    "creator_email": "example@gmail.com",
+    "creator_url": "https://www.example.com",
+    "home_page": "https://www.github.com/<user name>/<repo name>",
+    "system": "all",
+    "examples": [
+        "key value",
+        "..."
+    ]
+}

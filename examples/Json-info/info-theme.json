@@ -1,0 +1,11 @@
+{
+    "name": "Style name",
+    "type": "dark",
+    "version": "1.0.0",
+    "creator_name": "Author name",
+    "creator_url": "https://www.example.com",
+    "creator_email": "everyskils@gmail.com",
+    "creator_home_page": "https://www.github.com/<user name>/<repo name>",
+    "style": "style.qss",
+    "icon": "Icon.png"
+}
