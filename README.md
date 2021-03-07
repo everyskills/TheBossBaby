@@ -224,14 +224,14 @@ for start using default keywords write in prefix like this ```@keyword```
 | (install, download, downloader, installer)          | show downloader page in Search Box
 
 ## Platform Support
-[x] Linux
-[x] Windows 10
-[x] MacOS
+- [x] Linux
+- [x] Windows 10
+- [x] MacOS
 
 ## Test Platfrom 
-[x] Linux
-[] Windows
-[] MacOS
+- [x] Linux
+- [] Windows
+- [] MacOS
 
 ## License
 Licensed under the GPL and MIT licenses (see LICENSE)
