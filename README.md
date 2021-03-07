@@ -1,7 +1,7 @@
 ## TheBossBaby for cross-platform v1.0.0
 
-TheBossBaby is a extendable Search app with plugins and fetchers
 ![Logo](https://github.com/everyskills/TheBossBaby/blob/master/src/icons/logo.png)
+TheBossBaby is a extendable Search app with plugins and fetchers
 
 ## ٍScreenshot for TheBossBaby
 ![Screenshot](https://github.com/everyskills/TheBossBaby/blob/master/Screenshot.gif)
@@ -43,7 +43,7 @@ sudo python3 setup.py
 
 /* Items style */
 #UIB_list_widget:item {
-    color: white;
+    color: white;!
     background: gray;
 } 
 
