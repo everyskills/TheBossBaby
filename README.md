@@ -1,8 +1,10 @@
 ## TheBossBaby for cross-platform v1.0.0
 
 TheBossBaby is a extendable Search app with plugins and fetchers
+![Logo](https://github.com/everyskills/TheBossBaby/blob/master/src/icons/logo.png)
 
-![Example](https://github.com/everyskills/TheBossBaby/blob/master/Screenshot.gif)
+## ٍScreenshot for TheBossBaby
+![Screenshot](https://github.com/everyskills/TheBossBaby/blob/master/Screenshot.gif)
 
 >## Installation
 - ### Steps to install TheBossBaby app
