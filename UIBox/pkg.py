@@ -95,8 +95,9 @@ def add_item(obj, icon: QIcon, text: str="", tooltip: str="", selectable: bool=F
             alignment=None):
 
     font = QFont()
-    font.setPointSize(font_size)
-    
+    # font.setPointSize(font_size)
+    font.setPixelSize(font_size)
+
     att = QListWidgetItem()
     att.setText(text)
     att.setHidden(hide)
@@ -158,9 +159,9 @@ def icon_types(_file: str, is_file: list=[False, ""]):
             iconProvider.icon(fileInfo).pixmap(200, 200).save(is_file[1], "png")
             return is_file[1]
             
-def api_icons(_type: str):
+def api_icons(_type: str, default: list=[]):
     try:
-        return json.load(open(base_dir + "api/icons.json")).get(_type)
+        return json.load(open(base_dir + "api/icons.json")).get(_type, default)
     except KeyError:
         return ""
 
@@ -337,7 +338,6 @@ def get_split_file(_file):
     )
 
 def get_platform():
-    platform = ""
     if sys.platform.startswith(("linux")):
         platform = "linux"
     elif sys.platform.startswith("win"):
@@ -346,5 +346,17 @@ def get_platform():
         platform = "macos"
     else:
         platform = "all"
+
+    return platform
+
+def get_system_name():
+    if sys.platform.startswith(("linux")):
+        platform = "Linux"
+    elif sys.platform.startswith("win"):
+        platform = "Windows"
+    elif sys.platform.startswith("darw"):
+        platform = "MacOS"
+    else:
+        platform = "UnKnow"
 
     return platform
