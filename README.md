@@ -230,8 +230,6 @@ for start using default keywords write in prefix like this ```@keyword```
 
 ## Test Platfrom 
 - [x] Linux
-- [] Windows
-- [] MacOS
 
 ## License
 Licensed under the GPL and MIT licenses (see LICENSE)
