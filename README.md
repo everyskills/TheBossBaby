@@ -2,7 +2,7 @@
 
 TheBossBaby is a extendable Search app with plugins and fetchers
 
-![Example](https://raw.github.com/nate-parrott/flashlight/master/Image.png)
+![Example](https://www.github.com/everyskills/Screenshot.gif)
 
 >## Installation
 - ### Steps to install TheBossBaby app
@@ -13,6 +13,10 @@ git clone https://www.github.com/everyskills/TheBossBaby.git
 ## after then do this command
 
 python3 setup.py
+
+## or in linux
+
+sudo python3 setup.py
 ```
 
 ## Main Widgets for style
@@ -56,7 +60,6 @@ python3 setup.py
 ------------------------------------------
 
 ## Writing Plugins
-<!-- ### you can see the examples in creator plugins -->
 ### You can program any type of plugins like QWidget or Items and this simple example for WebView plugin:
 
 This is a basic walkthrough for creating a plugin. We'll create a simple say plugin, 
@@ -76,18 +79,19 @@ to install your plugin go to settings and go to the downloads page and select pa
 
 ### info.json
 The first thing we need is an `info.json` file. Here's what to put in it:
-```javascript
+```json
 {
 	"name": "Python Functions",
 	"version": "1.0.0",
 	"description": "simple description",        // (optional)
 	"icon": "icon.png",                         // (optional)
 	"help": "README.md",                        // (optional)
-	"script": "main.py",
+	"script": "plugin.py",
 	"keyword": "print",
 	"creator_name": "Author name",              // (optional)
 	"creator_email": "example@domain.com",      // (optional)
-    "creator_url": "https://www.example.com"    // (optional)
+    "creator_url": "https://www.example.com",    // (optional)
+    "home_page" : "https://www.github/<user name>/<repo name>", // (optional)
 	"system": "all",
     "examples": [
         "print value",
@@ -100,7 +104,8 @@ The first thing we need is an `info.json` file. Here's what to put in it:
 
 Once that's there, you should be able to open up the TheBossBaby Installed list and see your plugin. It doesn't do anything yet.
 
-## plugin.py / json("script")
+## plugin.py
+
 ```python
 def Results(parent):
     """ param: parent for main window methods """
@@ -161,9 +166,68 @@ There are two more fields you can return in your `results` dictionary that may b
 - `open_links_in_browser`: _optional_ when the user clicks links in the webview, they'll close TheBossBaby and open in a browser
 
 
+
+
+## Writing Themes
+
+**What makes a theme**
+
+A theme needs a couple of things, which we'll explain below:
+
+- a `.thm` directory, containing:
+- an `info.json`
+- a `style.qss`
+- an `Icon.png` (optional)
+
+## info.json
+```json
+    "name": "Style name",
+    "type": "dark",        // [dark, light]
+    "version": "1.0.0", // (optional)
+    "creator_name": "Example", // (optional)
+    "creator_url": "https://example.com", // (optional)
+    "creator_email": "example@gmail.com", // (optional)
+    "creator_home_page": "https://github.com/everyskills/Darktheme.git", // (optional)
+    "style": "style.qss",
+    "icon": "Icon.png" // (optional)
+```
+
+## style.qss
+Click in this [url](https://doc.qt.io/qt-5/stylesheet-examples.html) to see how Qt Style Sheet Work
+
 ## Screenshots
 Online plugin pages like [this one](url) have screenshots of plugins. Take a screenshot of TheBossBaby showing your plugin by pressing `Meta + Shift + Return`, then saving that screenshot inside your plugin
 
+## TheBossBaby Default Keywords
+for start using default keywords write in prefix like this ```@keyword``` 
+
+### Return Press
+
+| ID/ObjectName    | Widget        |
+| -------------    | ------------- |
+| (install, download, downloader, installer) + Return | Open Downloader Window outside Search Box
+| hide | Hide Window
+| (exit, quit) | Kill window
+| settings | Open Settings Window
+| dark | Toggle to Dark mode
+| light | Toggle to Light mode
+| style {style name}
+| small | Toggle to Samll window mode
+| extend | Toggle to Extend window mode
+| clear-history | Clear History File
+| reload | Reload all Plugins and settings
+
+### Text Change
+
+| ID/ObjectName    | Widget        |
+| -------------    | ------------- |
+| (install, download, downloader, installer)          | show downloader page in Search Box
+| 
+
+## Platform Support
+- [x] Linux
+- [] Windows 10
+- [] MacOS
 
 ## License
 Licensed under the GPL and MIT licenses (see LICENSE)

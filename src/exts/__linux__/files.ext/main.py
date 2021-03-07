@@ -20,7 +20,6 @@ class Results(QWidget):
         self.parent = parent
 
         self.ui = loadUi(base_dir + "files.ui", self)
-        # self.ui.list_widget.itemClicked.connect(self.add_click_path)
         self.ui.list_widget.itemDoubleClicked.connect(self.add_click_path)
         self.ui.list_widget.itemSelectionChanged.connect(self.get_path_info)
         self.ui.btn_video.clicked.connect(self.start_video)
@@ -28,6 +27,9 @@ class Results(QWidget):
 
         enterAction = QAction("enter", self, shortcut="Return", triggered=self.get_enter_item)
         self.ui.list_widget.addAction(enterAction)
+
+        self.ui.label_12.hide()
+        self.ui.lpermissions.hide()
 
         self.init_ui()
         
@@ -50,46 +52,39 @@ class Results(QWidget):
         self.query = self.parent.get_text()
 
         _icon = pkg.icon_types(self.query)
-        self.ui.image.setPixmap(pkg.set_image(_icon, icon=True, size=150))
+        self.ui.image.setPixmap(pkg.set_image(_icon, icon=True, size=300))
 
-        _path, _file_count, _folder_count, _size = None, 0, 0, 0.00
+        _file_count, _folder_count, _size = 0, 0, 0.00
+        _path = os.path.expandvars(os.path.expanduser(self.query))
 
         if len(self.query) == 1 and self.query.startswith("~"):
             self.parent.insert_text("/")
 
-        if self.query.startswith(("/", "~")):
-            _path = os.path.expanduser(self.query)
-
-        elif "$" in self.query:
-            _path = os.path.expandvars(self.query)
-
         try:
-            if _path:
-                all_path = glob(_path + "*")
-                for i in all_path:
-                    if not os.path.isfile(i):
-                        _icon = pkg.icon_types(i)
-                        _folder_count += 1
-                        _size += os.path.getsize(i)
+            all_path = glob(_path + "*")
+            for i in all_path:
+                if not os.path.isfile(i):
+                    _icon = pkg.icon_types(i)
+                    _folder_count += 1
+                    _size += os.path.getsize(i)
 
-                    elif not os.path.isdir(i):
-                        _icon = pkg.icon_types(i)
-                        _file_count += 1
-                        _size += os.path.getsize(i)
+                elif not os.path.isdir(i):
+                    _icon = pkg.icon_types(i)
+                    _file_count += 1
+                    _size += os.path.getsize(i)
 
-                    else:
-                        _icon = pkg.icon_types(i)
-                        _file_count += 1
-                        _size += os.path.getsize(i)
-                    
-                    list_item = pkg.add_item(self.ui.list_widget, _icon)
-                    item_widget = pkg.add_item_widget(
-                        list_item, item.UIBUi_Item(), str(os.path.split(i)[1]), i)
-                    pkg.set_item_widget(self.ui.list_widget, item_widget)
-                    self.ui.status.setText(f"{_folder_count} {'Folder' if _folder_count <= 1 else 'Folders'}, {_file_count} {'File' if _file_count <= 1 else 'Files'} ({pkg.get_size(_size)})")
-                    item_widget[1].mouseDoubleClickEvent = (lambda e: self.add_click_path(self.list_widget.currentItem()))
-
-        except FileNotFoundError:
+                else:
+                    _icon = pkg.icon_types(i)
+                    _file_count += 1
+                    _size += os.path.getsize(i)
+                
+                list_item = pkg.add_item(self.ui.list_widget, _icon)
+                item_widget = pkg.add_item_widget(
+                    list_item, item.UIBUi_Item(), str(os.path.split(i)[1]), i)
+                pkg.set_item_widget(self.ui.list_widget, item_widget)
+                self.ui.status.setText(f"{_folder_count} {'Folder' if _folder_count <= 1 else 'Folders'}, {_file_count} {'File' if _file_count <= 1 else 'Files'} ({pkg.get_size(_size)})")
+                item_widget[1].mouseDoubleClickEvent = (lambda e: self.add_click_path(self.list_widget.currentItem()))
+        except Exception:
             pass
 
     def hide_video(self):
@@ -132,19 +127,19 @@ class Results(QWidget):
         if _file.endswith(".gif"):
             self.hide_video()
             movie = QMovie(_path)
-            movie.setScaledSize(QSize(300, 200))
+            movie.setScaledSize(QSize(350, 300))
             self.ui.image.setMovie(movie)
             movie.start()
 
         elif _file.endswith(img):
             self.hide_video()
-            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=300))
+            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=350))
 
         elif _file.endswith(video) or _file.endswith(audio):
             self.video_player = pkg.video_player(
                 self.ui.image, "", self.media_time_changed)
             
-            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=150))
+            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=300))
             self.video_player.set_media(_path)
             self.show_video()
 
@@ -156,7 +151,7 @@ class Results(QWidget):
 
         else:
             self.hide_video()
-            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=150))
+            self.ui.image.setPixmap(pkg.set_image(item.icon(), size=300))
             
     def set_data(self, _file):
         if not _file.endswith(".fdmdownload"):

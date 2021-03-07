@@ -84,7 +84,7 @@ class SettingsWindow:
         ############# QComboBox Value Changed
         mt.CB_changed(self.ui.window_style)
 
-        self.add_list_paths()
+        # self.add_list_paths()
 
     ###################### Set Line Style 
     # def dialog_font(self):
@@ -193,25 +193,25 @@ class SettingsWindow:
     #     self.ui.left_icon.setStyleSheet("")
 
 
-    def add_list_paths(self):
-        for i in range(10):
-            item_widget = KUi_Form()
-            item = pkg.add_item(self.list_widget_path, "")
+    # def add_list_paths(self):
+    #     for i in range(10):
+    #         item_widget = KUi_Form()
+    #         item = pkg.add_item(self.list_widget_path, "")
 
-            item.setSizeHint(QSize(60, 60))
+    #         item.setSizeHint(QSize(60, 60))
 
-            item_widget.btn_icon.setIcon(pkg.icon_types(item_widget.line_path.text().strip()))
-            item_widget.line_path.setText(str(i))
-            item_widget.setObjectName("line_path_%d" % i)
+    #         item_widget.btn_icon.setIcon(pkg.icon_types(item_widget.line_path.text().strip()))
+    #         item_widget.line_path.setText(str(i))
+    #         item_widget.setObjectName("line_path_%d" % i)
 
-            self.list_widget_path.addItem(item)
-            self.list_widget_path.setItemWidget(item, item_widget)
+    #         self.list_widget_path.addItem(item)
+    #         self.list_widget_path.setItemWidget(item, item_widget)
 
-            item_widget.line_path.textChanged.connect(self.edited_path)
+    #         item_widget.line_path.textChanged.connect(self.edited_path)
 
-    def edited_path(self, text):
-        item = self.list_widget_path.currentItem()
-        print(item)
+    # def edited_path(self, text):
+    #     item = self.list_widget_path.currentItem()
+    #     print(item)
 
 def main():
     app = QApplication([])
