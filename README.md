@@ -213,7 +213,7 @@ for start using default keywords write in prefix like this ```@keyword```
 | settings | Open Settings Window
 | dark | Toggle to Dark mode
 | light | Toggle to Light mode
-| style {style name}
+| style {style name} | Applay Theme by name
 | small | Toggle to Samll window mode
 | extend | Toggle to Extend window mode
 | clear-history | Clear History File
