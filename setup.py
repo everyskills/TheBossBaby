@@ -33,6 +33,7 @@ def main():
     	print(" [+] Copied TheBossBaby App -> ", path, "\tDone...")
     	shutil.copy2(base_dir + "uibox", "/usr/bin/")
 	    print(" [+] Copied uibox CLI tool -> ", "/usr/bin/", "\tDone...")
+        shutil.copy2(base_dir + "TheBossBaby.desktop", "/usr/share/applications/")
 
 if __name__ == "__main__":
     try:
