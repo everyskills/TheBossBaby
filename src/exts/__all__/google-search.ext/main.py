@@ -5,10 +5,9 @@
 def Results(parent):
 	return {
         "html": "",
-		"title": f"Search for '{parent.text}'",
 		"open_links_in_browser": False,
 		"items": [
-			{"title": f"Search for '{parent.text}' in Google.", "key": "1"},
+			{"title": f"Search for '{parent.text}' in Google."},
 		]
 	}
 

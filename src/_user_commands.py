@@ -70,6 +70,7 @@ class UserCommands:
                 
                 if isinstance(is_args, bool):
                     dic.get(data.get("type", ""))(data, key, val, is_args)
+                
                 elif not key in list(self.window.exts.keys()):
                     self.window.input.setText(data.get("json", {}).get("keyword", data.get("keyword")) + " ")
                     self.window.input.setFocus()

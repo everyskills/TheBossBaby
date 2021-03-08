@@ -94,10 +94,10 @@ class Ui_List(object):
 
         self.list_widget.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.list_widget.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.list_widget.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.list_widget.setAutoScroll(False)
+        # self.list_widget.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        # self.list_widget.setAutoScroll(True)
         self.list_widget.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerItem)
-        self.list_widget.setGridSize(QtCore.QSize(0, 55))
+        self.list_widget.setGridSize(QtCore.QSize(0, 50))
         self.list_widget.setWordWrap(False)
         self.list_widget.setObjectName("list_widget")
         self.gridLayout.addWidget(self.list_widget, 0, 0, 1, 1)
@@ -146,8 +146,8 @@ class UIBIPlugin(QtWidgets.QWidget, Ui_List):
             triggered=lambda: self.run_plug_func(self.list_widget.currentItem()))
 
         self.list_widget.addAction(enterAction)
-
-        self.list_widget.itemClicked.connect(self.run_plug_func)
+        self.list_widget.itemClicked.connect(lambda: self.item_event(False))
+        self.list_widget.itemSelectionChanged.connect(lambda: self.item_event(True))
         self.set_widget_items(self.func)
 
     def init_ui(self, func):
@@ -155,6 +155,8 @@ class UIBIPlugin(QtWidgets.QWidget, Ui_List):
 
     def set_widget_items(self, func):
         self.list_widget.clear()
+        self.result.clear()
+        
         ret_color = (
             self.parent.methods.light_color
             if self.parent.methods.style == 'dark' 
@@ -162,14 +164,10 @@ class UIBIPlugin(QtWidgets.QWidget, Ui_List):
 
         if isinstance(func, list) or isinstance(func, tuple):
             for count, item in enumerate(func):
-                if (self.parent.methods.text.lower() and 
-                    self.parent.methods.text.lower() in item.get("title", "").strip().lower() and
-                    count < 11):
-            
-                    icon = item.get("icon").strip()
-                    if not os.path.exists(icon):
-                        icon = base_dir + "icons/main/unknow.png"
+                if (self.parent.methods.text.lower() in item.get("title", "").strip().lower()): # and count < 11
 
+                    def_icon = self.parent.get_running_plugin
+                    icon = item.get("icon", def_icon.get("icon")).strip()
                     item_widget = self.add_item(icon, item.get("title", ""), item.get(
                         "subtitle", ""), "<font size='5' color='%s'>⏎</font>" % ret_color)
 
@@ -181,23 +179,36 @@ class UIBIPlugin(QtWidgets.QWidget, Ui_List):
             self.list_widget.blockSignals(False)
 
     def run_plug_func(self, item):
-        key = self.result.get(id(item))
+        data = self.result.get(id(item))
 
-        if not key.get("func", ""):
-            plug = self.parent.exts.get(self.parent.get_kv(self.parent.input.text())[0])
-            plug.get("script").Run(self.parent.methods, type("item", (), key))
-        else:
-            key.get("func")()
+        try:
+            if not data.get("func", ""):
+                plug = self.parent.exts.get(self.parent.get_kv(self.parent.input.text())[0])
+                pp = plug.get("script").Run(self.parent.methods, type("item", (), data))
+            else:
+                pp = data.get("func")()
 
-        self.parent.hide()
+            if not data.get("keep_app_open", False):
+                self.parent.hide()
+            
+            if pp:
+                self.set_widget_items(pp)
+        except Exception as err:
+            # print("Error-item-return-pressed-run: ", str(err))
+            pass
 
-    # def set_user_commands(self):
-    #     for p in glob(base_dir + "exts/__user__/__web__/*.ext/"):
-    #         data = json.load(open(p + "workflow.json"))
-    #         query = self.parent.methods.text
+    def item_event(self, selected: bool=False):
+        data = type("item", (), self.result.get(id(self.list_widget.currentItem())))
+        try:
+            if not selected:
+                pp = self.parent.exts.get(self.parent.running).get("script").ItemClicked(self.parent.methods, data)
+                if not pp or not data.keep_app_open == True:
+                    self.parent.hide()
+            else:
+                pp = self.parent.exts.get(self.parent.running).get("script").ItemSelected(self.parent.methods, data)
 
-    #         if self.list_widget.count() < 11:
-    #             item_widget = self.add_item(data.get("icon", p + "Icon.png"),
-    #                                         data.get("title", "").replace("{query}", query),
-    #                                         data.get("subtitle", "").replace("{query}", query),
-    #                                         "<font size='5'>↩️</font>")
+            if pp:
+                self.set_widget_items(pp)
+        except Exception as err:
+            # print("Error-item-clicked-selected: ", str(err))
+            pass

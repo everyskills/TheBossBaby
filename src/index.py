@@ -12,15 +12,14 @@ from _plugin_items import UIBIPlugin
 from _plugin_web_view import UIBWPlugin
 from ui._window import Ui_Form as app_ui
 from UIBox import pkg, dialog, item
-from PyQt5.QtCore import QEvent, QSize, Qt
+from PyQt5.QtCore import QEvent, QRunnable, QSize, QThread, QThreadPool, Qt, pyqtSlot
 from PyQt5.QtWidgets import QAction, QApplication, QSizeGrip, QStackedWidget, QWidget
 from settings.applay import ApplaySettingOnWindow
 from _downloader import Downloader
 from _keywords import TBB_Keyowrds
 from _tray_icon import TBB_Tray_Icon
 from _larg_text import TBB_Larg_Text
-
-# from threading import Thread
+from threading import Thread
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
@@ -206,6 +205,7 @@ class MainWindow(QWidget, app_ui):
             try:
                 dic = json.load(open(rd + "info.json")) # info.json
                 if dic.get("enabled", False):
+
                     icon = rd + dic.get("icon", "Icon.png")
                     if not icon or not os.path.exists(icon):
                         icon = base_dir + "icons/main/unknow.png"
@@ -238,8 +238,11 @@ class MainWindow(QWidget, app_ui):
                 self.tbb_keys.Keys[text](val)
             else:
                 key = self.get_kv(self.input.text())[0]
-                if key in list(self.exts.keys()):
+
+                if key and self.is_key(key):
+                    
                     pp = self.exts.get(key).get("script").Run(self.methods)
+
                     if isinstance(pp, dict):
                         pp.get("keywords", {}).update(self.web_running_data.get("keywords", {}))
                         self.web_running_data.update(pp)
@@ -461,6 +464,9 @@ class MainWindow(QWidget, app_ui):
             else:
                 return ("", "")
 
+    def is_key(self, text: str=""):
+        return text if text else self.running in list(self.exts.keys())
+        
     ####################### Create System Tray #######################
     def check_win(self):
         if self.isHidden():

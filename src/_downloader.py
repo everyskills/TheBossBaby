@@ -6,7 +6,7 @@ import shutil
 from glob import glob
 from PyQt5.QtGui import QDragEnterEvent, QIcon
 from PyQt5.QtCore import QThreadPool
-from PyQt5.QtWidgets import QAction, QApplication, QMessageBox, QWidget
+from PyQt5.QtWidgets import QApplication, QMessageBox, QWidget
 from _unzip import UnzipWorker, ZipInfo
 from ui.down import Ui_Form
 
@@ -26,11 +26,6 @@ class Downloader(QWidget, Ui_Form):
 
         self.screenshot.setStyleSheet("border: 1px dotted white; border-radius: 5px;")
         self.screenshot.setText("Drag Plugin Zip file here")
-
-        # self.quitAction = QAction( "&Quit", self,
-        #     shortcut="Ctrl+Q",
-        #     triggered=self.close)
-        # self.addAction(self.quitAction)
 
         self.btn_install.clicked.connect(self.start_unzip)
         self.progress_bar.hide()

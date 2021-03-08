@@ -98,8 +98,7 @@ class WebPage(QWebEnginePage):
         return super().javaScriptConsoleMessage(level, message, lineNumber, sourceID)
 
     def set_user_agent(self, agent: str):
-        if agent.strip():
-            self.profile().setHttpUserAgent(agent if agent.strip() else self._USER_AGENT)
+        self.profile().setHttpUserAgent(agent if agent.strip() else self._USER_AGENT)
 
     def acceptNavigationRequest(self, url, _type, isMainFrame):
         if (_type == QWebEnginePage.NavigationTypeLinkClicked and self.open_links_in_browser):
@@ -174,8 +173,9 @@ class UIBWPlugin(QWidget, UIBUi_web, UserCommands):
                 self.window.run_web_plugin(self.window.exts.get(key).get(
                     "icon"), self.window.web_running_data, False if selected else True)
 
-        except AttributeError:
-            self.window.built_in_func()
+        except AttributeError as err:
+            if self.window.is_key():
+                self.window.built_in_func()
 
     def get_selected_info(self):
         item = self.UIB_list_widget.currentItem()
@@ -257,7 +257,9 @@ class UIBWPlugin(QWidget, UIBUi_web, UserCommands):
                                                    func.get("base_file", "index.html"), 
                                                    func.get("keywords", {}))
             self.set_html(html)
-
+        else:
+            self.UIB_web.setHtml("")
+    
     ############ Check HTML return code type
     def set_html(self, html: str):
         try:

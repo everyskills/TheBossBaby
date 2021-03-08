@@ -59,12 +59,10 @@ class TBB_Larg_Text(QWidget):
     def mousePressEvent(self, a0: QMouseEvent) -> None:
         self.close()
 
-    def hideEvent(self, a0: QHideEvent) -> None:
-        self.close()
-
 def main():
     app = QApplication([])
     win = TBB_Larg_Text()
+    win.larg_text("Test Larg Text Ok")
     win.show()
     exit(app.exec_())
 

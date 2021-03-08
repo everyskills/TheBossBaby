@@ -45,7 +45,7 @@ class TBB_Tray_Icon:
 
         self.trayIcon = QSystemTrayIcon(QIcon(base_dir + "icons/logo.png"))
         self.trayIcon.setContextMenu(self.trayIconMenu)
-        self.trayIcon.setToolTip(f"The Boss Baby")
+        self.trayIcon.setToolTip(f"The Boss Baby v1.0.0")
         self.trayIcon.activated.connect(self.p.check_win)
 
     def show_message(self, title: str="", body: str="", icon: str="", timeout: int=5, clicked: object=lambda: ()):

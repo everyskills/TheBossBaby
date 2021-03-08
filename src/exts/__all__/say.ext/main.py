@@ -16,10 +16,8 @@ def speak(audio):
 def Results(parent):
 	return {
 		"html": f"<h3> Say ' {parent.text} '",
-		"title": f"Say '{parent.text}'",
-		"open_url_in_browser": True
+		"open_links_in_browser": True
 	}
 
 def Run(parent):
 	speak(parent.text)
-

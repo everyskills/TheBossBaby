@@ -1,0 +1,14 @@
+[Desktop Entry]
+Comment[en_US]=User Interface Box
+Comment=User Interface Box
+Exec=python3.8 /opt/TheBossBaby-app/src/index.py
+GenericName[en_US]=User Interface Box
+GenericName=User Interface Box
+Icon=/opt/TheBossBaby-app/src/icons/logo.png
+MimeType=Utilities
+Name[en_US]=TheBossBaby
+Name=TheBossBaby
+Path=/opt/TheBossBaby-app/src/
+StartupNotify=true
+Terminal=false
+Type=Application

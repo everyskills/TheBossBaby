@@ -134,7 +134,7 @@ class Controls:
 
     def include_file(self, _file: str):
         key = self.__parent.get_kv(self.__parent.input.text())[0]
-        return QUrl.fromUserInput(self.__parent.exts.get(key, {}).get("path") + _file).toLocalFile()
+        return QUrl.fromUserInput(self.__parent.exts.get(key, {}).get("path", "") + _file).toLocalFile()
 
     def get_input(self, text: str):
         patt = re.compile(r"\$\(([a-z-A-Z_0-9]+)\)")
