@@ -7,13 +7,23 @@ import shutil
 args = sys.argv
 path = "/opt/TheBossBaby-app"
 
-if "uninstall" in args:
-	if os.path.exists(path):
-		shutil.rmtree(path)
-	else:
-		print(" [!] TheBossBaby-app Directory is not exists.")
-elif "start" in args:
-	os.system("python3 " + path)
+try:
 
-else:
-	print(f" '{args}' command not found ")
+	if "uninstall" in args:
+		if os.path.exists(path):
+			shutil.rmtree(path)
+			os.remove("/usr/share/applications/TheBossBaby.desktop")
+			os.remove("/usr/bin/uibox")
+		else:
+			print(" [!] TheBossBaby-app Directory is not exists.")
+
+	elif "start" in args:
+		os.system("python3 " + path + "/index.py")
+
+	else:
+		print(f" '{args}' command not found ")
+
+except PermissionError:
+    print("You must be root or sudo to run this file on Linux")
+except FileExistsError as err:
+	print(err)
