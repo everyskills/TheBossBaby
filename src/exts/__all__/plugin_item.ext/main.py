@@ -8,7 +8,6 @@ def Results(parent):
         List.append({
             "title": f"Item Number '{i}'",
             "subtitle": "Test Plugin Items",
-            "icon": "",
             "key": f"num{i}",
             "keep_app_open": True
         })
@@ -20,14 +19,11 @@ def Run(parent, item):
     print("KEY: ", item.key)
     print("ITEM: ", item.title)
 
-    if item.key == "num1":
-        print("You'r number 1")
-    else:
-        print("You'r in any number")
-
+    return Results(parent)
+    
 def ItemSelected(parent, item):
     print(item.key)
 
 def ItemClicked(parent, item):
     Run(parent, item)
-    return [{"keep_app_open": True}]
+    return Results(parent)

@@ -5,7 +5,6 @@
 simple description what plugin do
 """
 
-import os
 from PyQt5.QtWidgets import QWidget
 from UIBox.list_item import UIBUi_List
 
@@ -13,8 +12,6 @@ __keyword__ = ""
 __author__ = ""
 __github__ = ""
 __all__ = ["Results",]
-
-base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 ## NOTE: Before create your plugin, please check if not was taken your keyword
 ## NOTE: Write all Information in package.json for best quality

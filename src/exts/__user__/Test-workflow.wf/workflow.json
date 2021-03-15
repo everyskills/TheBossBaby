@@ -9,7 +9,7 @@
 		{
 			"type": "web",
 			"url": "https://www.google.com/search?q={query}",
-			"browser": "google-chrome",
+			"browser": "firefox",
 			"args": false,
 			"use_thread": false,
 			"icon": "Icon.png",

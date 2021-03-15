@@ -8,16 +8,13 @@ from _user_commands import UserCommands
 from PyQt5.QtWebChannel import QWebChannel
 from PyQt5.QtCore import QObject, QSize, QUrl
 from PyQt5.QtGui import QDesktopServices, QIcon
+from jinja2 import Environment, FileSystemLoader, Template
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 from PyQt5.QtWidgets import QFrame, QGridLayout, QListWidget, QProgressBar, QSizePolicy, QSplitter, QWidget
+from threading import Thread
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
-try:
-    from jinja2 import Environment, FileSystemLoader, Template
-except ModuleNotFoundError:
-    sys.path.insert(0, base_dir + '/modules/jinja2.zip')
-    from jinja2 import Environment, FileSystemLoader, Template
 
 """
 return: ⏎
@@ -77,7 +74,7 @@ class UIBUi_web(object):
 
         self.UIB_splitter = QSplitter(Form)
         self.UIB_splitter.setHandleWidth(5)
-
+        
         self.UIB_splitter.addWidget(self.UIB_list_widget)
         self.UIB_splitter.addWidget(self.UIB_web)
 
@@ -85,6 +82,10 @@ class UIBUi_web(object):
         
         QWidget.setTabOrder(self.UIB_list_widget, self.UIB_web)
         self.UIB_progress_bar.hide()
+
+    #     self.UIB_web.resizeEvent = self.save_size
+    # def save_size(self, event):
+    #     self.window.plug_splitter_width.update({self.window.running: self.UIB_web.width()})
 
 class WebPage(QWebEnginePage):
     def __init__(self, table):
@@ -143,8 +144,8 @@ class UIBWPlugin(QWidget, UIBUi_web, UserCommands):
 
     def init_ui(self, func=None):
         if not func == None:
-            if func.get("object", {}):
-                objects = func.get("object", {"": DefaultApp()})
+            if func.get("objects", {}):
+                objects = func.get("objects", {"": DefaultApp()})
                 self.web_page.open_links_in_browser = func.get("open_links_in_browser", True)
 
                 if (not list(self.registeredObjects.keys()) == list(objects.keys()) or not self.registeredObjects):
@@ -152,27 +153,30 @@ class UIBWPlugin(QWidget, UIBUi_web, UserCommands):
                     self.channel.registerObjects(objects)
                     self.registeredObjects.update(objects)
 
-            if func.get("web_args", ""):
+            if str(func.get("web_args", "")):
             	os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] += " " + func.get("web_flags", "")
-            
+
             self.run_plugin(func)
 
     def run_plugin_item(self, item, selected: bool=False):
         try:
             data = type("item", (), self.window.web_item_results.get(id(item), {}))
             key = self.window.running
+            plugin_code = self.window.exts.get(key).get("script")
+            pp = {}
 
-            if not selected:
-            	pp = self.window.exts.get(key).get("script").ItemClicked(self.window.methods, data)
-            else:
-            	pp = self.window.exts.get(key).get("script").ItemSelected(self.window.methods, data)
+            if not selected and hasattr(plugin_code, "ItemClicked"):
+            	pp = plugin_code.ItemClicked(self.window.methods, data)
+                
+            elif hasattr(plugin_code, "ItemSelected"):
+            	pp = plugin_code.ItemSelected(self.window.methods, data)
 
-            if isinstance(pp, dict):
+            if pp and isinstance(pp, dict):
                 pp.get("keywords", {}).update(self.window.web_running_data.get("keywords", {}))
                 self.window.web_running_data.update(pp)
                 self.window.run_web_plugin(self.window.exts.get(key).get(
                     "icon"), self.window.web_running_data, False if selected else True)
-
+        
         except AttributeError as err:
             if self.window.is_key():
                 self.window.built_in_func()
@@ -180,7 +184,6 @@ class UIBWPlugin(QWidget, UIBUi_web, UserCommands):
     def get_selected_info(self):
         item = self.UIB_list_widget.currentItem()
         data = self.results.get(id(item))
-
         try:
             is_run = self.window.get_kv(self.window.input.text())[0]
             if not is_run in list(self.window.exts.keys()):
@@ -216,15 +219,14 @@ class UIBWPlugin(QWidget, UIBUi_web, UserCommands):
                 desc = data.get("json", {}).get("description", "")
                 name = data.get("json", {}).get("name", "")
                 version = data.get("json", {}).get("version")
-                key = data.get("json", {}).get("keyword", "")
 
                 keys = {
-                    "name": name if name else data.get("title"),
-                    "icon": data.get("icon"),
-                    "tag":  desc if desc else data.get("description"),
                     "version": version,
+                    "icon": data.get("icon"),
+                    "key": data.get("keyword", ""),
+                    "name": name if name else data.get("title"),
+                    "tag":  desc if desc else data.get("description"),
                     "style": "file://" + base_dir + "default_view/plugin.css",
-                    "key": key if key else data.get("keyword"),
                     'color': 'black' if not self.window.methods.style == 'dark' else 'white',
                     'bg': self.window.methods.dark_color if self.window.methods.style == 'dark' else self.window.methods.light_color
                 }
@@ -232,10 +234,8 @@ class UIBWPlugin(QWidget, UIBUi_web, UserCommands):
                 html = self.get_jinja_template(open(base_dir + "default_view/plugin.html", "r").read(), keys)
                 self.window.btn_ext.setIcon(QIcon(data.get("icon")))
                 self.set_html(html)
-
             else:
                 self.run_plugin_item(item, selected=True)
-
         except Exception as err:
             print(err)
             self.run_plugin_item(item, selected=True)
@@ -248,7 +248,6 @@ class UIBWPlugin(QWidget, UIBUi_web, UserCommands):
         html = str(func.get("html"))
         if html.strip():
             self.web_page.set_user_agent(str(func.get("user_agent", "")))
-
             if func.get("jinja", False) and not func.get("template_dir", ""):
                 html = self.get_jinja_template(open(html, "r").read() if os.path.exists(html) 
                                                 else html, func.get("keywords", {}))

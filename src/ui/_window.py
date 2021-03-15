@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_Form(object):
@@ -73,6 +74,7 @@ class Ui_Form(object):
         self.input.setCursorPosition(0)
         self.input.setClearButtonEnabled(False)
         self.input.setObjectName("input")
+        self.input.setAcceptDrops(True)        
         self.gridLayout_2.addWidget(self.input, 0, 1, 1, 1)
         self.gridLayout_7.addWidget(self.UIB_input_frame, 0, 0, 1, 2)
         self.UIB_main_frame = QtWidgets.QFrame(self.UIB_frame)
@@ -89,3 +91,21 @@ class Ui_Form(object):
         self.main_grid_layout.setObjectName("main_grid_layout")
         self.gridLayout_7.addWidget(self.UIB_main_frame, 1, 0, 1, 2)
         self.gridLayout.addWidget(self.UIB_frame, 0, 0, 1, 1)
+
+        self.input.dragEnterEvent = self.input_drag_event
+
+    def input_drag_event(self, event: QtGui.QDragEnterEvent):
+        data = event.mimeData()
+
+        event.setAccepted(True)
+
+        if data.hasUrls():
+            text = data.urls()[0].toLocalFile()
+        elif data.hasHtml():
+            text = data.html().strip()
+        elif data.hasColor():
+            text = data.colorData().name()
+        else:
+            text = data.text()
+
+        self.input.insert(text)

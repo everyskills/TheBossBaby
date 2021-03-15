@@ -107,7 +107,7 @@ def Results(parent):
 	return {
 		"html": html.replace("<!--CONTENT-->", content.replace("\n", "<br/>")).replace("{{image}}", "file://" + base_dir + "background.png"),
         "open_links_in_browser": True,
-        "object": {"note": MyApp()},
+        "objects": {"note": MyApp()},
 		"items": [
 			{"key": "secound", "icon": "", "title": title}
 		]

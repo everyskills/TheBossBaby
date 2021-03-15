@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 
 import os
+import sys
 import json
 import subprocess
-import sys
 
 from glob import glob
 from threading import Thread
-from PyQt5.QtCore import QFileInfo, QPointF, QSize, Qt, QRect
-from PyQt5.QtGui import QColor, QFont, QImage, QIcon, QBrush, QPixmap, QPainter, QWindow
+from PyQt5.QtCore import QFileInfo, QPointF, QSize, QUrl, Qt, QRect
+from PyQt5.QtGui import QColor, QDesktopServices, QFont, QImage, QIcon, QBrush, QPixmap, QPainter, QWindow
 from PyQt5.QtWidgets import QFileIconProvider, QGraphicsDropShadowEffect, QListWidgetItem
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
@@ -185,19 +185,19 @@ def set_image(_file: str, icon: bool=False, size: int=150):
         return QIcon(_file).pixmap(QSize(size, size))
 
 def add_item_widget(item, item_widget, text: str="", 
-                    desc: str="", hotkey: str="", no_desc: bool=False,
-                    item_size=(250, 40)):
+                    subtitle: str="", hotkey: str="", 
+                    no_subtitle: bool=False, item_size=(250, 40)):
 
     frame = item_widget
     frame.title.setText(text)
-    frame.shortcut.setText(hotkey)
+    frame.hotkey.setText(hotkey)
     
-    if no_desc:
-        frame.desc.hide()
-        frame.desc.setStyleSheet("")
+    if no_subtitle:
+        frame.subtitle.hide()
+        frame.subtitle.setStyleSheet("")
     else:
-        frame.desc.show()
-        frame.desc.setText(desc)
+        frame.subtitle.show()
+        frame.subtitle.setText(subtitle)
 
     item.setSizeHint(QSize(item_size[0], item_size[1]))
 
@@ -206,18 +206,9 @@ def add_item_widget(item, item_widget, text: str="",
 def get_sys_icon(_name: str):
     _icon = QIcon.fromTheme(_name)
     return _icon
-    # if not _icon.isNull():
-    #     return _icon
-    # else:
-    #     return 
         
 def _ext_json(_path: str, key: str, value: str=""):
     return json.load(open(str(_path + "package.json"))).get(key.lower(), value)
-
-def _get_path_ext_json(query: str, key: str="", value: str=""):
-    for i in glob(base_dir + "exts/pu.*.ext/"):
-        if _ext_json(i, "key_word") == query:
-            return _ext_json(i, key, value), i
 
 def set_item_widget(obj, item):
     obj.addItem(item[0])
@@ -226,8 +217,8 @@ def set_item_widget(obj, item):
 def set_item(obj, item):
     obj.addItem(item)
 
-def run_app(cmd):
-    Thread(target=subprocess.call, kwargs={"shell": True, "args": cmd}, daemon=True).start()
+def run_app(cmd: object):
+    Thread(target=lambda: subprocess.call(cmd, shell=True, stderr=None, stdin=None, stdout=None), daemon=True).start()
 
 def get_size(bytes, suffix="B"):
     """
@@ -360,3 +351,18 @@ def get_system_name():
         platform = "UnKnow"
 
     return platform
+
+def open_url(_file: str):
+    QDesktopServices.openUrl(QUrl.fromUserInput(_file))
+
+def cmd_open_url(_file: str):
+    run_app("xdg-open '%s'" % _file)
+
+def run_thread(func: object, *args, **kwargs):
+    Thread(target=func, daemon=True, args=args, kwargs=kwargs).start()
+
+def get_cmd_output(*args):
+    t = ""
+    for i in args:
+        t += i + " "
+    return os.popen(t, "r")

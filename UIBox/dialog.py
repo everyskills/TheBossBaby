@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from PyQt5.QtCore import Qt, QDir
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (QColorDialog, QDialog, QErrorMessage, QFileDialog, QFontDialog,
                             QInputDialog, QLineEdit, QMessageBox)

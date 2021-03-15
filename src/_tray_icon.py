@@ -17,9 +17,10 @@ class TBB_Tray_Icon:
         self.trayIcon.show()
 
     def createActions(self):
-        self.hideAction = QAction(QIcon(base_dir + "icons/logo.png"), "&Toggle Window",
+        self.hideAction = QAction(QIcon(base_dir + "icons/logo.png"), 
+                                "&Toggle Window",
                                 self.p, 
-                                shortcut="Alt+Space", 
+                                shortcut="Alt+Space",
                                 triggered=self.p.check_win)
         
         self.preferencesAction = QAction(pkg.get_sys_icon(
@@ -48,7 +49,7 @@ class TBB_Tray_Icon:
         self.trayIcon.setToolTip(f"The Boss Baby v1.0.0")
         self.trayIcon.activated.connect(self.p.check_win)
 
-    def show_message(self, title: str="", body: str="", icon: str="", timeout: int=5, clicked: object=lambda: ()):
-        # self.tray = QSystemTrayIcon(QIcon(base_dir + "icons/logo.png"))
+    def show_message(self, icon: str="", title: str="", body: str="", timeout: int=5, clicked: object=lambda: ()):
+        """:param: timeout(1) = 1000ms"""
         self.trayIcon.messageClicked.connect(clicked)
-        self.trayIcon.showMessage(title, body, QIcon(icon), timeout * 1000)
+        self.trayIcon.showMessage(title, body, QIcon(base_dir + "icons/logo.png"), timeout * 1000)

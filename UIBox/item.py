@@ -6,12 +6,9 @@ class UIBUi_Item(QtWidgets.QWidget):
     def __init__(self):
         super(UIBUi_Item, self).__init__()
 
-        self.LClick, self.LHover, self.LDClick = [], [], []
-
         self.setObjectName("Form")
         self.setMouseTracking(True)
 
-        # self.resize(321, 54)
         self.gridLayout_2 = QtWidgets.QGridLayout(self)
         self.gridLayout_2.setSpacing(0)
         self.gridLayout_2.setContentsMargins(0, 0, -2, 0)
@@ -25,13 +22,17 @@ class UIBUi_Item(QtWidgets.QWidget):
         self.title.setText("")
         self.title.setObjectName("title")
         self.gridLayout.addWidget(self.title, 0, 1, 1, 1)
-        self.desc = QtWidgets.QLabel(self)
+        self.subtitle = QtWidgets.QLabel(self)
         font = QtGui.QFont()
         font.setPointSize(7)
-        self.desc.setFont(font)
-        self.desc.setText("")
-        self.desc.setObjectName("desc")
-        self.gridLayout.addWidget(self.desc, 1, 1, 1, 1)
+        self.subtitle.setFont(font)
+        self.subtitle.setText("")
+        self.subtitle.setObjectName("subtitle")
+        self.gridLayout.addWidget(self.subtitle, 1, 1, 1, 1)
+
+        self.subtitle.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.subtitle.setAlignment(QtCore.Qt.AlignLeft)
+
         self.image = QtWidgets.QLabel(self)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -41,50 +42,36 @@ class UIBUi_Item(QtWidgets.QWidget):
         self.image.setText("")
         self.image.setObjectName("image")
         self.gridLayout.addWidget(self.image, 0, 0, 2, 1)
-        self.shortcut = QtWidgets.QLabel(self)
+        self.hotkey = QtWidgets.QLabel(self)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.shortcut.sizePolicy().hasHeightForWidth())
-        self.shortcut.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(self.hotkey.sizePolicy().hasHeightForWidth())
+        self.hotkey.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(8)
-        self.shortcut.setFont(font)
-        self.shortcut.setText("")
-        self.shortcut.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.shortcut.setObjectName("shortcut")
-        self.gridLayout.addWidget(self.shortcut, 0, 2, 2, 1)
+        self.hotkey.setFont(font)
+        self.hotkey.setText("")
+        self.hotkey.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.hotkey.setObjectName("hotkey")
+        self.gridLayout.addWidget(self.hotkey, 0, 2, 2, 1)
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
 
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
         self.setStyleSheet("""
-        /* color: #898b8c; */
-        #desc {
+        #subtitle {
             padding-left: 3px;
             font-size: 11px;
             color: #929a90;
         }
-        #title {
-            padding-left: 2px;
+        #hotkey {
+            padding-left: 5px;
         }
+
+        #title {padding-left: 2px}
         """)
-    
-    def clicked(self, call):
-        self.LClick.append(call)
-    
-    def hoverd(self, call):
-        self.LHover.append(call)
-
-    def doubl_clicked(self, call):
-        self.LDClick.append(call)
-
-    def mouseMoveEvent(self, event) -> None:
-        for func in self.LHover: func(self)
-        
-    def mouseDoubleClickEvent(self, event) -> None:
-        for func in self.LDClick: func(self)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

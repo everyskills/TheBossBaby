@@ -24,9 +24,9 @@ def Results(parent):
         return [
             {
                 "title": "No package " + parent.text + " could be found",
+                "highlightable": False,
                 "subtitle":"Are your repositories updated? (sudo apt update) "
                             "Remember, you can use regular expresions For example: apty ^steam",
-                "key": ""
             }
         ]
 

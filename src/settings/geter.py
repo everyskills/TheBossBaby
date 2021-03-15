@@ -3,21 +3,19 @@
 import os
 
 from . import methods as mt
-from PyQt5.QtCore import QSize
-from UIBox import dialog, pkg
+from UIBox import dialog
 from PyQt5.QtWidgets import QApplication, QStyleFactory
 from PyQt5.uic import loadUi
 from ._themes import ThemePage
 from ._plugins import PluginPage
-from .path_item_ui import KUi_Form
+from ._workflow import WorkFlow
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 class SettingsWindow:
-    def __init__(self) -> None:
+    def __init__(self, parent=None) -> None:
         super().__init__()
-    
-        # self.parent = parent
+
         self.ui = loadUi(base_dir + "../ui/extend_setting.ui", self)
         self.dialog = dialog.UIBDialog()
         self.setting = mt.setting
@@ -25,6 +23,7 @@ class SettingsWindow:
         ################# Include Classes
         self.thm = ThemePage(self)
         self.plug = PluginPage(self)
+        self.workflow = WorkFlow(self)
 
         ################# get all value from setting file and put them in formas
         self.get_settings_value()

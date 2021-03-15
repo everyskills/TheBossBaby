@@ -26,19 +26,20 @@ class Controls:
         self.__parent.show()
 
     def set_win_height(self, h: int):
-        if not h < 70:
+        if not h < 50:
             self.__parent.setFixedHeight(h)
-        
+
     def set_win_width(self, w: int):
-        if not w > 700:
+        if not w < 50:
             self.__parent.setFixedWidth(w)
 
     def set_win_size(self, w: int, h: int):
-        self.__parent.setFixedSize(w, h)
+        if not w < 50 and not h < 50:
+            self.__parent.setFixedSize(w, h)
 
     def set_small_mode(self):
         self.__parent.win_setting.small_mode()
-    
+
     def set_extend_mode(self):
         self.__parent.win_setting.extend_mode()
 
@@ -67,9 +68,13 @@ class Controls:
         return self.get_text()
 
     @property
+    def key(self):
+        return self.get_key()
+
+    @property
     def value(self):
         return self.get_text()
-        
+
     @property
     def result(self):
         return self.get_text()
@@ -82,16 +87,15 @@ class Controls:
     def light_color(self):
         return "#f6f6f6"
 
-    def post_message(self, title: str="", body: str="", icon: str="", timeout: int=5, clicked: object=lambda: ()):
-        self.__parent.tbb_tray_icon.show_message(title, body, icon, timeout, clicked)
+    def post_message(self, icon: str="", title: str="", body: str="", timeout: int=5000, clicked: object=lambda: ()):
+        self.__parent.tbb_tray_icon.show_message(
+            icon, title, body, timeout, clicked)
 
     def larg_text(self, text: str="", font_size: int=50, timeout: int=5000):
         self.__parent.tbb_larg_text.larg_text(text, font_size, timeout)
 
-
     def text_changed(self, func: object):
         self.__parent.input.textChanged.connect(func)
-
 
     def text_copy(self, text: str=""):
         if not text:
@@ -125,7 +129,7 @@ class Controls:
                     _dict.update({args[i]: args[i + 1]})
                 except IndexError:
                     _dict.update({args[i]: ""})
-        
+
         return _dict.get(key, default)
 
     def reload_page(self, count: int=1):
@@ -153,6 +157,12 @@ class Controls:
         except IndexError:
             return ""
 
+    def get_key(self):
+        try:
+            return self.__parent.get_kv(self.__parent.input.text())[0].strip().lower()
+        except IndexError:
+            return ""
+
     def insert_in_cursor(self, text: str):
         cur = self.__parent.input.cursorPosition()
         self.__parent.input.setCursorPosition(cur)
@@ -172,3 +182,7 @@ class Controls:
                     int(len(text)) + len(self.__parent.get_kv(self.__parent.input.text())[0]) + 1)
                 self.__parent.input.cursorForward(True, int(len(text)) + int(len(i)))
                 self.__parent.input.blockSignals(False)
+
+    @property
+    def icon(self):
+        return self.__parent.exts.get(self.__parent.get_kv(self.__parent.input.text())[0]).get("icon")

@@ -1,0 +1,31 @@
+{
+    "name": "Bluetooth Connect",
+    "version": "1.0.0",
+    "description": "Linux apt packages search",
+    "help": "README.md",
+    "keywords": [
+        {
+            "key": "btc",
+            "title": "Bluetooth Connect",
+            "subtitle": "",
+            "icon": ""
+        },
+        {
+            "key": "btd",
+            "title": "Bluetooth Disconnect",
+            "subtitle": "",
+            "icon": ""
+        }
+    ],
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "linux",
+    "examples": [
+        "btc choose device from list item for connect a device",
+        "btd choose device from list item for disconnect a device"
+    ],
+    "enabled": true
+}

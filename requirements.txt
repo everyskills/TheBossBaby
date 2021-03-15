@@ -4,11 +4,10 @@ pyttsx3==2.90
 google_trans_new==1.1.9
 PyQtWebEngine==5.15.0
 jinja2==2.11.3
-keyboard==0.13.5
+pyqtkeybind==0.0.8
 phonenumbers==8.12.15
 Pillow==7.2.0
-distutils
 markdown==3.2.2
 qtpy==1.9.0
-python-qnotifications==2.0.6
+distutils
 PyQtWebKit

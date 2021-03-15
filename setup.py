@@ -29,11 +29,15 @@ def main():
     	path = "/opt/TheBossBaby-app"
     	if not os.path.exists(path):
     		os.mkdir(path)
-    	shutil.copytree(base_dir + "src", path + "/src")
-    	print(" [+] Copied TheBossBaby App -> ", path, "\tDone...")
-    	shutil.copy2(base_dir + "uibox", "/usr/bin/")
-	    print(" [+] Copied uibox CLI tool -> ", "/usr/bin/", "\tDone...")
+
+        shutil.copytree(base_dir + "src", path + "/src")
+        print(" [+] Copied TheBossBaby App -> ", path, "\tDone...")
+
+        shutil.copy2(base_dir + "uibox", "/usr/bin/")
+        print(" [+] Copied uibox CLI tool -> ", "/usr/bin/", "\tDone...")
+
         shutil.copy2(base_dir + "TheBossBaby.desktop", "/usr/share/applications/")
+        print(" [+] Copied TheBossBaby Desktop file -> ", "/usr/share/applications/", "\tDone...")
 
 if __name__ == "__main__":
     try:

@@ -7,12 +7,13 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMessageBox
 from UIBox import pkg
 from glob import glob
+from ._plugin_settings import PluginSettings
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
-class PluginPage:
+class PluginPage(PluginSettings):
     def __init__(self, parent) -> None:
-        super().__init__()
+        super(PluginPage, self).__init__(parent)
 
         self.p = parent
         self.results = {}
@@ -46,11 +47,11 @@ class PluginPage:
 
                 item = pkg.add_item(self.p.list_widget_plugin, 
                                     QIcon(self.get_plugin_icon(_file, pp, ps)), 
-                                    self.get_js(_file, "name", "UnKnow Name"),
-                                    self.get_js(_file, "description", "UnKnow Description"),
+                                    str(self.get_js(_file, "name", "UnKnow Name")),
+                                    str(self.get_js(_file, "description", "UnKnow Description")),
                                     font_size=13)
 
-                if text.strip().lower() in self.get_js(_file, "name", "").lower() or not text.strip():
+                if text.strip().lower() in str(self.get_js(_file, "name", "")).lower() or not text.strip():
                     self.p.list_widget_plugin.addItem(item)
                     self.results.update({id(item): _file})
                     self.p.match_plugin.setText("Match (%s) Plugins." % self.p.list_widget_plugin.count())
@@ -59,7 +60,7 @@ class PluginPage:
                 print(err)
 
     def get_plugin_icon(self, _file: str, _path: str, _plug_path: str):
-        icon = _plug_path + self.get_js(_file, "icon", "Icon.png")
+        icon = _plug_path + str(self.get_js(_file, "icon", "Icon.png"))
         if not icon or not os.path.exists(icon):
             icon = _path + "/icons/main/unknow.png"
         return icon
@@ -73,7 +74,7 @@ class PluginPage:
     def get_selected_item_data(self):
         item = self.p.list_widget_plugin.currentItem()
         self.p.cr_examples.clear()
-        
+
         try:
             _file = self.results.get(id(item), "")
             html = """
@@ -81,33 +82,42 @@ class PluginPage:
             &nbsp;<font size='2'>Version %s</font><br><br>
             <font size='3'>%s</font><br>
             """ % (
-                self.get_js(_file, "name", "UnKnow Name"),
-                self.get_js(_file, "version", "1.0.0"),
-                self.get_js(_file, "description", "no Description")
+                str(self.get_js(_file, "name", "UnKnow Name")),
+                str(self.get_js(_file, "version", "1.0.0")),
+                str(self.get_js(_file, "description", "no Description"))
             )
+
+            self._help_file = os.path.split(
+                _file)[0] + "/" + str(self.get_js(_file, "help", "README.md"))
+            self._setting_file = os.path.split(
+                _file)[0] + "/" + str(self.get_js(_file, "settings", "settings.json"))
 
             self.p.plugin_top_data.setText(html)
             self.p.plugin_icon.setIcon(item.icon())
 
-            self.p.cr_key.setText(self.get_js(_file, "keyword", ""))
-            self.p.cr_email.setText(self.get_url(self.get_js(_file, "creator_email", "no Email")))
-            self.p.cr_url.setText(self.get_url(self.get_js(_file, "creator_url", "no URL")))
-            self.p.cr_home_page.setText(self.get_url(self.get_js(_file, "home_page", "no Home Page")))
-            self.p.cr_name.setText(self.get_js(_file, "creator_name", "no name"))
+            # self.p.cr_key.setText(str(self.get_js(_file, "keyword", "")))
+            self.p.cr_email.setText(self.get_url(str(self.get_js(_file, "creator_email", "no Email"))))
+            self.p.cr_url.setText(self.get_url(str(self.get_js(_file, "creator_url", "no URL"))))
+            self.p.cr_home_page.setText(self.get_url(str(self.get_js(_file, "home_page", "no Home Page"))))
+            self.p.cr_name.setText(str(self.get_js(_file, "creator_name", "no name")))
             self.p.check_pluging_is_enabled.setChecked(self.get_js(_file, "enabled", False))
 
-            for i in self.get_js(_file, "examples", []):
+            for i in list(self.get_js(_file, "examples", [])):
                 self.p.cr_examples.insertHtml(str(i) + "<br>" * 2)
-            
-            _help_file = os.path.split(
-                _file)[0] + "/" + self.get_js(_file, "help", "")
 
-            if os.path.exists(_help_file):
-                with open(_help_file) as _fr:
-                    self.p.plugin_web_view.setHtml(markdown.markdown(_fr.read()))
+            if os.path.exists(self._help_file):
+                with open(self._help_file) as _fr:
+                    self.p.plugin_help_web.setHtml(markdown.markdown(_fr.read()))
+            else:
+                self.p.plugin_help_web.setHtml("")
+            
+            if os.path.exists(self._setting_file):
+                self.set_plugin_setting_form()
+            else:
+                self.p.plugin_settings_web.setHtml("")
 
         except Exception as err:
-            print(err)
+            print("Error-settings-item-selected: ", err)
 
     def update_plugin_file(self, text: str="", enabled: bool=False):
         _file = self.results.get(id(self.p.list_widget_plugin.currentItem()), "")
@@ -134,10 +144,10 @@ class PluginPage:
 
         msgBox.setWindowIcon(QIcon(base_dir + "icons/logo.png"))
         msgBox.setIconPixmap(item.icon().pixmap(50, 50))
-        msgBox.setWindowTitle(f"Plugin Delete - {self.get_js(_file, 'name', '')}")
+        msgBox.setWindowTitle(f"Plugin Delete - {str(self.get_js(_file, 'name', ''))}")
         msgBox.setText(f"""\
                         {self.get_js(_file, "name", "")[0:64]}<br>\
-                        &nbsp;<font size='1' color='#ffffff'>Version {self.get_js(_file, "version", "")} \
+                        &nbsp;<font size='1' color='#ffffff'>Version {str(self.get_js(_file, "version", ""))} \
                         </font></sub><br><br>
                         You are sure you wnat to delete this plugin ?
                         """)
@@ -152,6 +162,8 @@ class PluginPage:
             self.set_plugins()
 
     def launche_plugin(self):
-        item = self.p.list_widget_plugin.currentItem()
-        _file = self.results.get(id(item), "")
+        key = self.p.cr_key.text().strip()
+        if key:
+            ...
+            
         ## Complete Code Here

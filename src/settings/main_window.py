@@ -9,7 +9,7 @@ class SettingsMainWindow(QMainWindow, SettingsWindow):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
 
-        self.parent = parent
+        self.p = parent
         self.resize(QtCore.QSize(1000, 600))
         self.setWindowIcon(QIcon(base_dir + "icons/logo.png"))
         self.setWindowTitle("The Boss Baby - Settings")

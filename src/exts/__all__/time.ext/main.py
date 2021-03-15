@@ -65,6 +65,5 @@ HTML = """
 def Results(parent):
 	return {
 		"html": HTML,
-		"title": "See the time in page",
 		"open_links_in_browser": True
 	}

@@ -137,34 +137,45 @@ class ApplaySettingOnWindow:
     def select_plugin_value(self):
         k, v = self.p.get_kv(self.p.input.text())
         self.p.input.setSelection(len(k) + 1 if v else 0, len(self.p.input.text()))
+        self.p.input.setFocus()
 
     def clear_plugin_value(self):
         k, v = self.p.get_kv(self.p.input.text())
         self.p.input.setText(k + " " if v else "")
+        self.p.input.setFocus()
 
     def small_mode(self):
         self.set_line_style(False)
-        self.p.UIB_main_frame.hide()
-        self.p.setFixedHeight(mt.setting.value("window_min_extend", type=int))
+        height = mt.setting.value("window_min_extend", type=int)
+        if not self.p.UIB_main_frame.isHidden() and self.p.height() != height:
+            self.p.UIB_main_frame.hide()
+            self.p.setFixedHeight(height)
+
         # self.p.resize(QSize(mt.setting.value("window_width", type=int), mt.setting.value("window_min_extend", type=int)))
 
     def extend_mode(self):
         self.set_line_style(True)
-        self.p.UIB_main_frame.show()
-        self.p.setFixedHeight(mt.setting.value("window_max_extend", type=int))
+        height = mt.setting.value("window_max_extend", type=int)
+        if self.p.UIB_main_frame.isHidden() and self.p.height() != height:
+            self.p.UIB_main_frame.show()
+            self.p.setFixedHeight(height)
+
         # self.p.resize(QSize(mt.setting.value("window_width", type=int), mt.setting.value("window_max_extend", type=int)))
 
-    def default_mode(self):
+    def custom_extend(self, value: int):
         self.set_line_style(True)
-        self.p.UIB_main_frame.show()
-        self.p.setFixedHeight(180)
-        # self.p.resize(QSize(self.p.width(), 180))
-
-    def extend_custom(self, value: int):
-        self.set_line_style(True)
-        self.p.UIB_main_frame.show()
+        if self.p.UIB_main_frame.isHidden():
+            self.p.UIB_main_frame.show()
         self.p.setFixedHeight(value)
+
         # self.p.resize(QSize(self.p.width(), value))
+
+
+    # def default_mode(self):
+    #     self.set_line_style(True)
+    #     self.p.UIB_main_frame.show()
+    #     self.p.setFixedHeight(180)
+    #     # self.p.resize(QSize(self.p.width(), 180))
 
     def for_ward_cursor(self):
         self.p.input.setCursorPosition(len(self.p.input.text()))

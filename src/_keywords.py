@@ -12,20 +12,28 @@ class TBB_Keyowrds:
         self.p = parent
 
         self.Keys = {
-            "@install": self.key_install,
-            "@settings": self.key_settings,
-            "@dark": self.key_dark,
-            "@light": self.key_light,
-            "@style": self.key_style,
-            "@quit": self.key_quit,
-            "@hide": self.key_hide,
-            "@small": self.key_small,
-            "@extend": self.key_extend,
-            "@clear-history": self.key_clear_history,
-            "@reload": self.key_reload,
-            "@exit": self.key_quit
+            "@install": (self.key_install, "install.svg"),
+            "@settings": (self.key_settings, ""),
+            "@dark": (self.key_dark, ""),
+            "@light": (self.key_light, ""),
+            "@style": (self.key_style, ""),
+            "@quit": (self.key_quit, "exit.svg"),
+            "@exit": (self.key_quit, "exit.svg"),
+            "@hide": (self.key_hide, ""),
+            "@small": (self.key_small, ""),
+            "@extend": (self.key_extend, ""),
+            "@clear-history": (self.key_clear_history, ""),
+            "@reload": (self.key_reload, ""),
+            "@post-msg": (self.key_post_msg, ""),
+            "@larg-txt": (self.key_larg_txt, "")
         }
 
+    def key_larg_txt(self, val):
+        self.p.tbb_larg_text.larg_text(val)
+
+    def key_post_msg(self, val):
+        self.p.tbb_tray_icon.show_message(
+            base_dir + "icons/logo.png", "TheBossBaby", val, 3)
 
     def key_settings(self, val):
         self.p.win_setting.open_setting_window()

@@ -37,7 +37,8 @@ _FUNCTIONS = {
     'tanh': math.tanh,
     'sum': func.get_sum,
     'average': func.get_average,
-    'perc': func.get_percent
+    'perc': func.get_percent,
+    'addall': func.get_add_all
 }
 
 class Parser:
@@ -60,8 +61,8 @@ class Parser:
             )
         return value
 
-    def peek(self):
-        return self.string[self.index:self.index + 1]
+    def peek(self, add: int=1):
+        return self.string[self.index:self.index + add]
 
     def hasNext(self):
         return self.index < len(self.string)
@@ -78,7 +79,6 @@ class Parser:
     def popExpected(self, value):
         if not self.popIfNext(value):
             raise Exception("Expected '" + value + "' at index " + str(self.index))
-
 
     def skipWhitespace(self):
         while self.hasNext():
@@ -100,12 +100,13 @@ class Parser:
             if char == '+':
                 self.index += 1
                 values.append(self.parseMultiplication())
+
             elif char == '-':
                 self.index += 1
                 values.append(-1 * self.parseMultiplication())
             else:
                 break
-        
+
         return sum(values)
 
     def parseMultiplication(self):
@@ -118,6 +119,7 @@ class Parser:
             if char == '*':
                 self.index += 1
                 values.append(self.parseParenthesis())
+
             elif char == '/':
                 div_index = self.index
                 self.index += 1
@@ -135,6 +137,7 @@ class Parser:
         
         for factor in values:
             value *= factor
+
         return value
 
     def parseParenthesis(self):
@@ -190,14 +193,16 @@ class Parser:
     def parseVariable(self):
         self.skipWhitespace()
         var = []
+
         while self.hasNext():
             char = self.peek()
-            
+
             if char.lower() in '_abcdefghijklmnopqrstuvwxyz0123456789':
                 var.append(char)
                 self.index += 1
             else:
                 break
+
         var = ''.join(var)
         
         function = _FUNCTIONS.get(var.lower())
@@ -269,7 +274,6 @@ def evaluate(expression, vars=None):
         return int(value)
     return value
 
-
 if __name__ == "__main__":
     print(evaluate("cos(x+4*3) + 2 * 3", {'x': 5}))
     print(evaluate("exp(0)"))
@@ -283,10 +287,3 @@ if __name__ == "__main__":
     print(evaluate("atan2(2, 1)"))
     print(evaluate("hypot(5, 12)"))
     print(evaluate("pow(3, 5)"))
-
-"""update
-calc help(var|func)
-
-@replace dict like this
-{'func|var': (callback, 'help message   ')}
-"""

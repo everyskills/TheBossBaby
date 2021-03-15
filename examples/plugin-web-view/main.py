@@ -1,9 +1,6 @@
 #!/usr/bin/python3
 
-import os
 from PyQt5.QtCore import QObject, pyqtSlot
-
-base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
 ## You can use Jinja2 template in html code
 HTML = """
@@ -47,14 +44,14 @@ class MyApp(QObject):
         """ get name from <h1> and print it from python code"""
         print("Your name is: ", text.strip())
 
-def Plugin(parent=None):
+def Plugin(parent):
     """ main function for start plugin from UIBox """
     return {
-        ## HTML code or File path: (base_dir + "index.html")
+        ## HTML code or File path: parent.include_file("index.html")
         "html": HTML,
         
         ## remove it if you do not need it
-        "object": {"tbb": MyApp()},
+        "objects": {"tbb": MyApp()},
 
         "items": [
           {

@@ -1,12 +1,10 @@
 #!/usr/bin/python3
 
 import os
-import json
 
 from PyQt5.QtCore import QSize, QUrl
 from PyQt5.QtGui import QDesktopServices, QFont, QIcon
 from UIBox import pkg, item
-from glob import glob
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 
@@ -26,10 +24,10 @@ class UserCommands:
             hotkey = "<font size='4' color='%s'>⏎</font>" % ret_color
 
         if not tag.strip():
-            uib_item.desc.hide()
+            uib_item.subtitle.hide()
             uib_item.gridLayout.addWidget(uib_item.title, 0, 1, 2, 1)
         else:
-            uib_item.desc.show()
+            uib_item.subtitle.show()
             uib_item.gridLayout.addWidget(uib_item.title, 0, 1, 1, 1)
 
         list_item = pkg.add_item(self.UIB_list_widget,
@@ -43,6 +41,7 @@ class UserCommands:
         item_widget[1].title.setFont(font)
         
         pkg.set_item_widget(self.UIB_list_widget, item_widget)
+
         return item_widget[0]
 
     def run_clicked_item(self):
@@ -62,7 +61,6 @@ class UserCommands:
             is_args = None
 
             try:
-
                 if data.get("args", "").strip() == "yes" and val.strip() and key == data.get("keyword", ""):
                     is_args = True
                 elif data.get("args", "").strip() == "no":
@@ -72,7 +70,7 @@ class UserCommands:
                     dic.get(data.get("type", ""))(data, key, val, is_args)
                 
                 elif not key in list(self.window.exts.keys()):
-                    self.window.input.setText(data.get("json", {}).get("keyword", data.get("keyword")) + " ")
+                    self.window.input.setText(data.get("keyword", "") + " ")
                     self.window.input.setFocus()
 
             except Exception as err:
@@ -81,11 +79,11 @@ class UserCommands:
     def set_list_items(self, _path: str="exts/__user__/*.wf/"):
         text = self.window.input.text().strip()
         key, _ = self.window.get_kv(self.window.input.text())
-        # query = ""
 
         self.UIB_list_widget.setGridSize(QSize(43, 43))
 
         ###################### Workflow List Item ######################
+        # query = ""
         # for p in glob(base_dir + _path):
         #     data = json.load(open(p + "workflow.json"))
         #     wf_data = type("wf_data", (), data)
@@ -117,17 +115,22 @@ class UserCommands:
         ###################### Plugins List Item ######################
         for k in (self.window.exts.keys()):
             data = self.window.exts.get(k)
+
             if (text.lower() in data.get("json").get("name", "") or
                 text.lower() in data.get("json").get("description") or
-                text.lower() in data.get("json").get("keyword") or
-                key == data.get("json").get("keyword")):
+                text.lower() in k or key == k):
 
-                item = self.add_item(data.get("icon"),
-                                    data.get("json").get("name", ""),
-                                    data.get("json").get("description"))
-                
+                if data.get("key_att", {}):
+                    item = self.add_item(
+                                        self.window.methods.include_file(data.get("key_att").get("icon")) or data.get("icon"),
+                                        data.get("key_att").get("title", ""),
+                                        data.get("key_att").get("subtitle", ""))
+                else:
+                    item = self.add_item(data.get("icon"),
+                                        data.get("json").get("name", ""),
+                                        data.get("json").get("description", ""))
+
                 self.results.update({id(item): data})
-
 
     ######################## WEB Run Code #########################
     def web_type_code(self, data, key, val, is_args: bool):

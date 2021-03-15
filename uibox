@@ -5,10 +5,15 @@ import os
 import shutil
 
 args = sys.argv
+path = "/opt/TheBossBaby-app"
 
-if "--uninstall" in args:
-	path = "/opt/TheBossBaby-app"
+if "uninstall" in args:
 	if os.path.exists(path):
 		shutil.rmtree(path)
 	else:
 		print(" [!] TheBossBaby-app Directory is not exists.")
+elif "start" in args:
+	os.system("python3 " + path)
+
+else:
+	print(f" '{args}' command not found ")

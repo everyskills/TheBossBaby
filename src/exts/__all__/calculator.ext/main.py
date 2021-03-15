@@ -37,14 +37,31 @@ class Results(QWidget):
     def init_ui(self):
         self.search_func()
         
+        if not self.parent.text:
+            self.title.clear()
+            self.text_edit.clear()
+
         try:
             self.set_vars()
-            if len(self.parent.text.split(":")) > 1:
-                if self.parent.text.split(":")[0].strip() == "help":
-                    var = self.parent.text.split(":")[1].strip().lower()
-                    self.set_result(get_help(var))
+            new_att = re.findall("^(help|rmset)\s*\((.*)\)", self.parent.text)
+
+            if new_att:
+                if new_att[0][0] == "help":
+                    self.set_result(get_help(new_att[0][1].strip()))
+
+                elif new_att[0][0] == "rmset":
+                    split = new_att[0][1].split(",")
+                    if len(split) > 0:
+                        for i in split:
+                            self.math_vars.pop(i.strip(), "")
+                    else:
+                        self.math_vars.pop(str(new_att[0][1]).strip(), "")
+                    
+                    self.set_result(f"Removed: {new_att[0][1]}")
+
             elif self.parent.text.strip() and not self.parent.text.startswith("set"):
                 self.set_result(str(evaluate(self.parent.text, self.math_vars)))
+
         except Exception as math_err:
             self.title.setText(str(math_err))
 
@@ -73,8 +90,7 @@ class Results(QWidget):
     def set_vars(self):
         txt = str(self.parent.text.strip())
         try:
-            patt = re.compile(r"set\s*\((.*)\)")
-            data = patt.findall(txt)[0].strip().split(";")
+            data = re.findall(r"^set\s*\((.*)\)", txt)[0].strip().split(";")
             for i in data:
                 k, v = i.split("=")
                 if not k.lower().strip() in "_abcdefghijklmnopqrstuvwxyz" or not evaluate(v.strip()):
@@ -87,5 +103,6 @@ class Results(QWidget):
                     self.title.clear()
         except IndexError:
             pass
+
         except ValueError as math_err:
             raise Exception(math_err)

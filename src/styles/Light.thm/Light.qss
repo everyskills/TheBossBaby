@@ -10,9 +10,10 @@ QListWidget,
 #Form, 
 #UIB_frame, 
 #UIB_input_frame {
-    /* color : #808080; */
-    color: #232629;
     /* background-color: #f4f3f6; */
+    /* color : #808080; */
+    
+    color: #232629;
     background-color: #f6f6f6;
 }
 
@@ -64,13 +65,13 @@ QListWidget:item:hover{
 
 QListWidget:item:selected{
 	border-radius:  5px;
-	background-color: #cecece;
+	background-color: #dcdcdc;
 	color: #000;
 }
 
 QListWidget:item:focus{
 	border-radius:  5px;
-	background-color: #cecece;
+	background-color: #dcdcdc;
     color: #000;
 }
 

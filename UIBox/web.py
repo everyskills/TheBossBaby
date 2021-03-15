@@ -38,7 +38,6 @@ def get_webengine_settings():
     settings.setDefaultTextEncoding("utf-8")
     settings.setAttribute(QWebEngineSettings.TouchIconsEnabled, True)
     settings.setAttribute(QWebEngineSettings.Accelerated2dCanvasEnabled, True)
-    # settings.setAttribute(QWebEngineSettings.AllowAllUnknownUrlSchemes, True)
     settings.setAttribute(QWebEngineSettings.AllowWindowActivationFromJavaScript, True)
     settings.setAttribute(QWebEngineSettings.AutoLoadIconsForPage, True)
     settings.setAttribute(QWebEngineSettings.DnsPrefetchEnabled, True)
@@ -54,17 +53,13 @@ def get_webengine_settings():
     settings.setAttribute(QWebEngineSettings.LocalStorageEnabled, True)
     settings.setAttribute(QWebEngineSettings.PdfViewerEnabled, True)
     settings.setAttribute(QWebEngineSettings.PluginsEnabled, True)
-    # settings.setAttribute(QWebEngineSettings.PictographFont, True)
     settings.setAttribute(QWebEngineSettings.PrintElementBackgrounds, True)
-    # settings.setAttribute(QWebEngineSettings.SansSerifFont, True)
     settings.setAttribute(QWebEngineSettings.ScreenCaptureEnabled, True)
     settings.setAttribute(QWebEngineSettings.ScrollAnimatorEnabled, True)
-    # settings.setAttribute(QWebEngineSettings.SerifFont, True)
     settings.setAttribute(QWebEngineSettings.SpatialNavigationEnabled, True)
-    # settings.setAttribute(QWebEngineSettings.StandardFont, True)
-
     settings.setAttribute(QWebEngineSettings.WebGLEnabled, True)
     settings.setAttribute(QWebEngineSettings.WebRTCPublicInterfacesOnly, True)
     settings.setAttribute(QWebEngineSettings.XSSAuditingEnabled, True)
     settings.setAttribute(QWebEngineSettings.AutoLoadImages, True)
-    # settings.setAttribute(QWebEngineSettings.FocusOnNavigationEnabled, True)
+
+    return settings

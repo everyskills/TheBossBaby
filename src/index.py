@@ -5,29 +5,26 @@ import os
 import json
 import sys
 
-from glob import glob
-from _methods import Controls
-from PyQt5.QtGui import QFont, QIcon
-from _plugin_items import UIBIPlugin
-from _plugin_web_view import UIBWPlugin
-from ui._window import Ui_Form as app_ui
 from UIBox import pkg, dialog, item
-from PyQt5.QtCore import QEvent, QRunnable, QSize, QThread, QThreadPool, Qt, pyqtSlot
+from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtCore import QEvent, QSize, Qt
 from PyQt5.QtWidgets import QAction, QApplication, QSizeGrip, QStackedWidget, QWidget
 from settings.applay import ApplaySettingOnWindow
+from ui._window import Ui_Form as app_ui
+from _plugin_web_view import UIBWPlugin
+from _plugin_items import UIBIPlugin
 from _downloader import Downloader
+from _larg_text import TBB_Larg_Text
+from _key_bind import TBB_Key_Bind
+
+########### Index Code Files Import ################
+from _methods import Controls
 from _keywords import TBB_Keyowrds
 from _tray_icon import TBB_Tray_Icon
-from _larg_text import TBB_Larg_Text
-from threading import Thread
+from _get_all_plugins import TBB_Get_All_Plugins
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
-
-try:
-    import keyboard
-except ModuleNotFoundError:
-    sys.path.insert(0, base_dir + '/modules/keyboard.zip')
-    import keyboard
+sys.path.append(base_dir)
 
 class MainWindow(QWidget, app_ui):
     def __init__(self, parent=None, *args, **kwargs):
@@ -57,7 +54,8 @@ class MainWindow(QWidget, app_ui):
         self.tbb_keys = TBB_Keyowrds(self)
         self.tbb_tray_icon = TBB_Tray_Icon(self)
         self.tbb_larg_text = TBB_Larg_Text(self)
-
+        self.tbb_key_bind = TBB_Key_Bind(self)
+        self.tbb_get_all_plugins = TBB_Get_All_Plugins(self)
         self.web = UIBWPlugin(self)
         self.items = UIBIPlugin(self)
 
@@ -67,7 +65,6 @@ class MainWindow(QWidget, app_ui):
         ############ QLineEdit signal/sloat
         self.input.textChanged.connect(self.start_tbb_search)
         self.input.returnPressed.connect(self.built_in_func)
-
         self.web.UIB_list_widget.itemActivated.connect(self.web.run_clicked_item)
         
         ############ start app and run all functinos
@@ -86,8 +83,7 @@ class MainWindow(QWidget, app_ui):
             "screenshot", 
             self, 
             shortcut="Meta+Shift+Return", 
-            triggered=self.get_screenshot)
-        
+            triggered=self.get_screenshot)        
         self.addAction(self.screen_shot_action)
 
     ############################ Code for Resize window from left and right ###############################3
@@ -98,6 +94,17 @@ class MainWindow(QWidget, app_ui):
             grip = QSizeGrip(self)
             grip.resize(self.gripSize, self.gripSize)
             self.grips.append(grip)
+
+        # storage = QStorageInfo("/media/osama/SanDisk")
+        # print(storage.rootPath())
+
+        # if storage.isReadOnly():
+        #     print("isReadOnly:", storage.isReadOnly())
+
+        # qDebug("name:" + storage.name())
+        # qDebug("fileSystemType:" + str(storage.fileSystemType()))
+        # qDebug("size:" + str(storage.bytesTotal()/1000/1000) + " MB")
+        # qDebug("availableSize:" + str(storage.bytesAvailable()/1000/1000) + " MB")
 
     def resizeEvent(self, event):
         QWidget.resizeEvent(self, event)
@@ -130,7 +137,7 @@ class MainWindow(QWidget, app_ui):
 
     ####################### get all plugin and set stacked widget ##########################
     def init_ui(self):
-        self.get_all_plugins()
+        self.tbb_get_all_plugins.get_plugins()
         self.set_stacked_widget()
 
     ####################### Tacke Simple Screen Shot for TheBossBaby window #######################
@@ -196,35 +203,6 @@ class MainWindow(QWidget, app_ui):
                 self.input.cursorForward(True, int(len(text)) + int(len(i)))
                 self.input.blockSignals(False)
 
-    ####################### get all plugins and set them to self.exts var #######################
-    def get_all_plugins(self):
-        Plugins = glob(base_dir + f"exts/__{pkg.get_platform()}__/*.ext/")
-        Plugins.extend(glob(base_dir + "exts/__all__/*.ext/"))
-        count = 0
-        for rd in Plugins:
-            try:
-                dic = json.load(open(rd + "info.json")) # info.json
-                if dic.get("enabled", False):
-
-                    icon = rd + dic.get("icon", "Icon.png")
-                    if not icon or not os.path.exists(icon):
-                        icon = base_dir + "icons/main/unknow.png"
-
-                    self.exts.update({str(dic.get("keyword")).strip().lower():
-                        {
-                            "script": pkg.Import(rd + dic.get("script", "plugin.py")),
-                            "object": pkg.Import(rd + dic.get("script", "plugin.py")).Results,
-                            "count": count, 
-                            "icon": icon,
-                            "json": dic,
-                            "path": rd
-                        }
-                    })
-                    count += 1
-            except Exception as plug_err:
-                print(f"Error-add: ({rd}): ", plug_err)
-                continue
-
     @property
     def get_running_plugin(self):
         return self.exts.get(self.get_kv(self.input.text())[0])
@@ -233,20 +211,16 @@ class MainWindow(QWidget, app_ui):
     def built_in_func(self):
         try:
             text, val = self.get_kv(self.input.text())
-            
             if text in list(self.tbb_keys.Keys.keys()):
-                self.tbb_keys.Keys[text](val)
+                self.tbb_keys.Keys[text][0](val)
             else:
                 key = self.get_kv(self.input.text())[0]
-
-                if key and self.is_key(key):
-                    
+                if key and self.is_key(key) and hasattr(self.exts.get(key).get("script"), "Run"):
                     pp = self.exts.get(key).get("script").Run(self.methods)
-
-                    if isinstance(pp, dict):
-                        pp.get("keywords", {}).update(self.web_running_data.get("keywords", {}))
-                        self.web_running_data.update(pp)
-                        self.run_web_plugin(self.exts.get(key).get("icon"), self.web_running_data)
+                    # if isinstance(pp, dict):
+                    pp.get("keywords", {}).update(self.web_running_data.get("keywords", {}))
+                    self.web_running_data.update(pp)
+                    self.run_web_plugin(self.exts.get(key).get("icon"), self.web_running_data)
 
         except AttributeError as err:
             print("Error-return-pressed-plugin: ", err)
@@ -262,7 +236,6 @@ class MainWindow(QWidget, app_ui):
     ####################### get line edit text and process it #######################
     def start_tbb_search(self, text: str):
         key, val = self.get_kv(text)
-        exts_keys = list(self.exts.keys())
 
         self.web.UIB_list_widget.clear()
         
@@ -278,21 +251,19 @@ class MainWindow(QWidget, app_ui):
             pass
 
         if not self.input.text().strip():
-            self.running = ""
-            self.set_sys_icon()
+            self.null_mode()
             self.win_setting.small_mode()
-        
-        elif key in exts_keys and self.input.selectionLength() <= 0:
+
+        elif key in list(self.exts.keys()) and self.input.selectionLength() <= 0:
             self.run_plugin(key)
-            
+            # QApplication.processEvents()
+
             if self.win_setting.s.value("check_history_storage", False, bool):
                 self.update_history()
 
-            self.win_setting.extend_mode()
-
         elif key.startswith("@"):
             if key in ("@download", "@install", "@downloader", "@installer"):
-                self.btn_ext.setIcon(QIcon(base_dir + "icons/main/downloader.png"))
+                self.btn_ext.setIcon(QIcon(base_dir + "icons/keywords/install.svg"))
 
                 tbb_downloader = Downloader()
                 val = os.path.expandvars(os.path.expanduser(val))
@@ -306,31 +277,40 @@ class MainWindow(QWidget, app_ui):
                 self.stackedWidget.setCurrentIndex(0)
                 self.win_setting.extend_mode()
             else:
-                self.btn_ext.setIcon(QIcon(base_dir + "icons/main/executable.png"))
+                icon = ""
+                if key in list(self.tbb_keys.Keys.keys()):
+                    icon = self.tbb_keys.Keys[key][1]
+
+                icon = base_dir + f"icons/keywords/{key.lstrip('@')}.png" if not icon else base_dir + "icons/keywords/" + icon
+                if not os.path.exists(icon):
+                    icon = base_dir + "icons/main/executable.png"
+
+                self.btn_ext.setIcon(QIcon(icon))
                 self.win_setting.small_mode()
+
         else:
-            self.running = ""
-            self.set_sys_icon()
-            # 
-            color = 'black' if not self.methods.style == 'dark' else 'white'
-            bg = self.methods.dark_color if self.methods.style == 'dark' else self.methods.light_color
-            style = "style='background-color: %s; color: %s;'" % (bg, color)
-            self.web.set_html(
-                "<html {0}><body {0}>\
-                <center><h3> {1} </h3>\
-                </center></body></html>".format(style, self.input.text()))
-            
+            self.null_mode()
+            self.null_html()
             self.web.set_list_items()
+            
             if not self.stackedWidget.currentWidget() == self.web:
                 self.stackedWidget.insertWidget(0, self.web)
                 self.stackedWidget.setCurrentIndex(0)
 
             if self.web.UIB_list_widget.count() <= 0:
-                self.running = ""
-                self.set_sys_icon()
                 self.win_setting.small_mode()
             else:
                 self.win_setting.extend_mode()
+
+    def null_html(self):
+        color = 'black' if not self.methods.style == 'dark' else 'white'
+        bg = self.methods.dark_color if self.methods.style == 'dark' else self.methods.light_color
+        style = "style='background-color: %s; color: %s;'" % (bg, color)
+        self.web.set_html("<html {0}><body {0}></body></html>".format(style))
+
+    def null_mode(self):
+        self.running = ""
+        self.set_sys_icon()
 
     ###################### Get System Icon Linux/MacOS/Windows #############
     def set_sys_icon(self):
@@ -348,24 +328,18 @@ class MainWindow(QWidget, app_ui):
     def run_plugin(self, key: str):
         plugin = self.exts.get(key)
         try:
-            os.chdir(plugin.get("path"))
             pp = plugin.get("object")(self.methods)
-            ############ Fast Code ############
             self.btn_ext.setIcon(QIcon(plugin.get("icon")))
             _w = self.stackedWidget.currentWidget()
-            
+
+            ## Web View Plugin
             if pp and isinstance(pp, dict):
-                # print("run web widget")
-                ## Qt Web View
-                # if _w == None or not getattr(_w, "__type__", "") == "web":
-                #     self.stackedWidget.removeWidget(self.stackedWidget.widget(0))
-                #     self.stackedWidget.insertWidget(0, UIBWPlugin(self, pp))
-                # else:
                 self.web_running_data = pp
                 self.run_web_plugin(plugin.get("icon"), pp)
+                self.win_setting.extend_mode()
 
+            ## Lists Widget Item
             elif pp and isinstance(pp, list) or isinstance(pp, tuple):
-                ## Qt List Widget Item
                 if _w == None or not getattr(_w, "__type__", "") == "item":
                     # print("added new item widget")
                     self.stackedWidget.removeWidget(self.stackedWidget.widget(0))
@@ -374,17 +348,19 @@ class MainWindow(QWidget, app_ui):
                     # print("run item widget")
                     _w.func = pp
                     _w.init_ui(pp)
+
+            ## Qt Widget
             else:
-                ## Qt Widget
                 if not key == self.running and pp:
                     # print("added new qt widget")
                     self.stackedWidget.removeWidget(self.stackedWidget.widget(0))
                     self.stackedWidget.insertWidget(0, pp)
-                else:
-                    if not self.running == "err" and pp:
-                        # print("run qt widget")
-                        setattr(_w, "parent", self.methods)
-                        _w.init_ui()
+                elif not self.running == "err" and pp:
+                    # print("run qt widget")
+                    setattr(_w, "parent", self.methods)
+                    _w.init_ui()
+    
+                self.win_setting.extend_mode()
 
             self.running = key
             self.running_widget_type = getattr(_w, "__type__", "")
@@ -395,13 +371,11 @@ class MainWindow(QWidget, app_ui):
 
     def run_web_plugin(self, icon, data, enabled: bool=True):
         self.web.init_ui(data)
-
         if data.get("items", []) and enabled:
             self.web.UIB_list_widget.clear()
 
             for i in data.get("items", []):
                 uib_item = item.UIBUi_Item()
-
                 tag = str(i.get("subtitle", ""))
                 
                 ret_color = (
@@ -409,15 +383,13 @@ class MainWindow(QWidget, app_ui):
                     if self.methods.style == 'dark'
                     else self.methods.dark_color)
 
-                hotkey = "<font size='4' color='%s'>⏎</font>" % ret_color
-
                 if not tag.strip():
                     gr_size = 37
-                    uib_item.desc.hide()
+                    uib_item.hotkey.hide()
                     uib_item.gridLayout.addWidget(uib_item.title, 0, 1, 2, 1)
                 else:
                     gr_size = 43
-                    uib_item.desc.show()
+                    uib_item.hotkey.show()
                     uib_item.gridLayout.addWidget(uib_item.title, 0, 1, 1, 1)
 
                 self.web.UIB_list_widget.setGridSize(QSize(gr_size, gr_size))
@@ -428,7 +400,8 @@ class MainWindow(QWidget, app_ui):
 
                 item_widget = pkg.add_item_widget(list_item, uib_item, 
                     str(i.get("title", "")),
-                    tag, str(hotkey),
+                    tag,
+                    "<font size='4' color='%s'>⏎</font>" % ret_color,
                     item_size=(100, 30 if not tag.strip() else 37))
 
                 font = QFont()
@@ -480,6 +453,35 @@ class MainWindow(QWidget, app_ui):
         else:
             self.hide()
 
+
+# class Worker(QRunnable):
+#     '''
+#     Worker thread
+
+#     Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
+
+#     :param callback: The function callback to run on this worker thread. Supplied args and
+#                      kwargs will be passed through to the runner.
+#     :type callback: function
+#     :param args: Arguments to pass to the callback function
+#     :param kwargs: Keywords to pass to the callback function
+#     '''
+
+#     def __init__(self, fn):
+#         super(Worker, self).__init__()
+#         self.fn = fn
+
+#     @pyqtSlot()
+#     def run(self):
+#         '''
+#         Initialise the runner function with passed args, kwargs.
+#         '''
+#         # self.fn(*self.args, **self.kwargs)
+#         self.fn()
+
+        # self.threadpool = QThreadPool()
+        # self.threadpool.start(Worker())
+
 ################# main function for run app ##########################
 def main():
     app = QApplication(sys.argv)
@@ -499,5 +501,8 @@ def main():
 if __name__ == "__main__":
     main()
 
-
 #303136
+## this code for get all ids in html page
+# var arr = $.map($("#mydiv [id]"), function(n, i) {
+#     return n.id
+# })

@@ -28,6 +28,9 @@
         <property name="text">
          <string/>
         </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
@@ -102,7 +105,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>11</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="cursor">

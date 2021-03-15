@@ -4,7 +4,11 @@
     "description": "simple plugin description.",
     "icon": "Icon.png",
     "help": "README.md",
+    
     "keyword": "key",
+    // or
+    "keywords": ["key1", "key2"],
+
     "script": "main.py",
     "creator_name": "Author name",
     "creator_email": "example@gmail.com",
