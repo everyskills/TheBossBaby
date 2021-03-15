@@ -2,13 +2,14 @@
 
 import os
 
+from glob import glob
 from threading import Thread
 from subprocess import call
-from glob import glob
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QWidget
 from PyQt5.uic import loadUi
 from UIBox import pkg, item
+from .desktop_parser import DesktopParser
 
 base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
 apps = {}
@@ -112,9 +113,9 @@ class Results(QWidget):
         else:
             return text
 
-    def get_app(self, _file: str, key: str, value: str=""):
+    def get_app(self, _file: str, key: str):
         try:
-            app = pkg.Import(base_dir + "desktop_parser.py").DesktopParser(_file)
+            app = DesktopParser(_file)
             app.read()
             return app.get(key)
         except KeyError:
@@ -133,10 +134,10 @@ class Results(QWidget):
             name = self.get_app(i, "Name") or self.get_app(i, "X-GNOME-FullName")
             _icon = self.get_app(i, "Icon")
 
-            if (_icon and os.path.exists(_icon)):
+            if _icon and os.path.exists(_icon):
                 icon = QIcon(_icon)
             else:
-                icon = pkg.get_sys_icon(_icon) if _icon else pkg.icon_path("executable-icon.png", True)
+                icon = pkg.get_sys_icon(_icon) if _icon else QIcon(self.parent.include_file("executable.png"))
 
             if (name and self.get_app(i, "Exec")):
                 apps.update({name: {

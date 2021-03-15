@@ -138,7 +138,22 @@ class Controls:
 
     def include_file(self, _file: str):
         key = self.__parent.get_kv(self.__parent.input.text())[0]
+        _file = os.path.expandvars(os.path.expanduser(_file))
         return QUrl.fromUserInput(self.__parent.exts.get(key, {}).get("path", "") + _file).toLocalFile()
+
+    def get_status_icon(self, name: str):
+        _file = base_dir + f"icons/status/{name.strip().lower()}.svg"
+        if os.path.exists(_file):
+            return _file
+        else:
+            return None
+
+    def get_system_icon(self, name: str):
+        _file = base_dir + f"icons/systems/{name.strip().lower()}.png"
+        if os.path.exists(_file):
+            return _file
+        else:
+            return None
 
     def get_input(self, text: str):
         patt = re.compile(r"\$\(([a-z-A-Z_0-9]+)\)")
