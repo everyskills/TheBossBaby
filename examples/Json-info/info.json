@@ -15,8 +15,15 @@
         "..."
     ],
 
-    // Types: [input, text, dialog, int, num, float, double, check, select]
+    // Types: [keyword, kw, input, text, dialog, int, num, float, double, check, select]
     "settings": {
+        "kw": {
+            "type": "keyword",
+            "title": "Plugin Keyword",
+            "subtitle": "do somthing",
+            "value": "key"
+        },
+        
     	"id_input": {
     		"type": "input",
     		"title": "Text Title",
