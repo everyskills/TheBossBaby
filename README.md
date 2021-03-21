@@ -89,16 +89,82 @@ The first thing we need is an `info.json` file. Here's what to put in it:
 	"icon": "icon.png",                         // (optional)
 	"help": "README.md",                        // (optional)
 	"script": "plugin.py",
-	"keyword": "print",
 	"creator_name": "Author name",              // (optional)
 	"creator_email": "example@domain.com",      // (optional)
-    	"creator_url": "https://www.example.com",    // (optional)
-    	"home_page" : "https://www.github/<user name>/<repo name>", // (optional)
+	"creator_url": "https://www.example.com",    // (optional)
+	"home_page" : "https://www.github/<user name>/<repo name>", // (optional)
 	"system": "all", // [windows, macos, linux, all]
 	"examples": [
-            "print value",
-            "..."
-    	]
+	    "print value",
+	    "..."
+	],
+
+    // Types: [keyword, kw, input, text, dialog, int, num, float, double, check, select]
+    "settings": {
+    	"kw": {
+		"type": "keyword",
+		"title": "Plugin Keyword",
+		"subtitle": "do somthing",
+		"value": "key"
+	},
+	
+    	"id_input": {
+    		"type": "input",
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"value": "input type"
+    	},
+
+    	"id_text": {
+    		"type": "text",
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"value": "text type"
+    	},
+
+    	"id_dialog": {
+    		"type": "dialog",
+    		"dialog": "",  // [file, dir, color]
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"value": "text type"
+    	},
+
+    	"id_int": {
+    		"type": "int",
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"suffix": "",
+    		"prefix": "",
+    		"value": 12
+    	},
+
+    	"id_float": {
+    		"type": "float",
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"suffix": "",
+    		"prefix": "",
+    		"value": 12.0
+    	},
+
+    	"id_check": {
+    		"type": "check",
+    		"name": "check name",
+    		"value": 12.0
+    	},
+
+    	"id_select": {
+    		"type": "select",
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"value": "yes",
+    		"options": [
+    			"yes",
+    			"no"
+    		]
+    	},
+    }
 }
 ```
 
