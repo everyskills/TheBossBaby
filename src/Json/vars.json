@@ -1,0 +1,30 @@
+{
+    "qau": {
+        "name": "qau",
+        "type": "str",
+        "value": "/home/o_o/Pictures/QAU/"
+    },
+    "name": {
+        "name": "name",
+        "type": "str",
+        "value": "Osama Muhammed"
+    },
+    "app": {
+        "name": "app",
+        "type": "str",
+        "value": "TheBossBaby"
+    },
+    "version": {
+        "name": "version",
+        "type": "str",
+        "value": "1.0.3"
+    },
+    "sk": {
+        "name": "sk",
+        "type": "json",
+        "value": [
+            "Python",
+            "C++"
+        ]
+    }
+}

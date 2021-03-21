@@ -49,7 +49,7 @@ class TBB_Tray_Icon:
         self.trayIcon.setToolTip(f"The Boss Baby v1.0.0")
         self.trayIcon.activated.connect(self.p.check_win)
 
-    def show_message(self, icon: str="", title: str="", body: str="", timeout: int=5, clicked: object=lambda: ()):
-        """:param: timeout(1) = 1000ms"""
-        self.trayIcon.messageClicked.connect(clicked)
-        self.trayIcon.showMessage(title, body, QIcon(base_dir + "icons/logo.png"), timeout * 1000)
+    def show_message(self, icon: object="", title: str="", body: str="", timeout: int=5000, clicked: object=lambda: ()):
+        if self.trayIcon.supportsMessages():
+            self.trayIcon.messageClicked.connect(clicked)
+            self.trayIcon.showMessage(title, body, QIcon(icon) if not isinstance(icon, int) else icon, timeout)

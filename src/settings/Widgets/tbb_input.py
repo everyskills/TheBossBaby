@@ -1,37 +1,33 @@
 
-from PyQt5.QtWidgets import QFrame, QGridLayout, QLabel, QLineEdit, QSizePolicy, QToolButton
-
+from PyQt5.QtWidgets import QLabel, QLineEdit
 class UIB_Input_type:
-    def __init__(self):
-        self.frame = QFrame(self.scrollAreaWidgetContents)
-        self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
-        self.gridLayout_2 = QGridLayout(self.frame)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.name = QLabel(self.frame)
-        self.name.setObjectName(u"name")
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.name.sizePolicy().hasHeightForWidth())
-        self.name.setSizePolicy(sizePolicy)
+    def __init__(self, parent: object, key: str, value: dict):
+        self._p = parent
+        self._id = key
+        self._json = value
 
-        self.gridLayout_2.addWidget(self.name, 0, 1, 1, 1)
+        if self._json.get("title", ""):
+            title = QLabel(self._json.get("title", ""))
+            self._p.gridLayout.addWidget(title)
 
-        self.button = QToolButton(self.frame)
-        self.button.setObjectName(u"button")
+        line = QLineEdit(self._json.get("value", ""))
+        line.setStyleSheet("padding: 2px; font-size: 14px;")
 
-        self.gridLayout_2.addWidget(self.button, 1, 0, 1, 1)
+        line.setObjectName(self._id)
+        self._p.gridLayout.addWidget(line)
 
-        self.input = QLineEdit(self.frame)
-        self.input.setObjectName(u"input")
+        self.obj_changed(line)
 
-        self.gridLayout_2.addWidget(self.input, 1, 1, 1, 1)
+        if self._json.get("subtitle", ""):
+            subtitle = QLabel(self._json.get("subtitle", ""))
+            subtitle.setStyleSheet("padding-left: 3px; font-size: 11px; margin-bottom: 15px;")
+            self._p.gridLayout.addWidget(subtitle)
+        else:
+            line.setStyleSheet(line.styleSheet() + "margin-bottom: 10px;")
 
-        self.description = QLabel(self.frame)
-        self.description.setObjectName(u"description")
-        sizePolicy.setHeightForWidth(self.description.sizePolicy().hasHeightForWidth())
-        self.description.setSizePolicy(sizePolicy)
+    def obj_changed(self, obj):
+        obj.textChanged.connect(lambda: self.save_settings(obj))
 
-        self.gridLayout_2.addWidget(self.description, 2, 1, 1, 1)
+    def save_settings(self, obj):
+        data = {"value": obj.text()}
+        self._p.edit_settings(obj.objectName(), data)

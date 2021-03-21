@@ -1,0 +1,22 @@
+{
+    "name": "Voice Reader",
+    "version": "1.0.0",
+    "description": "simpel plugin for read word usin computer voice",
+    "icon": "icon.svg",
+    "help": "README.md",
+    "keyword": "say",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "all",
+    "settings": {
+        "kw": {
+            "type": "keyword",
+            "title": "Voice Reader",
+            "value": "say"
+        }
+    },
+    "enabled": true
+}

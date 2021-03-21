@@ -1,0 +1,25 @@
+{
+    "kw": {
+        "type": "keyword",
+        "value": "app",
+        "title": "App Keyword"
+    },
+    "user_apps": {
+        "type": "input",
+        "value": "~/.local/share/applications",
+        "title": "User Apps",
+        "subtitle": "path to all user apps"
+    },
+    "sys_apps": {
+        "type": "input",
+        "value": "/usr/share/applications",
+        "title": "System Apps",
+        "subtitle": "path to all system apps"
+    },
+    "max_results": {
+        "type": "num",
+        "value": 10.0,
+        "suffix": " item",
+        "title": "Max Results"
+    }
+}

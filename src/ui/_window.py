@@ -3,6 +3,8 @@
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "")
+
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -74,7 +76,13 @@ class Ui_Form(object):
         self.input.setCursorPosition(0)
         self.input.setClearButtonEnabled(False)
         self.input.setObjectName("input")
-        self.input.setAcceptDrops(True)        
+        self.input.setAcceptDrops(True)
+
+        # self.input.addAction(QtGui.QIcon(
+        #     base_dir + "../icons/logo.png"), self.input.LeadingPosition)
+        # self.input.addAction(QtGui.QIcon(
+        #     base_dir + "../icons/logo.png"), self.input.TrailingPosition)
+
         self.gridLayout_2.addWidget(self.input, 0, 1, 1, 1)
         self.gridLayout_7.addWidget(self.UIB_input_frame, 0, 0, 1, 2)
         self.UIB_main_frame = QtWidgets.QFrame(self.UIB_frame)

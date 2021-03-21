@@ -1,0 +1,24 @@
+{
+    "name": "Qt File Browser",
+    "version": "1.0.0",
+    "description": "qt file browser",
+    "icon": "Icon.png",
+    "help": "README.md",
+    "script": "plugin.py",
+    "creator_name": "Osama Muhammed",
+    "creator_email": "everyskills@gmail.com",
+    "home_page": "https://www.github.com/<user name>/<repo name>",
+    "system": "all",
+    "examples": [
+        "qt-fb path",
+        "..."
+    ],
+    "settings": {
+        "kw": {
+            "type": "keyword",
+            "title": "Qt File Browser",
+            "value": "qt-fb"
+        }
+    },
+    "enabled": true
+}

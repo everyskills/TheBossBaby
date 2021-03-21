@@ -1,0 +1,35 @@
+{
+    "name": "Password Manager",
+    "version": "1.0.0",
+    "description": "storage you email, url, etc.. password and fetch them.",
+    "icon": "Icon.png",
+    "help": "README.md",
+    "script": "main.py",
+    "creator_name": "Author name",
+    "creator_email": "example@gmail.com",
+    "creator_url": "https://www.example.com",
+    "home_page": "https://www.github.com/<user name>/<repo name>",
+    "system": "all",
+    "examples": [
+        "gpss <group>/<value>",
+        "spss <group>/<value>"
+    ],
+    "settings": {
+        "kw_gpss": {
+            "type": "keyword",
+            "title": "Get Password",
+            "value": "gpss"
+        },
+        "kw_spss": {
+            "type": "keyword",
+            "title": "Set Password",
+            "value": "spss"
+        },
+        "kw_rpss": {
+            "type": "keyword",
+            "title": "Remove Password",
+            "value": "rpss"
+        }
+    },
+    "enabled": true
+}

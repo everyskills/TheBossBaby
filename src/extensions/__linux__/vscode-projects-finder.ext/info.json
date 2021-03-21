@@ -1,0 +1,62 @@
+{
+    "name": "VS Code Projects",
+    "version": "1.0.0",
+    "description": "Open your VSCode projects from anywhere using TheBossBaby",
+    "help": "README.md",
+    "keyword": "vsp",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "linux",
+    "examples": [
+        "vsp project name",
+        "..."
+    ],
+    "settings": {
+        "kw": {
+            "type": "kw",
+            "title": "VSCode Projects",
+            "subtitle": "Open your VSCode projects",
+            "value": "vsp"
+        },
+        "config_path": {
+            "type": "dialog",
+            "dialog": "dir",
+            "value": "~/.config/Code/",
+            "title": "Config path",
+            "subtitle": "The path to VSCode's config folder (e.g., update if you are using Code - OSS)"
+        },
+        "projects_file_path": {
+            "type": "dialog",
+            "dialog": "dir",
+            "value": "~/.config/Code/User/globalStorage/alefragnani.project-manager/",
+            "title": "Projects File path",
+            "subtitle": "The location of of projects file cache created by Project Manager VSCode Extension"
+        },
+        "code_executable_path": {
+            "type": "input",
+            "title": "VS Code executable path",
+            "subtitle": "The path to the VS Code executable",
+            "value": "code"
+        },
+        "include_recent_workspaces": {
+            "type": "check",
+            "name": "When to include recent workspaces",
+            "value": true
+        },
+        "include_project_manager": {
+            "type": "check",
+            "name": "Include projects from the Project Manager extension",
+            "value": true
+        },
+        "max_results": {
+            "type": "num",
+            "title": "Max Results",
+            "value": 12,
+            "suffix": " item"
+        }
+    },
+    "enabled": true
+}

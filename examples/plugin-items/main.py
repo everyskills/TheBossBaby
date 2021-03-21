@@ -45,7 +45,7 @@ def Results(parent):
     	"ctrl_enter": lambda p, i: (),
     	
         ## Function Callback when item Selected
-    	"item_selected": lambda p, i: ()
+    	"item_selected": lambda p, i: (),
 
         ## Function Callback when item Clicked
     	"item_clicked": lambda p, i: ()

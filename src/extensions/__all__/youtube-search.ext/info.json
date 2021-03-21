@@ -1,0 +1,35 @@
+{
+    "name": "Youtube Search",
+    "version": "1.0.0",
+    "description": "Search videos on Youtube",
+    "icon": "Icon.png",
+    "help": "README.md",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://www.everyskills.com",
+    "home_page": "https://www.github.com/<user name>/<repo name>",
+    "system": "all",
+
+    "settings": {
+        "youtube_search_extension": {
+            "type": "keyword",
+            "title": "Youtube Search",
+            "subtitle": "Search for youtube videos",
+            "value": "yt"
+        },
+
+        "description_template": {
+            "type": "input",
+            "title": "Descrption Template",
+            "subtitle": "Information about video (duration, date, views, channel, url, id)",
+            "value": "{duration} • {views} • {channel} • {date}"
+        },
+        "show_thumbnails": {
+            "type": "check",
+            "name": "Show thumbnails",
+            "value": true
+        }
+    },
+    "enabled": true
+}

@@ -1,0 +1,74 @@
+{
+    "name": "Emoji",
+    "version": "1.0.0",
+    "description": "Emoji extension",
+    "icon": "images/icon.png",
+    "help": "README.md",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "all",
+    "examples": [
+        "em emoji name for search and copy to clipboard",
+        "em smile",
+        "em :smile"
+    ],
+    "enabled": true,
+    "settings": {
+        "emoji_kw": {
+            "type": "keyword",
+            "title": "Emoji",
+            "value": "em"
+        },
+        "emoji_style": {
+            "type": "select",
+            "title": "Emoji Style",
+            "subtitle": "Choose the style of emojis you prefer",
+            "value": "twemoji",
+            "options": [
+                "apple",
+                "twemoji",
+                "noto",
+                "blobmoji"
+            ]
+        },
+        "fallback_emoji_style": {
+            "type": "select",
+            "title": "Fallback Emoji Style",
+            "subtitle": "Choose the style of emojis you prefer, if your first pick isn't available",
+            "value": "noto",
+            "options": [
+                "apple",
+                "twemoji",
+                "noto",
+                "blobmoji"
+            ]
+        },
+        "display_char": {
+            "type": "select",
+            "title": "Display System Emoji",
+            "subtitle": "If yes, emojis in the search menu will appear to the right of their names, and will be rendered by the system's font.",
+            "value": "no",
+            "options": [
+                "no",
+                "yes"
+            ]
+        },
+        "skin_tone": {
+            "type": "select",
+            "title": "Skin Tone",
+            "subtitle": "Choose the skin tone for your emojis",
+            "value": "\ud83d\udc4c default",
+            "options": [
+                "\ud83d\udc4c default",
+                "\ud83d\udc4c\ud83c\udffb light",
+                "\ud83d\udc4c\ud83c\udffc medium-light",
+                "\ud83d\udc4c\ud83c\udffd medium",
+                "\ud83d\udc4c\ud83c\udffe medium-dark",
+                "\ud83d\udc4c\ud83c\udfff dark"
+            ]
+        }
+    }
+}

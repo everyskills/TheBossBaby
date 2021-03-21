@@ -1,0 +1,21 @@
+{
+    "name": "Contact Storage",
+    "version": "0.0.0",
+    "description": "simple plugin for save, update, show and delete contact",
+    "icon": "Icon.png",
+    "help": "README.md",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "all",
+    "settings": {
+        "kw": {
+            "type": "keyword",
+            "title": "Contact Names",
+            "value": "phone"
+        }
+    },
+    "enabled": true
+}

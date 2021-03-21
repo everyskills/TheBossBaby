@@ -92,10 +92,9 @@ def mask_image(imgdata, img_size: tuple=(100, 100), size: int=64):
 def add_item(obj, icon: QIcon, text: str="", tooltip: str="", selectable: bool=False, 
             select: bool=False, checkable: bool=False, check: bool=False, hide: bool=False, 
             font_size: int=10, icon_size=(25, 25), enabled: bool=True, dis_bg: str="#efeeef", 
-            alignment=None):
+            alignment=None, icon_theme: bool=False, icon_provider: bool=False):
 
     font = QFont()
-    # font.setPointSize(font_size)
     font.setPixelSize(font_size)
 
     att = QListWidgetItem()
@@ -103,8 +102,17 @@ def add_item(obj, icon: QIcon, text: str="", tooltip: str="", selectable: bool=F
     att.setHidden(hide)
     att.setFont(font)
 
-    if icon: 
+    if icon and isinstance(icon, str):
+        if icon_provider:
+            icon = icon_types(icon)
+        elif icon_theme:
+            icon = QIcon.fromTheme(icon)
+        else:
+            icon = QIcon(icon)
         att.setIcon(icon)
+    else:
+        att.setIcon(icon)
+
     if tooltip: 
         att.setToolTip(tooltip)
     if checkable:

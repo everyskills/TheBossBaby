@@ -1,0 +1,39 @@
+{
+    "name": "Apt Packages",
+    "version": "1.0.0",
+    "description": "Linux apt packages search",
+    "help": "README.md",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "linux",
+    "enabled": true,
+    "settings": {
+        "term": {
+            "type": "input",
+            "title": "Terminal",
+            "value": "tilix -e",
+            "subtitle": "select terminal name for run command inside it"
+        },
+        "kw": {
+            "type": "keyword",
+            "title": "Apt Package Keyword",
+            "value": "apt",
+            "subtitle": "Keyword for launche Apt plugin"
+        },
+        "cmd": {
+            "type": "input",
+            "value": "sudo apt install -u",
+            "title": "Command",
+            "subtitle": "Command for execute"
+        },
+        "max_results": {
+            "type": "num",
+            "value": 12,
+            "suffix": " item",
+            "title": "Max Results"
+        }
+    }
+}

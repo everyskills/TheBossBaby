@@ -1,0 +1,20 @@
+{
+    "name": "Google Translate",
+    "version": "1.0.0",
+    "description": "Google Translator from and to any language",
+    "help": "README.md",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "all",
+    "settings": {
+        "kw": {
+            "type": "keyword",
+            "title": "Google Translate",
+            "value": "gt"
+        }
+    },
+    "enabled": true
+}

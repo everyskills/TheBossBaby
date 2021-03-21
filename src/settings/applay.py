@@ -147,7 +147,7 @@ class ApplaySettingOnWindow:
     def small_mode(self):
         self.set_line_style(False)
         height = mt.setting.value("window_min_extend", type=int)
-        if not self.p.UIB_main_frame.isHidden() and self.p.height() != height:
+        if not self.p.UIB_main_frame.isHidden() or self.p.height() != height:
             self.p.UIB_main_frame.hide()
             self.p.setFixedHeight(height)
 
@@ -156,7 +156,7 @@ class ApplaySettingOnWindow:
     def extend_mode(self):
         self.set_line_style(True)
         height = mt.setting.value("window_max_extend", type=int)
-        if self.p.UIB_main_frame.isHidden() and self.p.height() != height:
+        if self.p.UIB_main_frame.isHidden() or self.p.height() != height:
             self.p.UIB_main_frame.show()
             self.p.setFixedHeight(height)
 

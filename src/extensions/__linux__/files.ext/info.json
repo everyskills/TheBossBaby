@@ -1,0 +1,22 @@
+{
+    "name": "Linux Files Browser",
+    "version": "1.0.0",
+    "description": "simple files manager for linux",
+    "icon": "Icon.svg",
+    "help": "README.md",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "linux",
+    "settings": {
+        "kw": {
+            "type": "kw",
+            "title": "Files Browser",
+            "value": "fd"
+        }
+    },
+
+    "enabled": true
+}

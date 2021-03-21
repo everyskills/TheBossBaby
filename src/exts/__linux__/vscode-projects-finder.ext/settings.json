@@ -1,9 +1,0 @@
-[
-    {
-        "id": "terminal",
-        "type": "input",
-        "name": "Terminal",
-        "default_value": "tilix",
-        "description": "select terminal name for run command inside it"
-    }
-] 

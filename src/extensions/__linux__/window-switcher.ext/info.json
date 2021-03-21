@@ -1,0 +1,15 @@
+{
+    "name": "Window Switcher",
+    "version": "1.0.0",
+    "description": "Find and switch Linux/X11 windows by name",
+    "icon": "Icon.png",
+    "help": "README.md",
+    "keyword": "win",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "linux",
+    "enabled": true
+}

@@ -1,0 +1,27 @@
+{
+    "name": "Emoji Selector",
+    "version": "1.0.0",
+    "description": "emoji selectro and copy to clipboard",
+    "icon": "Icon.png",
+    "help": "README.md",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "all",
+    "examples": [
+        "emoji emoji name for search and copy to clipboard",
+        "emoji love",
+        "emoji small"
+    ],
+    "enabled": true,
+    "settings": {
+        "kw": {
+            "type": "kw",
+            "value": "emoji",
+            "title": "Emoji Keyword",
+            "subtitle": "emoji selectro and copy to clipboard"
+        }
+    }
+}

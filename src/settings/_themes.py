@@ -25,7 +25,7 @@ class ThemePage:
         self.p.search_theme.textChanged.connect(self.set_theme_items)
 
     def get_all_themes(self):
-        for p in glob(base_dir + "../styles/*.thm/"):
+        for p in glob(base_dir + "../extensions/__themes__/*.thm/"):
             pp = (p.split("..")[0].rstrip("settings/"))
             ps = pp + p.split("..")[1]
 

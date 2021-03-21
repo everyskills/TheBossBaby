@@ -1,0 +1,28 @@
+{
+    "name": "Github search",
+    "version": "1.0.0",
+    "description": "Convenient search for projects on Github",
+    "icon": "Icon.png",
+    "help": "README.md",
+    "script": "main.py",
+    "keyword": "gb",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "all",
+    "settings": {
+        "kw": {
+            "type": "keyword",
+            "title": "Search Keyword",
+            "value": "gb"
+        },
+        "max-results": {
+            "type": "num",
+            "title": "Max Results",
+            "value": 12,
+            "suffix": " item"
+        }
+    },
+    "enabled": true
+}

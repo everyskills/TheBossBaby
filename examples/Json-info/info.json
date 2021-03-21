@@ -4,11 +4,6 @@
     "description": "simple plugin description.",
     "icon": "Icon.png",
     "help": "README.md",
-    
-    "keyword": "key",
-    // or
-    "keywords": ["key1", "key2"],
-
     "script": "main.py",
     "creator_name": "Author name",
     "creator_email": "example@gmail.com",
@@ -18,5 +13,65 @@
     "examples": [
         "key value",
         "..."
-    ]
+    ],
+
+    // Types: [input, text, dialog, int, num, float, double, check, select]
+    "settings": {
+    	"id_input": {
+    		"type": "input",
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"value": "input type"
+    	},
+
+    	"id_text": {
+    		"type": "text",
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"value": "text type"
+    	},
+
+    	"id_dialog": {
+    		"type": "dialog",
+    		"dialog": "",  // [file, dir, color]
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"value": "text type"
+    	},
+
+    	"id_int": {
+    		"type": "int",
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"suffix": "",
+    		"prefix": "",
+    		"value": 12
+    	},
+
+    	"id_float": {
+    		"type": "float",
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"suffix": "",
+    		"prefix": "",
+    		"value": 12.0
+    	},
+
+    	"id_check": {
+    		"type": "check",
+    		"name": "check name",
+    		"value": 12.0
+    	},
+
+    	"id_select": {
+    		"type": "select",
+    		"title": "Text Title",
+    		"subtitle": "Text Subtitle",
+    		"value": "yes",
+    		"options": [
+    			"yes",
+    			"no"
+    		]
+    	},
+    }
 }

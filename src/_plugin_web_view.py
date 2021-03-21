@@ -216,16 +216,19 @@ class UIBWPlugin(QWidget, UIBUi_web, UserCommands):
                 # self.window.btn_ext.setIcon(QIcon(icon))
                 # pass
 
-                desc = data.get("json", {}).get("description", "")
-                name = data.get("json", {}).get("name", "")
-                version = data.get("json", {}).get("version")
+                if data.get("json", {}).get("keywords", []):
+                    _type = "Plugin Key"
+                else:
+                    _type = "Plugin"
 
                 keys = {
-                    "version": version,
+                    "type": _type,
+                    "author": data.get("json", {}).get("creator_name", ""),
+                    "version": data.get("json", {}).get("version", "0.0.0"),
                     "icon": data.get("icon"),
                     "key": data.get("keyword", ""),
-                    "name": name if name else data.get("title"),
-                    "tag":  desc if desc else data.get("description"),
+                    "name": str(data.get("json", {}).get("name", data.get("title"))),
+                    "tag":  str(data.get("json", {}).get("description", data.get("subtitle"))),
                     "style": "file://" + base_dir + "default_view/plugin.css",
                     'color': 'black' if not self.window.methods.style == 'dark' else 'white',
                     'bg': self.window.methods.dark_color if self.window.methods.style == 'dark' else self.window.methods.light_color

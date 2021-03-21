@@ -1,0 +1,26 @@
+{
+    "term": {
+        "type": "input",
+        "title": "Terminal",
+        "value": "tilix -e",
+        "subtitle": "select terminal name for run command inside it"
+    },
+    "kw": {
+        "type": "keyword",
+        "title": "Keyword",
+        "value": "apt",
+        "subtitle": "Keyword for launche Apt plugin"
+    },
+    "cmd": {
+        "type": "input",
+        "value": "sudo apt install -u",
+        "title": "Command",
+        "subtitle": "Command for execute"
+    },
+    "max_results": {
+        "type": "num",
+        "value": 12.0,
+        "suffix": " item",
+        "title": "Max Results"
+    }
+}

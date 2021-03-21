@@ -55,6 +55,7 @@ class UserCommands:
 
         if not self.results.get(id(item)):
             self.run_plugin_item(item)
+
         else:
             data = self.results.get(id(item))
             key, val = self.window.get_kv(self.window.input.text())
@@ -63,6 +64,7 @@ class UserCommands:
             try:
                 if data.get("args", "").strip() == "yes" and val.strip() and key == data.get("keyword", ""):
                     is_args = True
+
                 elif data.get("args", "").strip() == "no":
                     is_args = False
                 
@@ -76,12 +78,10 @@ class UserCommands:
             except Exception as err:
                 print("USER-CMD-CLICKED: ", err)
 
-    def set_list_items(self, _path: str="exts/__user__/*.wf/"):
+    def set_list_items(self, _path: str="extensions/__user__/*.wf/"):
         text = self.window.input.text().strip()
         key, _ = self.window.get_kv(self.window.input.text())
-
         self.UIB_list_widget.setGridSize(QSize(43, 43))
-
         ###################### Workflow List Item ######################
         # query = ""
         # for p in glob(base_dir + _path):
@@ -122,13 +122,14 @@ class UserCommands:
 
                 if data.get("key_att", {}):
                     item = self.add_item(
-                                        self.window.methods.include_file(data.get("key_att").get("icon")) or data.get("icon"),
-                                        data.get("key_att").get("title", ""),
-                                        data.get("key_att").get("subtitle", ""))
+                        self.window.methods.include_file(data.get("key_att", {}).get("icon", "")) or data.get("icon"),
+                        data.get("key_att", {}).get("title", ""),
+                        data.get("key_att",  {}).get("subtitle", ""))
                 else:
-                    item = self.add_item(data.get("icon"),
-                                        data.get("json").get("name", ""),
-                                        data.get("json").get("description", ""))
+                    item = self.add_item(
+                        data.get("icon"),
+                        data.get("json").get("name", ""),
+                        data.get("json").get("description", ""))
 
                 self.results.update({id(item): data})
 

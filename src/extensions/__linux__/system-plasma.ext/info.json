@@ -1,0 +1,23 @@
+{
+    "name": "Plasma System",
+    "version": "1.0.0",
+    "description": "Session logout functions for Plasma desktop.",
+    "icon": "Icon.svg",
+    "help": "README.md",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed Alzabidi",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://everyskills.com",
+    "home_page": "https://github.com/everyskills/",
+    "system": "linux",
+    "settings": {
+        "kw": {
+            "type": "keyword",
+            "title": "Exit Plasma",
+            "subtitle": "Session logout functions for Plasma desktop.",
+            "value": "exit"
+        }
+    },
+
+    "enabled": true
+}

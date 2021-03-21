@@ -1,0 +1,25 @@
+{
+    "name": "Tic Tac Game",
+    "version": "1.0.0",
+    "description": "simple tic tac game.",
+    "icon": "Icon.png",
+    "help": "README.md",
+    "script": "main.py",
+    "creator_name": "Osama Muhammed",
+    "creator_email": "everyskils@gmail.com",
+    "creator_url": "https://www.everyskills.com",
+    "home_page": "https://www.github.com/<user name>/<repo name>",
+    "system": "all",
+    "examples": [
+        "tic-tac",
+        "..."
+    ],
+    "settings": {
+        "kw": {
+            "type": "keyword",
+            "title": "Tic Tac Game",
+            "value": "tic-tac"
+        }
+    },
+    "enabled": false
+}

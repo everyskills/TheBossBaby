@@ -28,6 +28,7 @@ class Downloader(QWidget, Ui_Form):
         self.screenshot.setText("Drag Plugin Zip file here")
 
         self.btn_install.clicked.connect(self.start_unzip)
+        self.btn_install.hide()
         self.progress_bar.hide()
 
     def unzip_file(self, url: str):
@@ -69,23 +70,25 @@ class Downloader(QWidget, Ui_Form):
             path = data.urls()[0].toLocalFile()
             if os.path.exists(path) and path.endswith(".zip"):
                 event.setAccepted(True)
+                self.btn_install.show()
                 self.plugin_file = path
                 self.set_plugin_info(path)
             else:
                 event.setAccepted(False)
+                self.btn_install.hide()
         except IndexError:
             pass
 
     def start_install(self):
         try:
-            _down_path = base_dir + "exts/__download__/"
-            
+            _down_path = base_dir + "extensions/__download__/" # exts -> extensions
+
             for i in glob(_down_path + "*"):
                 if not os.path.isfile(i) and not i.endswith(".zip"):
 
                     if not self.info.get("style", ""):
                         _path = base_dir + \
-                            f"exts/__{self.info.get('system')}__/" + \
+                            f"extensions/__{self.info.get('system')}__/" + \
                             os.path.split(i)[1] + ".ext"
 
                         if os.path.exists(_path):
@@ -93,7 +96,7 @@ class Downloader(QWidget, Ui_Form):
                         shutil.move(i, _path)
 
                     else:
-                        _path = base_dir + f"styles/" + os.path.split(i)[1] + ".thm"
+                        _path = base_dir + f"extensions/__themes__/" + os.path.split(i)[1] + ".thm"
                         if os.path.exists(_path):
                             shutil.rmtree(_path)
                         shutil.move(i, _path)
@@ -106,13 +109,12 @@ class Downloader(QWidget, Ui_Form):
             print("Copy Error: ", err)
 
     def start_unzip(self):
-        _down_path = base_dir + "exts/__download__/"
+        _down_path = base_dir + "extensions/__download__/"
         zip_down = _down_path + os.path.split(self.plugin_file)[1]
         if (
-            self.info.get("keyword") and
+            self.info.get("settings") and
             self.info.get("script") and
             self.info.get("system")) or (
-                
                 self.info.get("type", "") and 
                 self.info.get("style")):
 
@@ -140,7 +142,7 @@ class Downloader(QWidget, Ui_Form):
             self.screenshot.setPixmap(QIcon(base_dir + "tmp/Screenshot.png").pixmap(640, 400))            
         if icon:
             self.icon.setIcon(QIcon(base_dir + "tmp/Icon.png"))
-        
+
         self.data.setText(html)
 
 def main():

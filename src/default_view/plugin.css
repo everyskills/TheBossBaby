@@ -19,19 +19,19 @@ body > #centered > div {
     display: table-cell;
     vertical-align: middle;
     text-align: center;
-    font-size: x-large;
+    /* font-size: x-large; */
     line-height: 1.1;
     padding: 30px;
 }
 
 #hint {
-    opacity: 0.5;
+    opacity: 0.8;
     font-weight: bold;
     font-size: small;
     position: absolute;
     left: 10px;
     right: 10px;
-    bottom: 10px;
+    bottom: 0px;
     text-align: center;
 }
 
@@ -42,14 +42,14 @@ h1 {
 
 p {
     margin-top: 3px;
-    opacity: 0.7;
+    opacity: 0.9;
     font-size: small;
 }
 
 hr { 
-    opacity: 0.3;
-    font-size: small;
-    margin-top: 80px;
+    opacity: 0.2;
+    font-size: xx-small;
+    margin-top: 10px;
     width: 80%;
 }
 
@@ -58,4 +58,8 @@ hr {
     height: 150px;
     /* border: 2px solid #ccc; */
     /* border-radius: 100px; */
+}
+
+p span {
+    color: #fff;
 }

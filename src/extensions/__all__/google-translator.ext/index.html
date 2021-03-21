@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Google Translator</title>
+  	<link href="{{ include_file('style.css') }}" rel="stylesheet">
+  </head>
+  <body>
+
+    <div class="modal-container" id="modal-opened">
+      <div class="modal">
+        <p>From: {{ from }} &MediumSpace;&MediumSpace; To: {{ to }}</p>
+        <div class="modal__details">
+          <p class="modal__description">{{ text }}</p>
+        </div>
+        <p class="modal__text">{{ results }}</p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -12,18 +12,18 @@
 	<div id='centered'>
 		<div>
 			<img id="call-img" src="{{ icon }}" />
-			<h4>{{ name }}</h4>
+			<h1>{{ name }}</h1>
+			<br>
 			<p>{{ tag }}</p>
 			<hr>
-			<p>Keyword: {{ key }}</p>
-			<p>Version: {{ version }}</p>
+			<p>Keyword: <span>{{ key }}</span></p>
+			<p>Version: <span>{{ version }}</span></p>
+			<p>Type: <span>{{ type }}</span></p>
 			<br>
 		</div>
 	</div>
-
-	<!-- <div id='hint'>
-		<h2> Phone type: {{ ph_ty }} </h2>
-	</div> -->
-
+	<div id='hint'>
+		<h6 style="font-size: small;">By: {{ author }}</h6>
+	</div>
 	</body>
 </html>
