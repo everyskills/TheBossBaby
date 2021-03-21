@@ -284,6 +284,10 @@ for start using default keywords write in prefix like this ```@keyword```
 | extend | Toggle to Extend window mode
 | clear-history | Clear History File
 | reload | Reload all Plugins and settings
+| var | add new variables
+| var-del {var-name}| delete variables
+| post-msg {query}| send System Notification
+| larg-txt {query}| show Larg Text in Screen
 
 ### Text Change
 
