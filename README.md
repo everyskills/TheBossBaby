@@ -71,13 +71,13 @@ which print user text input to page
 
 A plugin needs a couple of things, which we'll explain below:
 
-- a `.ext` directory, containing:
+- a `.zip`
 - an `info.json`
 - a `plugin.py`
 - an `Icon.png` (optional)
 
-## Create the .ext 
-to install your plugin go to settings and go to the downloads page and select path to the plugin directory.
+## Create the .zip
+to install your plugin wirte in search line `@install {path/to/plugin.zip}` or drag the file in Center Widget
 
 ### info.json
 The first thing we need is an `info.json` file. Here's what to put in it:
@@ -213,7 +213,7 @@ for start using default keywords write in prefix like this ```@keyword```
 | settings | Open Settings Window
 | dark | Toggle to Dark mode
 | light | Toggle to Light mode
-| style {style name}
+| style {style name} | Applay Theme by name
 | small | Toggle to Samll window mode
 | extend | Toggle to Extend window mode
 | clear-history | Clear History File
